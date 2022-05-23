@@ -3,7 +3,7 @@
 
 #include <vector>
 #include <string>
-#include <iostream.h>
+#include <iostream>
 
 #include "TileSection.hh"
 
@@ -39,13 +39,13 @@ public:
         TileSection* section    ()              const
         {
             if (m_section_in_use<0) {
-                G4cout<<"No section selected!!!"<<endl;
+                G4cout<<"No section selected!!!"<<std::endl;
                 return 0;
             }
             else if (m_section_in_use<(int)m_sectionlist.size()) {
                 return m_sectionlist[m_section_in_use];
             } else {
-                G4cout<<"Section in use is too big!!!"<<endl;
+                G4cout<<"Section in use is too big!!!"<<std::endl;
                 return 0;
             }
         }

@@ -39,11 +39,11 @@
 #include "G4VisAttributes.hh"
 #include "globals.hh"
 
-#include "G4NistMaanger.hh"
-
+#include "G4NistManager.hh"
+#include "G4SystemOfUnits.hh"
 //Includers from C++
 //
-#include <iostream.h>
+#include <iostream>
 
 //Constructors and de-constructor
 //
@@ -70,7 +70,7 @@ ATLTileCalTBDetConstruction::ATLTileCalTBDetConstruction(G4double x, G4double y,
 ATLTileCalTBDetConstruction::~ATLTileCalTBDetConstruction()
 {;}
 
-G4VPhysicalVolume* ATLTileCalTBDetectorConstruction::Construct() {
+G4VPhysicalVolume* ATLTileCalTBDetConstruction::Construct() {
 
     //Colours and vis attributes
     //
@@ -99,13 +99,13 @@ G4VPhysicalVolume* ATLTileCalTBDetectorConstruction::Construct() {
     //Materials
     //
     auto nistManager  = G4NistManager::Instance();
-    auto Air          = nistManager->FindOrBuildMaterial("G4_Air");
+    auto Air          = nistManager->FindOrBuildMaterial("G4_AIR");
     auto Iron         = nistManager->FindOrBuildMaterial("G4_Fe");
     auto C            = nistManager->FindOrBuildElement(6);
     auto H            = nistManager->FindOrBuildElement(1);
-    auto Scintillator = new G4Material(name="Scintillator", density=1.032*g/cm3, ncomponents=2); 
-    Scintillator->addElement("C", natoms=9);
-    Scintillator->addElement("H", natoms=10);
+    auto Scintillator = new G4Material("Scintillator", 1.032*g/cm3, 2); 
+    Scintillator->AddElement(C, 9);
+    Scintillator->AddElement(H, 10);
 
     //The Experimental Hall (beam line along Z axis)
     //
@@ -123,7 +123,7 @@ G4VPhysicalVolume* ATLTileCalTBDetectorConstruction::Construct() {
         = new G4PVPlacement(0,G4ThreeVector(),"expHall",
                             experimentalHall_log,0,false,0);
 
-    experimentalHall_log->SetVisAttributes(HallColor);
+    //experimentalHall_log->SetVisAttributes(HallColor);
 
     solidWorld = experimentalHall_box;
     logicWorld = experimentalHall_log;

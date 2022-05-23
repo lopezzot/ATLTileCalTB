@@ -44,7 +44,7 @@ int main(int argc,char** argv) {
 
     //Mandatory user initialization classes
     //
-    runManager->SetUserInitialization(new ATLTileCalTBDetConstruction);
+    runManager->SetUserInitialization(new ATLTileCalTBDetConstruction());
     runManager->SetUserInitialization(new ATLTileCalTBActInitialization());
 
     //Manadatory Geant4 classes

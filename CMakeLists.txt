@@ -55,8 +55,6 @@ target_link_libraries(ATLTileCalTB ${Geant4_LIBRARIES})
 set(ATLTileCalTB_SCRIPTS
   icons.mac
   gui.mac
-  run.png
-  init.mac
   init_vis.mac
   vis.mac
   )
@@ -73,11 +71,11 @@ endforeach()
 # Add program to the project targets
 # (this avoids the need of typing the program name after make)
 #
-add_custom_target(B5 DEPENDS exampleB5)
+add_custom_target(G4ATLTileCalTB DEPENDS ATLTileCalTB)
 
 #----------------------------------------------------------------------------
 # Install the executable to 'bin' directory under CMAKE_INSTALL_PREFIX
 #
-install(TARGETS exampleB5 DESTINATION bin)
+install(TARGETS ATLTileCalTB DESTINATION bin)
 
 ##**************************************************
