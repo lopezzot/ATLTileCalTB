@@ -53,10 +53,12 @@ target_link_libraries(ATLTileCalTB ${Geant4_LIBRARIES})
 # build ATLTileCalTB.
 #
 set(ATLTileCalTB_SCRIPTS
-  icons.mac
-  gui.mac
-  init_vis.mac
-  vis.mac
+    TileTB_2B1EB.gdml
+    TileTB_2B1EB_nobeamline.gdml
+    icons.mac
+    gui.mac
+    init_vis.mac
+    vis.mac
   )
 
 foreach(_script ${ATLTileCalTB_SCRIPTS})

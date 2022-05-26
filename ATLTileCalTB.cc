@@ -24,6 +24,8 @@
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 
+#include "G4GDMLParser.hh"
+
 int main(int argc,char** argv) {
     
     //No arguments => set interactive mode and define UI session
@@ -44,13 +46,15 @@ int main(int argc,char** argv) {
 
     //Mandatory user initialization classes
     //
-    runManager->SetUserInitialization(new ATLTileCalTBDetConstruction());
     runManager->SetUserInitialization(new ATLTileCalTBActInitialization());
 
     //Manadatory Geant4 classes
     //
     auto physicsList = new FTFP_BERT;
     runManager->SetUserInitialization(physicsList);
+    G4GDMLParser parser;
+    parser.Read("TileTB_2B1EB_nobeamline.gdml");
+    runManager->SetUserInitialization(new ATLTileCalTBDetConstruction(parser));
 
     //Visualization manager construction
     //
