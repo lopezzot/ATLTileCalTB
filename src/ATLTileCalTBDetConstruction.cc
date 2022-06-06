@@ -37,14 +37,16 @@ ATLTileCalTBDetConstruction::ATLTileCalTBDetConstruction(const G4GDMLParser& par
 ATLTileCalTBDetConstruction::~ATLTileCalTBDetConstruction()
 {}
 
+//Construct() method
+//
 G4VPhysicalVolume* ATLTileCalTBDetConstruction::Construct() {
 
     auto worldPV = fParser.GetWorldVolume();
     
-    auto LVStore = G4LogicalVolumeStore::GetInstance();
-    for(G4LogicalVolume* volume : *LVStore) {
-        G4cout<<"volumeeeeeeee.: "<<volume->GetName()<<G4endl;
-    }
+    //auto LVStore = G4LogicalVolumeStore::GetInstance();
+    //for(G4LogicalVolume* volume : *LVStore) {
+    //    G4cout<<"volumeeeeeeee.: "<<volume->GetName()<<G4endl;
+    //}
 
     DefineVisAttributes();
 
@@ -52,41 +54,41 @@ G4VPhysicalVolume* ATLTileCalTBDetConstruction::Construct() {
 
 }
 
+//DefineVisAttributes() method
+//
 void ATLTileCalTBDetConstruction::DefineVisAttributes() {
 
-    auto CALOVisAttr = new G4VisAttributes();
+    //Create vis attributes
+    //
+    auto CALOVisAttr = new G4VisAttributes(); //CALO::CALO invisible
     CALOVisAttr->SetVisibility( false );
-    auto TileTBEnvVisAttr = new G4VisAttributes();
+    auto TileTBEnvVisAttr = new G4VisAttributes(); //Tile::TileTBEnv invisible
     TileTBEnvVisAttr->SetVisibility( false );
-    auto BarrelVisAttr = new G4VisAttributes();
-    BarrelVisAttr->SetVisibility( false );
-    auto TileBarMod1VisAttr = new G4VisAttributes();
-    TileBarMod1VisAttr->SetVisibility( false );
-    auto FingerVisAttr = new G4VisAttributes();
-    FingerVisAttr->SetForceSolid( true );
-    FingerVisAttr->SetColor( G4Color::Grey() );
+    //auto TileVisAttr = new G4VisAttributes(); //Tile::Scintillator blue
+    //TileVisAttr->SetForceSolid( true );
+    //TileVisAttr->SetColor( G4Color::Blue() );
+    //TileVisAttr->SetDaughtersInvisible( true );
+    auto FingerVisAttr = new G4VisAttributes(); //Tile::Finger grey
+    FingerVisAttr->SetForceSolid( true );       //Tile::EFinger grey
+    FingerVisAttr->SetColor( G4Color::Grey() ); //Tile::GirderMother grey
     FingerVisAttr->SetDaughtersInvisible( true );
-    auto ScinVisAttr = new G4VisAttributes();
-    ScinVisAttr->SetForceSolid( true );
-    ScinVisAttr->SetColor( G4Color::Blue() );
-    ScinVisAttr->SetDaughtersInvisible( true );
-    auto AbsorberChildVisAttr = new G4VisAttributes();
-    AbsorberChildVisAttr->SetForceSolid( true );
-    AbsorberChildVisAttr->SetColor( G4Color::Green() );
-    AbsorberChildVisAttr->SetDaughtersInvisible( true );
+    auto AbsorberVisAttr = new G4VisAttributes(); //Tile::Absorber magenta
+    AbsorberVisAttr->SetForceSolid( true );
+    AbsorberVisAttr->SetColor( G4Color::Cyan() );
+    AbsorberVisAttr->SetDaughtersInvisible( true );
 
+    //Assign vis attributes
+    //
     auto LVStore = G4LogicalVolumeStore::GetInstance();
     for(G4LogicalVolume* volume : *LVStore) {
-        if( volume->GetName()=="CALO::CALO" )      volume->SetVisAttributes( CALOVisAttr );
+        
+        if( volume->GetName()=="CALO::CALO" ) volume->SetVisAttributes( CALOVisAttr );
         if( volume->GetName()=="Tile::TileTBEnv" ) volume->SetVisAttributes( TileTBEnvVisAttr );
-        if( volume->GetName()=="Barrel" )    { G4cout<<"ciaooooooooo"<<G4endl;      volume->SetVisAttributes( BarrelVisAttr );}
-        if( volume->GetName()=="Tile::BarrelModule" ) volume->SetVisAttributes( TileBarMod1VisAttr );
+        //if( volume->GetName()=="Tile::Scintillator" ) volume->SetVisAttributes( TileVisAttr );
         if( volume->GetName()=="Tile::Finger" ) volume->SetVisAttributes( FingerVisAttr );
         if( volume->GetName()=="Tile::EFinger" ) volume->SetVisAttributes( FingerVisAttr );
         if( volume->GetName()=="Tile::GirderMother" ) volume->SetVisAttributes( FingerVisAttr );
-        if( volume->GetName()=="Tile::Scintillator" ) volume->SetVisAttributes( ScinVisAttr );
-        if( volume->GetName()=="Tile::Barrel" ) volume->SetVisAttributes( AbsorberChildVisAttr );
-
+        if( volume->GetName()=="Tile::Absorber" ) volume->SetVisAttributes( AbsorberVisAttr );
     }
 }
 
