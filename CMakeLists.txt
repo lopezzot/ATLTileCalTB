@@ -59,6 +59,7 @@ set(ATLTileCalTB_SCRIPTS
     gui.mac
     init_vis.mac
     vis.mac
+    TBrun.mac
   )
 
 foreach(_script ${ATLTileCalTB_SCRIPTS})
