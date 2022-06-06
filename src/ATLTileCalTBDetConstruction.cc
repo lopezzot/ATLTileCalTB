@@ -80,7 +80,7 @@ void ATLTileCalTBDetConstruction::DefineVisAttributes() {
     //Assign vis attributes
     //
     auto LVStore = G4LogicalVolumeStore::GetInstance();
-    for(G4LogicalVolume* volume : *LVStore) {
+    for(auto volume : *LVStore) {
         
         if( volume->GetName()=="CALO::CALO" ) volume->SetVisAttributes( CALOVisAttr );
         if( volume->GetName()=="Tile::TileTBEnv" ) volume->SetVisAttributes( TileTBEnvVisAttr );
@@ -89,6 +89,7 @@ void ATLTileCalTBDetConstruction::DefineVisAttributes() {
         if( volume->GetName()=="Tile::EFinger" ) volume->SetVisAttributes( FingerVisAttr );
         if( volume->GetName()=="Tile::GirderMother" ) volume->SetVisAttributes( FingerVisAttr );
         if( volume->GetName()=="Tile::Absorber" ) volume->SetVisAttributes( AbsorberVisAttr );
+
     }
 }
 
