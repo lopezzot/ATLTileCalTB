@@ -15,7 +15,7 @@
 
 //Includers form project files
 //
-//#include "B4cCalorHit.hh"
+#include "ATLTileCalTBHit.hh"
 
 //Includers from C++
 //
@@ -35,11 +35,11 @@ class ATLTileCalTBSensDet : public G4VSensitiveDetector {
         //Methods from base class
         //
         virtual void Initialize( G4HCofThisEvent* hitCollection );
-        virtual G4bool ProcessHits( G4Step* step, G4TouchableHistory* history );
+        virtual G4bool ProcessHits( G4Step* aStep, G4TouchableHistory* history );
         virtual void   EndOfEvent( G4HCofThisEvent* hitCollection );
 
     private:
-        //ATLTileCalTBHitsCollection* fHitsCollection;
+        ATLTileCalTBHitsCollection* fHitsCollection;
         G4int  fNCells;
 
 };

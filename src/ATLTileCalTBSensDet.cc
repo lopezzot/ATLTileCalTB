@@ -23,7 +23,7 @@
 //
 ATLTileCalTBSensDet::ATLTileCalTBSensDet( const G4String& name, const G4String& hitsCollectionName, G4int nCells )
     : G4VSensitiveDetector(name),
-      //fHitsCollection(nullptr),
+      fHitsCollection(nullptr),
       fNCells(nCells) {
   
     collectionName.insert(hitsCollectionName);
@@ -36,22 +36,21 @@ ATLTileCalTBSensDet::~ATLTileCalTBSensDet() {}
 //
 void ATLTileCalTBSensDet::Initialize(G4HCofThisEvent* hce) {
   
-  /*
-  // Create hits collection
-  fHitsCollection 
-    = new B4cCalorHitsCollection(SensitiveDetectorName, collectionName[0]); 
+    //Create hits collection
+    //
+    fHitsCollection = new ATLTileCalTBHitsCollection( SensitiveDetectorName, collectionName[0] ); 
 
-  // Add this collection in hce
-  auto hcID 
-    = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
-  hce->AddHitsCollection( hcID, fHitsCollection ); 
+    //Add this collection in the hits collection of this event
+    //
+    auto hcID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
+    hce->AddHitsCollection( hcID, fHitsCollection ); 
 
-  // Create hits
-  // fNofCells for cells + one more for total sums 
-  for (G4int i=0; i<fNofCells+1; i++ ) {
-    fHitsCollection->insert(new B4cCalorHit());
-  }
-  */
+    //Allocate hits in hce (currently just one hit)
+    //
+    for ( G4int i=0; i<fNCells; i++ ) {
+        fHitsCollection->insert(new ATLTileCalTBHit());
+    }
+
 }
 
 //ProcessHits base method
@@ -70,46 +69,35 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
     //        "Dep(MeV) "<< aStep->GetTotalEnergyDeposit() << " " <<
     //        "Mat "     << aStep->GetPreStepPoint()->GetMaterial()->GetName() << " " << 
     //        "Vol "     << aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetName() << G4endl; 
-  /*
-  // energy deposit
-  auto edep = step->GetTotalEnergyDeposit();
-  
-  // step length
-  G4double stepLength = 0.;
-  if ( step->GetTrack()->GetDefinition()->GetPDGCharge() != 0. ) {
-    stepLength = step->GetStepLength();
-  }
-
-  if ( edep==0. && stepLength == 0. ) return false;      
-
-  auto touchable = (step->GetPreStepPoint()->GetTouchable());
     
-  // Get calorimeter cell id 
-  auto layerNumber = touchable->GetReplicaNumber(1);
-  
-  // Get hit accounting data for this cell
-  auto hit = (*fHitsCollection)[layerNumber];
-  if ( ! hit ) {
-    G4ExceptionDescription msg;
-    msg << "Cannot access hit " << layerNumber; 
-    G4Exception("B4cCalorimeterSD::ProcessHits()",
-      "MyCode0004", FatalException, msg);
-  }         
+    auto edep = aStep->GetTotalEnergyDeposit();
+    if ( edep==0. ) return false; 
 
-  // Get hit for total accounting
-  auto hitTotal 
-    = (*fHitsCollection)[fHitsCollection->entries()-1];
-  
-  // Add values
-  hit->Add(edep, stepLength);
-  hitTotal->Add(edep, stepLength); 
+    //Get hit (just one for the moment)
+    //
+    auto hit = (*fHitsCollection)[0];
+    if ( ! hit ) {
+        G4ExceptionDescription msg;
+        msg << "Cannot access hit "; 
+        G4Exception("ATLTileCalTBSensDet::ProcessHits()",
+        "MyCode0004", FatalException, msg);
+    }         
+
+    //Add hit energy 
+    //
+    hit->AddE( edep );
       
-  return true;
-  */
+    return true;
+
 }
 
 //EndOfEvent base method
 //
-void ATLTileCalTBSensDet::EndOfEvent(G4HCofThisEvent*) {}
+void ATLTileCalTBSensDet::EndOfEvent(G4HCofThisEvent*) {
+    
+    auto hit = (*fHitsCollection)[0];
+    G4cout<<"Energy in scintillator (all) " << hit->GetEdep() << G4endl; 
+
+}
 
 //**************************************************
