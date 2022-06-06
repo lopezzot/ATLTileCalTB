@@ -40,7 +40,7 @@ class ATLTileCalTBSensDet : public G4VSensitiveDetector {
 
     private:
         //ATLTileCalTBHitsCollection* fHitsCollection;
-        G4int  nCells;
+        G4int  fNCells;
 
 };
 

@@ -23,8 +23,8 @@
 //
 ATLTileCalTBSensDet::ATLTileCalTBSensDet( const G4String& name, const G4String& hitsCollectionName, G4int nCells )
     : G4VSensitiveDetector(name),
-      fHitsCollection(nullptr),
-      fNofCells(nofCells) {
+      //fHitsCollection(nullptr),
+      fNCells(nCells) {
   
     collectionName.insert(hitsCollectionName);
 
@@ -34,8 +34,8 @@ ATLTileCalTBSensDet::~ATLTileCalTBSensDet() {}
 
 //Intiliaze base method
 //
-void B4cCalorimeterSD::Initialize(G4HCofThisEvent* hce)
-{
+void ATLTileCalTBSensDet::Initialize(G4HCofThisEvent* hce) {
+  
   /*
   // Create hits collection
   fHitsCollection 
@@ -56,9 +56,20 @@ void B4cCalorimeterSD::Initialize(G4HCofThisEvent* hce)
 
 //ProcessHits base method
 //
-G4bool B4cCalorimeterSD::ProcessHits(G4Step* step, 
-                                     G4TouchableHistory*)
-{  
+G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
+  
+    //Print out some info step-by-step in sensitive elements
+    //
+    //G4cout<<"Track #: "<< aStep->GetTrack()->GetTrackID()<< " " <<
+    //        "Step #: " << aStep->GetTrack()->GetCurrentStepNumber()<< " "<<
+    //        "Volume: " << aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetName()<< " " << G4endl;
+    //G4cout<<"x: "<< aStep->GetPreStepPoint()->GetPosition().x() <<
+    //        "y: "<< aStep->GetPreStepPoint()->GetPosition().y() <<
+    //        "z: "<< aStep->GetPreStepPoint()->GetPosition().z() << G4endl;
+    //G4cout<<"Particle "<< aStep->GetTrack()->GetParticleDefinition()->GetParticleName()<< " " <<
+    //        "Dep(MeV) "<< aStep->GetTotalEnergyDeposit() << " " <<
+    //        "Mat "     << aStep->GetPreStepPoint()->GetMaterial()->GetName() << " " << 
+    //        "Vol "     << aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetName() << G4endl; 
   /*
   // energy deposit
   auto edep = step->GetTotalEnergyDeposit();
@@ -99,18 +110,6 @@ G4bool B4cCalorimeterSD::ProcessHits(G4Step* step,
 
 //EndOfEvent base method
 //
-void B4cCalorimeterSD::EndOfEvent(G4HCofThisEvent*)
-{
-  /*
-  if ( verboseLevel>1 ) { 
-     auto nofHits = fHitsCollection->entries();
-     G4cout
-       << G4endl 
-       << "-------->Hits Collection: in this event they are " << nofHits 
-       << " hits in the tracker chambers: " << G4endl;
-     for ( std::size_t i=0; i<nofHits; ++i ) (*fHitsCollection)[i]->Print();
-  }
-  */
-}
+void ATLTileCalTBSensDet::EndOfEvent(G4HCofThisEvent*) {}
 
 //**************************************************

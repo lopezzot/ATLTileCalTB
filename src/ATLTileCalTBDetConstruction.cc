@@ -10,6 +10,7 @@
 //Includers from project files
 //
 #include "ATLTileCalTBDetConstruction.hh"
+#include "ATLTileCalTBSensDet.hh"
 
 //Includers from Geant4
 //
@@ -21,6 +22,7 @@
 #include "G4GDMLParser.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4VisAttributes.hh"
+#include "G4SDManager.hh"
 
 //Includers from C++
 //
@@ -43,14 +45,31 @@ G4VPhysicalVolume* ATLTileCalTBDetConstruction::Construct() {
 
     auto worldPV = fParser.GetWorldVolume();
     
-    //auto LVStore = G4LogicalVolumeStore::GetInstance();
-    //for(G4LogicalVolume* volume : *LVStore) {
-    //    G4cout<<"volumeeeeeeee.: "<<volume->GetName()<<G4endl;
-    //}
-
     DefineVisAttributes();
 
     return worldPV;
+
+}
+
+//ConstructSDandField() method
+//
+void ATLTileCalTBDetConstruction::ConstructSDandField() {
+
+    //Sensitive detectors
+    //
+    auto caloSD = new ATLTileCalTBSensDet( "caloSD", "caloHitsCollection", 2 );
+    G4SDManager::GetSDMpointer()->AddNewDetector( caloSD );
+
+    //Assign to logical volumes
+    //
+    auto LVStore = G4LogicalVolumeStore::GetInstance();
+    for(auto volume : *LVStore) {
+
+        if( volume->GetName()=="Tile::Scintillator" ) volume->SetSensitiveDetector( caloSD );
+    
+    }
+
+    //No fields involved
 
 }
 
@@ -60,19 +79,19 @@ void ATLTileCalTBDetConstruction::DefineVisAttributes() {
 
     //Create vis attributes
     //
-    auto CALOVisAttr = new G4VisAttributes(); //CALO::CALO invisible
+    auto CALOVisAttr = new G4VisAttributes();      //CALO::CALO invisible
     CALOVisAttr->SetVisibility( false );
     auto TileTBEnvVisAttr = new G4VisAttributes(); //Tile::TileTBEnv invisible
     TileTBEnvVisAttr->SetVisibility( false );
-    //auto TileVisAttr = new G4VisAttributes(); //Tile::Scintillator blue
+    //auto TileVisAttr = new G4VisAttributes();    //Tile::Scintillator blue
     //TileVisAttr->SetForceSolid( true );
     //TileVisAttr->SetColor( G4Color::Blue() );
     //TileVisAttr->SetDaughtersInvisible( true );
-    auto FingerVisAttr = new G4VisAttributes(); //Tile::Finger grey
-    FingerVisAttr->SetForceSolid( true );       //Tile::EFinger grey
-    FingerVisAttr->SetColor( G4Color::Grey() ); //Tile::GirderMother grey
+    auto FingerVisAttr = new G4VisAttributes();    //Tile::Finger grey
+    FingerVisAttr->SetForceSolid( true );          //Tile::EFinger grey
+    FingerVisAttr->SetColor( G4Color::Grey() );    //Tile::GirderMother grey
     FingerVisAttr->SetDaughtersInvisible( true );
-    auto AbsorberVisAttr = new G4VisAttributes(); //Tile::Absorber magenta
+    auto AbsorberVisAttr = new G4VisAttributes();  //Tile::Absorber magenta
     AbsorberVisAttr->SetForceSolid( true );
     AbsorberVisAttr->SetColor( G4Color::Cyan() );
     AbsorberVisAttr->SetDaughtersInvisible( true );
@@ -81,14 +100,14 @@ void ATLTileCalTBDetConstruction::DefineVisAttributes() {
     //
     auto LVStore = G4LogicalVolumeStore::GetInstance();
     for(auto volume : *LVStore) {
-        
-        if( volume->GetName()=="CALO::CALO" ) volume->SetVisAttributes( CALOVisAttr );
-        if( volume->GetName()=="Tile::TileTBEnv" ) volume->SetVisAttributes( TileTBEnvVisAttr );
+            
+        if( volume->GetName()=="CALO::CALO" )           volume->SetVisAttributes( CALOVisAttr );
+        if( volume->GetName()=="Tile::TileTBEnv" )      volume->SetVisAttributes( TileTBEnvVisAttr );
         //if( volume->GetName()=="Tile::Scintillator" ) volume->SetVisAttributes( TileVisAttr );
-        if( volume->GetName()=="Tile::Finger" ) volume->SetVisAttributes( FingerVisAttr );
-        if( volume->GetName()=="Tile::EFinger" ) volume->SetVisAttributes( FingerVisAttr );
-        if( volume->GetName()=="Tile::GirderMother" ) volume->SetVisAttributes( FingerVisAttr );
-        if( volume->GetName()=="Tile::Absorber" ) volume->SetVisAttributes( AbsorberVisAttr );
+        if( volume->GetName()=="Tile::Finger" )         volume->SetVisAttributes( FingerVisAttr );
+        if( volume->GetName()=="Tile::EFinger" )        volume->SetVisAttributes( FingerVisAttr );
+        if( volume->GetName()=="Tile::GirderMother" )   volume->SetVisAttributes( FingerVisAttr );
+        if( volume->GetName()=="Tile::Absorber" )       volume->SetVisAttributes( AbsorberVisAttr );
 
     }
 }
