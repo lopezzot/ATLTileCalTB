@@ -11,6 +11,7 @@
 //
 #include "ATLTileCalTBActInitialization.hh"
 #include "ATLTileCalTBPrimaryGenAction.hh"
+#include "ATLTileCalTBRunAction.hh"
 
 ATLTileCalTBActInitialization::ATLTileCalTBActInitialization()
     : G4VUserActionInitialization()
@@ -21,10 +22,16 @@ ATLTileCalTBActInitialization::~ATLTileCalTBActInitialization() {}
 //Define Build() and BuildForMaster() methods
 //
 void ATLTileCalTBActInitialization::BuildForMaster() const {
+    
+    SetUserAction( new ATLTileCalTBRunAction() );
+
 }
 
 void ATLTileCalTBActInitialization::Build() const {
+    
     SetUserAction( new ATLTileCalTBPrimaryGenAction );
+    SetUserAction( new ATLTileCalTBRunAction() );
+
 }
 
 //**************************************************

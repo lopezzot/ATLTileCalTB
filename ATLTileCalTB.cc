@@ -44,10 +44,6 @@ int main(int argc,char** argv) {
     auto runManager = new G4RunManager;
     #endif
 
-    //Mandatory user initialization classes
-    //
-    runManager->SetUserInitialization(new ATLTileCalTBActInitialization());
-
     //Manadatory Geant4 classes
     //
     auto physicsList = new FTFP_BERT;
@@ -55,6 +51,10 @@ int main(int argc,char** argv) {
     G4GDMLParser parser;
     parser.Read("TileTB_2B1EB_nobeamline.gdml");
     runManager->SetUserInitialization(new ATLTileCalTBDetConstruction(parser));
+
+    //Classes via ActionInitialization
+    //
+    runManager->SetUserInitialization(new ATLTileCalTBActInitialization());
 
     //Visualization manager construction
     //
