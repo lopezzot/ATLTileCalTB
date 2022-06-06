@@ -52,7 +52,7 @@ ATLTileCalTBPrimaryGenAction::~ATLTileCalTBPrimaryGenAction() {
 
 //Define GeneratePrimaries() method
 //
-void ATLTileCalTBPrimaryGenAction::GeneratePrimaries( G4Event* event){
+void ATLTileCalTBPrimaryGenAction::GeneratePrimaries( G4Event* event ){
 
     fParticleGun->GeneratePrimaryVertex( event );
 
