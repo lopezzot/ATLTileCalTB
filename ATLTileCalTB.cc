@@ -39,7 +39,7 @@ int main(int argc,char** argv) {
     //
     #ifdef G4MULTITHREADED
     auto runManager = new G4MTRunManager;
-    runManager->SetNumberOfThreads(2); //to be changed in real implementation
+    runManager->SetNumberOfThreads(3); //to be changed in real implementation
     #else
     auto runManager = new G4RunManager;
     #endif

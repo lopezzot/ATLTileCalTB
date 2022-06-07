@@ -19,7 +19,6 @@
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
 
-
 //Constructor and de-constructor
 //
 ATLTileCalTBRunAction::ATLTileCalTBRunAction()
@@ -36,7 +35,6 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction()
 
     analysisManager->SetVerboseLevel(1);
     analysisManager->SetNtupleMerging(true);
-
   
     // Creating ntuple
     //
@@ -65,7 +63,7 @@ void ATLTileCalTBRunAction::BeginOfRunAction(const G4Run* run) {
     std::string runnumber = std::to_string( run->GetRunID() );
     G4String fileName = "ATLTileCalTBout_Run" + runnumber + ".root";
     analysisManager->OpenFile(fileName);
-
+    
 }
 
 void ATLTileCalTBRunAction::EndOfRunAction(const G4Run* /*run*/) {
