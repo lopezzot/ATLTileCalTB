@@ -39,7 +39,7 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction()
     // Creating ntuple
     //
     analysisManager->CreateNtuple("tree", "calo");
-    analysisManager->CreateNtupleDColumn("ETile");
+    analysisManager->CreateNtupleDColumn("ELeak");
     analysisManager->FinishNtuple();
 
 }

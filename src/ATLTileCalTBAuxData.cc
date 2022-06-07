@@ -20,7 +20,7 @@
 //Constructor and de-constructor
 //
 ATLTileCalTBAuxData::ATLTileCalTBAuxData() 
-    : G4Run(),
+    : G4Event(),
       fLeakage(0.) {
 }
 

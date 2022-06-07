@@ -12,10 +12,13 @@
 #include "ATLTileCalTBActInitialization.hh"
 #include "ATLTileCalTBPrimaryGenAction.hh"
 #include "ATLTileCalTBRunAction.hh"
+#include "ATLTileCalTBEventAction.hh"
 
+//Constructor and de-constructor
+//
 ATLTileCalTBActInitialization::ATLTileCalTBActInitialization()
-    : G4VUserActionInitialization()
-{}
+    : G4VUserActionInitialization() {
+}
 
 ATLTileCalTBActInitialization::~ATLTileCalTBActInitialization() {}
 
@@ -31,6 +34,7 @@ void ATLTileCalTBActInitialization::Build() const {
     
     SetUserAction( new ATLTileCalTBPrimaryGenAction );
     SetUserAction( new ATLTileCalTBRunAction() );
+    SetUserAction( new ATLTileCalTBEventAction() );
 
 }
 
