@@ -13,6 +13,7 @@
 //Includers from Geant4
 //
 #include "G4Step.hh"
+#include "G4UserSteppingAction.hh"
 
 class ATLTileCalTBStepAction: public G4UserSteppingAction {
 
@@ -20,9 +21,9 @@ class ATLTileCalTBStepAction: public G4UserSteppingAction {
         ATLTileCalTBStepAction();
         virtual ~ATLTileCalTBStepAction();
 
-        virtual void UserSteppingAction( G4Step* aStep );
+        virtual void UserSteppingAction( const G4Step* aStep );
 
-}
+};
 
 #endif //ATLTileCalTBStepAction_h 1
 

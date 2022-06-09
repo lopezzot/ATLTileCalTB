@@ -13,6 +13,7 @@
 #include "ATLTileCalTBPrimaryGenAction.hh"
 #include "ATLTileCalTBRunAction.hh"
 #include "ATLTileCalTBEventAction.hh"
+#include "ATLTileCalTBStepAction.hh"
 
 //Constructor and de-constructor
 //
@@ -35,6 +36,7 @@ void ATLTileCalTBActInitialization::Build() const {
     SetUserAction( new ATLTileCalTBPrimaryGenAction );
     SetUserAction( new ATLTileCalTBRunAction() );
     SetUserAction( new ATLTileCalTBEventAction() );
+    SetUserAction( new ATLTileCalTBStepAction() );
 
 }
 

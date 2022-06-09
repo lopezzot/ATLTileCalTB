@@ -43,9 +43,10 @@ void ATLTileCalTBEventAction::BeginOfEventAction(const G4Event* /*event*/) {
 
 //EndOfEventaction() method
 //
-void ATLTileCalTBEventAction::EndOfEventAction(const G4Event* event) {
+void ATLTileCalTBEventAction::EndOfEventAction(const G4Event* /*event*/) {
 
     auto AuxData = static_cast<ATLTileCalTBAuxData*>( G4RunManager::GetRunManager()->GetNonConstCurrentRun() );
+    G4cout<<AuxData->GetLeakage()<<G4endl;
     AuxData->FillPerEvent();
 
 }  
