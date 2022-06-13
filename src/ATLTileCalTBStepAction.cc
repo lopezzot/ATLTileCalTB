@@ -33,9 +33,15 @@ void ATLTileCalTBStepAction::UserSteppingAction( const G4Step* aStep ) {
         fEventAction->Add( 0, aStep->GetTrack()->GetKineticEnergy() ); 
     }
 
-    //Collect all energy deposition
-    //
-    fEventAction->Add( 1, aStep->GetTotalEnergyDeposit() );
+    if ( aStep->GetTrack()->GetTouchableHandle()->GetVolume()->GetName() != "CALO::CALO" ||
+         aStep->GetTrack()->GetTouchableHandle()->GetVolume()->GetName() != "Barrel" ) {
+ 
+        //Collect calo energy deposition (everything but what goes into CALO::CALO and Barrel) 
+        //Warning: not exact measurement
+        //
+        fEventAction->Add( 1, aStep->GetTotalEnergyDeposit() );
+    
+    }
 
 }
 
