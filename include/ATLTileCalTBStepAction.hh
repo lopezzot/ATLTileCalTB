@@ -15,13 +15,20 @@
 #include "G4Step.hh"
 #include "G4UserSteppingAction.hh"
 
+//Includers from project files
+//
+#include "ATLTileCalTBEventAction.hh"
+
 class ATLTileCalTBStepAction: public G4UserSteppingAction {
 
     public:
-        ATLTileCalTBStepAction();
+        ATLTileCalTBStepAction( ATLTileCalTBEventAction* EvtAction );
         virtual ~ATLTileCalTBStepAction();
 
         virtual void UserSteppingAction( const G4Step* aStep );
+    
+    private:
+        ATLTileCalTBEventAction* fEventAction;
 
 };
 

@@ -33,10 +33,12 @@ void ATLTileCalTBActInitialization::BuildForMaster() const {
 
 void ATLTileCalTBActInitialization::Build() const {
     
+    auto EventAction = new ATLTileCalTBEventAction();
+
     SetUserAction( new ATLTileCalTBPrimaryGenAction );
     SetUserAction( new ATLTileCalTBRunAction() );
-    SetUserAction( new ATLTileCalTBEventAction() );
-    SetUserAction( new ATLTileCalTBStepAction() );
+    SetUserAction( EventAction );
+    SetUserAction( new ATLTileCalTBStepAction( EventAction ) );
 
 }
 

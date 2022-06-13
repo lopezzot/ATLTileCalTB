@@ -10,13 +10,16 @@
 //Includers from project files
 //
 #include "ATLTileCalTBStepAction.hh"
-#include "ATLTileCalTBAuxData.hh"
+
+//Includers from Geant4
+//
 #include "G4RunManager.hh"
 
 //Constructor and de-constructor
 //
-ATLTileCalTBStepAction::ATLTileCalTBStepAction()
-    : G4UserSteppingAction() {}
+ATLTileCalTBStepAction::ATLTileCalTBStepAction(ATLTileCalTBEventAction* EventAction)
+    : G4UserSteppingAction(),
+      fEventAction( EventAction ){}
 
 ATLTileCalTBStepAction::~ATLTileCalTBStepAction() {}
 
@@ -27,9 +30,12 @@ void ATLTileCalTBStepAction::UserSteppingAction( const G4Step* aStep ) {
     //Collect out of world leakage
     //
     if ( !aStep->GetTrack()->GetNextVolume() ){
-        auto auxData = static_cast<ATLTileCalTBAuxData*>(G4RunManager::GetRunManager()->GetNonConstCurrentRun());
-        auxData->AddLeakage( aStep->GetTrack()->GetKineticEnergy() ); 
+        fEventAction->Add( 0, aStep->GetTrack()->GetKineticEnergy() ); 
     }
+
+    //Collect all energy deposition
+    //
+    fEventAction->Add( 1, aStep->GetTotalEnergyDeposit() );
 
 }
 

@@ -10,13 +10,13 @@
 //Includers from project files
 //
 #include "ATLTileCalTBEventAction.hh"
-#include "ATLTileCalTBAuxData.hh"
 
 //Includers from Geant4
 //
 #include "G4RunManager.hh"
 #include "G4Event.hh"
 #include "G4UnitsTable.hh"
+#include "g4root.hh"
 
 //Includers from C++
 //
@@ -26,7 +26,8 @@
 //Constructor and de-constructor
 //
 ATLTileCalTBEventAction::ATLTileCalTBEventAction()
-    : G4UserEventAction() {
+    : G4UserEventAction(),
+      fAux{0.,0.} {
 }
 
 ATLTileCalTBEventAction::~ATLTileCalTBEventAction() {
@@ -36,8 +37,7 @@ ATLTileCalTBEventAction::~ATLTileCalTBEventAction() {
 //
 void ATLTileCalTBEventAction::BeginOfEventAction(const G4Event* /*event*/) {  
   
-    auto AuxData = static_cast<ATLTileCalTBAuxData*>( G4RunManager::GetRunManager()->GetNonConstCurrentRun() );
-    AuxData->Reset();
+    for ( auto& value : fAux ){ value = 0.; } 
 
 }
 
@@ -45,10 +45,15 @@ void ATLTileCalTBEventAction::BeginOfEventAction(const G4Event* /*event*/) {
 //
 void ATLTileCalTBEventAction::EndOfEventAction(const G4Event* /*event*/) {
 
-    auto AuxData = static_cast<ATLTileCalTBAuxData*>( G4RunManager::GetRunManager()->GetNonConstCurrentRun() );
-    G4cout<<AuxData->GetLeakage()<<G4endl;
-    AuxData->FillPerEvent();
+    auto analysisManager = G4AnalysisManager::Instance();
 
-}  
+    G4int counter = 0;
+    for ( auto& value : fAux ){ 
+        analysisManager->FillNtupleDColumn( counter, value );    
+        counter++;
+    }
+    analysisManager->AddNtupleRow();
+
+} 
 
 //**************************************************
