@@ -41,9 +41,26 @@ void ATLTileCalTBEventAction::BeginOfEventAction(const G4Event* /*event*/) {
 
 }
 
+//GetHitsCollection method()
+//
+ATLTileCalTBHitsCollection* ATLTileCalTBEventAction::GetHitsCollection(G4int hcID,
+                                                                       const G4Event* event) const {
+    auto hitsCollection = static_cast<ATLTileCalTBHitsCollection*>( event->GetHCofThisEvent()->GetHC(hcID) );
+  
+    if ( ! hitsCollection ) {
+        G4ExceptionDescription msg;
+        msg << "Cannot access hitsCollection ID " << hcID; 
+        G4Exception("ATLTileCalTBEventAction::GetHitsCollection()",
+        "MyCode0003", FatalException, msg);
+    } 
+
+    return hitsCollection;
+
+}    
+
 //EndOfEventaction() method
 //
-void ATLTileCalTBEventAction::EndOfEventAction(const G4Event* /*event*/) {
+void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
 
     auto analysisManager = G4AnalysisManager::Instance();
 
@@ -52,6 +69,14 @@ void ATLTileCalTBEventAction::EndOfEventAction(const G4Event* /*event*/) {
         analysisManager->FillNtupleDColumn( counter, value );    
         counter++;
     }
+    
+    // Get hits collections
+    //
+    auto HC = GetHitsCollection(0, event);
+
+    //to be completed to store the hits
+    //
+
     analysisManager->AddNtupleRow();
 
 } 

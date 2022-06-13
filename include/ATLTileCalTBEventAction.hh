@@ -15,6 +15,10 @@
 #include "G4UserEventAction.hh"
 #include "globals.hh"
 
+//Includers from project files
+//
+#include "ATLTileCalTBHit.hh"
+
 //Includers from C++
 //
 #include <array>
@@ -35,6 +39,7 @@ class ATLTileCalTBEventAction : public G4UserEventAction {
         void Reset();
 
     private:
+        ATLTileCalTBHitsCollection* GetHitsCollection(G4int hcID, const G4Event* event) const;
         std::array<G4double, nAuxData> fAux;
     
 };

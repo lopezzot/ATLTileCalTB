@@ -86,7 +86,7 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
     //Add hit energy 
     //
     hit->AddE( edep );
-      
+    hit->SetHitName( "test" );  
     return true;
 
 }
@@ -95,9 +95,6 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
 //
 void ATLTileCalTBSensDet::EndOfEvent(G4HCofThisEvent*) {
     
-    auto hit = (*fHitsCollection)[0];
-    G4cout<<"Energy in scintillator (all) " << hit->GetEdep() << G4endl; 
-
 }
 
 //**************************************************
