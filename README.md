@@ -5,8 +5,11 @@ A Geant4 simulation of the ATLAS Tile Calorimeter beam tests.
 <details open="open">
   <summary>Table of Contents</summary>
   <ol>
-    <li><a href="#project-description">Project description</a></li>                         <li><a href="#authors-and-contacts">Authors and contacts</a></li>
- </details>
+    <li><a href="#project-description">Project description</a></li>
+    <li><a href="#authors-and-contacts">Authors and contacts</a></li>
+    <li><a href="#selected-atlas-tilecal-references">Selected ATLAS TileCal references</a></li>
+  </ol>
+</details>
 
 <!--Project desription-->
 ## Project description
@@ -18,3 +21,7 @@ The project targets a standalone Geant4 simulation of the ATLAS Tile Calorimeter
 ## Authors and contacts
 - 👨‍🔬 Lorenzo Pezzotti (CERN EP-SFT) - lorenzo.pezzotti@cern.ch 
 - 👨‍🔬 Supervisor: Alberto Ribon (CERN EP-SFT)
+
+<!--Selected ATLAS TileCal references-->
+## Selected ATLAS TileCal references
+- 📄 <em>Study of energy response and resolution of the ATLAS Tile Calorimeter to hadrons of energies from 16 to 30 GeV</em>, Eur. Phys. J. C (2021) 81:549: [![Website shields.io](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](https://link.springer.com/article/10.1140/epjc/s10052-021-09292-5)
