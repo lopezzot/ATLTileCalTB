@@ -41,6 +41,7 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction()
     analysisManager->CreateNtuple("tree", "calo");
     analysisManager->CreateNtupleDColumn("ELeak");
     analysisManager->CreateNtupleDColumn("Edep");
+    analysisManager->CreateNtupleDColumn("Etile");
     analysisManager->FinishNtuple();
 
 }

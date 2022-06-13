@@ -63,19 +63,18 @@ ATLTileCalTBHitsCollection* ATLTileCalTBEventAction::GetHitsCollection(G4int hcI
 void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
 
     auto analysisManager = G4AnalysisManager::Instance();
-
+    
     G4int counter = 0;
     for ( auto& value : fAux ){ 
         analysisManager->FillNtupleDColumn( counter, value );    
         counter++;
     }
     
-    // Get hits collections
+    //Get hits collections and fill root ntuple
     //
     auto HC = GetHitsCollection(0, event);
-
-    //to be completed to store the hits
-    //
+    auto hit = (*HC)[0];
+    analysisManager->FillNtupleDColumn( 2, hit->GetEdep() );
 
     analysisManager->AddNtupleRow();
 
