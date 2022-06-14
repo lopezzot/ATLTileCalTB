@@ -23,7 +23,7 @@
 #include "FTFP_BERT.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
-
+#include "G4UIcommand.hh"
 #include "G4GDMLParser.hh"
 
 int main(int argc,char** argv) {
@@ -39,7 +39,8 @@ int main(int argc,char** argv) {
     //
     #ifdef G4MULTITHREADED
     auto runManager = new G4MTRunManager;
-    runManager->SetNumberOfThreads(3); //to be changed in real implementation
+    G4int nThreads = G4UIcommand::ConvertToInt( argv[2] );
+    runManager->SetNumberOfThreads( nThreads ); 
     #else
     auto runManager = new G4RunManager;
     #endif
