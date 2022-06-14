@@ -1,6 +1,13 @@
 # ATLTileCalTB
 A Geant4 simulation of the ATLAS Tile Calorimeter beam tests.
 
+<figure>
+<img src="./images/TileCal_mu.gif" alt="Trulli" style="width:100%">
+<figcaption align="center"><b>Fig. - 10 GeV muon passing through the ATLAS TileCal.</b></figcaption>
+</figure>
+
+<br/><br/>
+
 <!-- TABLE OF CONTENTS -->
 <details open="open">
   <summary>Table of Contents</summary>
