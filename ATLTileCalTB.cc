@@ -39,7 +39,10 @@ int main(int argc,char** argv) {
     //
     #ifdef G4MULTITHREADED
     auto runManager = new G4MTRunManager;
-    G4int nThreads = G4UIcommand::ConvertToInt( argv[2] );
+    G4int nThreads = 2; //default in MT mode
+    if ( argc == 3 ) {  //parser option with nThreads
+        nThreads = G4UIcommand::ConvertToInt( argv[2] );
+    }
     runManager->SetNumberOfThreads( nThreads ); 
     #else
     auto runManager = new G4RunManager;
