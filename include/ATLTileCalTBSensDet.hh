@@ -41,6 +41,7 @@ class ATLTileCalTBSensDet : public G4VSensitiveDetector {
     private:
         ATLTileCalTBHitsCollection* fHitsCollection;
         G4int  fNCells;
+        G4double BirkLaw( const G4Step* aStep) const;
 
 };
 
