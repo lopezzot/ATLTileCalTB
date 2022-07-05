@@ -57,7 +57,7 @@ void ATLTileCalTBDetConstruction::ConstructSDandField() {
 
     //Sensitive detectors
     //
-    auto caloSD = new ATLTileCalTBSensDet( "caloSD", "caloHitsCollection", 1 );
+    auto caloSD = new ATLTileCalTBSensDet( "caloSD", "caloHitsCollection" );
     G4SDManager::GetSDMpointer()->AddNewDetector( caloSD );
 
     //Assign to logical volumes

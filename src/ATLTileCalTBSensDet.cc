@@ -21,10 +21,9 @@
 
 //Constructor and de-constructor
 //
-ATLTileCalTBSensDet::ATLTileCalTBSensDet( const G4String& name, const G4String& hitsCollectionName, G4int nCells )
+ATLTileCalTBSensDet::ATLTileCalTBSensDet( const G4String& name, const G4String& hitsCollectionName )
     : G4VSensitiveDetector(name),
-      fHitsCollection(nullptr),
-      fNCells(nCells) {
+      fHitsCollection(nullptr) {
   
     collectionName.insert(hitsCollectionName);
 
@@ -47,7 +46,7 @@ void ATLTileCalTBSensDet::Initialize(G4HCofThisEvent* hce) {
 
     //Allocate hits in hce (currently just one hit)
     //
-    for ( G4int i=0; i<fNCells; i++ ) {
+    for ( G4int i=0; i<ATLTileCalTBGeometry::cellNoSize; i++ ) {
         fHitsCollection->insert(new ATLTileCalTBHit());
     }
 
@@ -70,13 +69,15 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
     //        "Mat "     << aStep->GetPreStepPoint()->GetMaterial()->GetName() << " " << 
     //        "Vol "     << aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume()->GetName() << G4endl; 
 
+    auto cellID = GetCellID( aStep );
+
     auto edep = aStep->GetTotalEnergyDeposit();
     if ( edep==0. ) return false; 
     G4double sdep = BirkLaw( aStep );
     //G4cout<<aStep->GetTrack()->GetParticleDefinition()->GetParticleName()<<" "<<edep<<" "<<sdep<<G4endl;
     //Get hit (just one for the moment)
     //
-    auto hit = (*fHitsCollection)[0];
+    auto hit = (*fHitsCollection)[cellID.to_cellNo()];
     if ( ! hit ) {
         G4ExceptionDescription msg;
         msg << "Cannot access hit "; 
@@ -86,7 +87,7 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
 
     //Add hit energy 
     //
-    hit->AddE( edep );
+    hit->AddE( sdep );
     hit->SetHitName( "test" );  
     return true;
 
@@ -141,6 +142,151 @@ G4double ATLTileCalTBSensDet::BirkLaw( const G4Step* aStep ) const {
     else { response = destep; }
 
     return response;
+
+}
+
+// GetCellID method
+//
+ATLTileCalTBGeometry::CellID ATLTileCalTBSensDet::GetCellID( const G4Step* aStep ) const {
+    auto handle = aStep->GetPreStepPoint()->GetTouchableHandle();
+
+    // Get scintillator and period copy number, identical everywhere
+    G4int scintillator_copy_no = handle->GetVolume(0)->GetCopyNo();
+    G4int period_copy_no = handle->GetVolume(2)->GetCopyNo();
+
+    // Get module number via string, depends on module layout
+    G4int module_no = -1;
+    auto module_name = handle->GetVolume(5)->GetName();
+    if ( module_name == "Tile::BarrelModule" ) {
+        module_no = handle->GetVolume(5)->GetCopyNo();
+    }
+    else if ( module_name == "EBarrelPos" ) {
+        module_no = 5;
+    }
+    else if ( module_name == "Tile::ITCModule" ) {
+        auto plug_name = handle->GetVolume(4)->GetName();
+        if ( plug_name == "Tile::Plug1Module" ) {
+            module_no = 6;
+        }
+        else if ( plug_name == "Tile::Plug2Module" ) {
+            module_no = 7;
+        }
+    }
+
+    // lambda to get row and column number
+    auto get_row_column = [](const G4int row_depth_no, const G4int row_length_no,
+                             const std::vector<G4int>& row_depths,
+                             const std::vector<std::vector<G4int>>& row_lengths) {
+        // Get row
+        std::size_t row_depth_idx = 0;
+        for (; row_depth_idx < row_depths.size(); ++row_depth_idx) {
+            if ( row_depth_no <= row_depths[row_depth_idx] ) {
+                break;
+            }
+        }
+
+        // Get column
+        std::size_t row_length_idx = 0;
+        for (; row_length_idx < row_lengths[row_depth_idx].size(); ++row_length_idx) {
+            if ( row_length_no <= row_lengths[row_depth_idx][row_length_idx] ) {
+                break;
+            }
+        }
+
+        return std::pair<std::size_t, std::size_t>(row_depth_idx, row_length_idx);
+    };
+
+    G4int row_depth_idx = -1;
+    G4int row_length_idx = -1;
+    switch (module_no)
+    {
+    case 1: case 2: { // Long Barrel Module
+
+        // Contains two half barrel, thus split period_copy_no and module_no
+        if ( period_copy_no > 152 ) {
+            // Right module, adjust period_copy_no and module_no
+            period_copy_no = period_copy_no - 152;
+            module_no += 2;
+        }
+        else {
+            // Left module, adjust period_copy_no and flip orientation
+            period_copy_no = 152 - period_copy_no;
+        }
+
+        // Get row and column
+        auto idx = get_row_column(scintillator_copy_no, period_copy_no,
+                                  ATLTileCalTBGeometry::lhb_row_depths,
+                                  ATLTileCalTBGeometry::lhb_row_lengths);
+        row_depth_idx = static_cast<G4int>(idx.first);
+        row_length_idx = static_cast<G4int>(idx.second);
+
+        // Row B and C are connected to form row BC
+        if ( row_depth_idx == 2 ) row_depth_idx = 1;
+
+        // Row A and BC start with index 1, only row D with index 0
+        if ( row_depth_idx != 3) row_length_idx += 1;
+
+        break;
+    }
+    case 5: { // Extended Barrel Module
+
+        // Get row and column
+        auto idx = get_row_column(scintillator_copy_no, period_copy_no,
+                                  ATLTileCalTBGeometry::lhb_row_depths,
+                                  ATLTileCalTBGeometry::lhb_row_lengths);
+        row_depth_idx = static_cast<G4int>(idx.first);
+        row_length_idx = static_cast<G4int>(idx.second);
+
+        switch (row_depth_idx)
+        {
+        case 0: {  // Row A
+            // Cells start with A12
+            row_length_idx += 12;
+            break;
+        }
+        case 1: { // Row B
+            // Cells start with B11
+            row_length_idx += 11;
+            break;
+        }
+        case 2: { // Row D
+            // Cells start with D5
+            row_length_idx += 5;
+            // Adjust to be interpreted as row D
+            row_depth_idx = 3;
+            break;
+        }
+        default:
+            break;
+        }
+
+        break;
+    }
+    case 6: { // ITCModule Plug 1
+        // Adjust to be interpreted as cell D4 from extended barrel
+        module_no = 5;
+        row_depth_idx = 3;
+        row_length_idx = 4;
+
+        break;
+    }
+    case 7: { // ITCModule Plug 2
+        // Adjust to be interpreted as cell C10 from extended barrel
+        module_no = 5;
+        row_depth_idx = 2;
+        row_length_idx = 10;
+
+        break;
+    }
+    default:
+        break;
+    }
+
+    ATLTileCalTBGeometry::CellID cellID = {module_no, row_depth_idx, row_length_idx};
+
+    //G4cout << cellID.to_string() << " no " << std::to_string(cellID.to_cellNo()) << G4endl;
+
+    return cellID;
 
 }
 

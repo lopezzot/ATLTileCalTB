@@ -16,6 +16,7 @@
 //Includers form project files
 //
 #include "ATLTileCalTBHit.hh"
+#include "ATLTileCalTBGeometry.hh"
 
 //Includers from C++
 //
@@ -29,7 +30,7 @@ class G4HCofThisEvent;
 class ATLTileCalTBSensDet : public G4VSensitiveDetector {
   
     public:
-        ATLTileCalTBSensDet( const G4String& name, const G4String& hitsCollectionName, G4int nCells );
+        ATLTileCalTBSensDet( const G4String& name, const G4String& hitsCollectionName );
         virtual ~ATLTileCalTBSensDet();
   
         //Methods from base class
@@ -40,8 +41,8 @@ class ATLTileCalTBSensDet : public G4VSensitiveDetector {
 
     private:
         ATLTileCalTBHitsCollection* fHitsCollection;
-        G4int  fNCells;
         G4double BirkLaw( const G4Step* aStep) const;
+        ATLTileCalTBGeometry::CellID GetCellID( const G4Step* aStep ) const;
 
 };
 
