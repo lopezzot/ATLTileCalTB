@@ -86,7 +86,7 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
 
     //Add hit energy 
     //
-    hit->AddE( edep );
+    hit->AddE( sdep );
     hit->SetHitName( "test" );  
     return true;
 
