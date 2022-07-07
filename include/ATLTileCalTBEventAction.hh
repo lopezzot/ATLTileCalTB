@@ -38,9 +38,14 @@ class ATLTileCalTBEventAction : public G4UserEventAction {
         void FillPerEvent();
         void Reset();
 
+        std::vector<G4double>& GetEdepVector() { return fEdepVector; };
+        std::vector<G4double>& GetSdepVector() { return fSdepVector; };
+
     private:
         ATLTileCalTBHitsCollection* GetHitsCollection(G4int hcID, const G4Event* event) const;
         std::array<G4double, nAuxData> fAux;
+        std::vector<G4double> fEdepVector;
+        std::vector<G4double> fSdepVector;
     
 };
                      

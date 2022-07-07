@@ -23,7 +23,8 @@ G4ThreadLocal G4Allocator<ATLTileCalTBHit>* ATLTileCalTBHitAllocator = 0;
 //
 ATLTileCalTBHit::ATLTileCalTBHit()
     : G4VHit(),
-      fEdep(0.) {
+      fEdep(0.),
+      fSdep(0.) {
 }
 
 ATLTileCalTBHit::~ATLTileCalTBHit() {}
@@ -32,6 +33,7 @@ ATLTileCalTBHit::ATLTileCalTBHit(const ATLTileCalTBHit& right)
     : G4VHit() {
   
     fEdep = right.fEdep;
+    fSdep = right.fSdep;
 
 }
 
@@ -40,6 +42,7 @@ ATLTileCalTBHit::ATLTileCalTBHit(const ATLTileCalTBHit& right)
 const ATLTileCalTBHit& ATLTileCalTBHit::operator=(const ATLTileCalTBHit& right) {
   
     fEdep = right.fEdep;
+    fSdep = right.fSdep;
 
     return *this;
 

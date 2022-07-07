@@ -26,8 +26,8 @@ ATLTileCalTBActInitialization::~ATLTileCalTBActInitialization() {}
 //Define Build() and BuildForMaster() methods
 //
 void ATLTileCalTBActInitialization::BuildForMaster() const {
-    
-    SetUserAction( new ATLTileCalTBRunAction() );
+    auto EventAction = new ATLTileCalTBEventAction();
+    SetUserAction( new ATLTileCalTBRunAction( EventAction ) );
 
 }
 
@@ -36,7 +36,7 @@ void ATLTileCalTBActInitialization::Build() const {
     auto EventAction = new ATLTileCalTBEventAction();
 
     SetUserAction( new ATLTileCalTBPrimaryGenAction );
-    SetUserAction( new ATLTileCalTBRunAction() );
+    SetUserAction( new ATLTileCalTBRunAction( EventAction ) );
     SetUserAction( EventAction );
     SetUserAction( new ATLTileCalTBStepAction( EventAction ) );
 
