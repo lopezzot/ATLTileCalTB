@@ -37,7 +37,7 @@ ATLTileCalTBPrimaryGenAction::ATLTileCalTBPrimaryGenAction()
       auto particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle( "pi-" );
       fParticleGun->SetParticleDefinition( particleDefinition );
       fParticleGun->SetParticleEnergy( 10.*GeV );
-      fParticleGun->SetParticlePosition( G4ThreeVector( 0.,0.,0. ) );
+      fParticleGun->SetParticlePosition( G4ThreeVector(2298.,0.,0.) );
 
       const G4double PrimaryAngle = 76*deg; //set TB angle as on ATLAS reference paper
       fParticleGun->SetParticleMomentumDirection( G4ThreeVector( sin(PrimaryAngle),0.,cos(PrimaryAngle) ) );

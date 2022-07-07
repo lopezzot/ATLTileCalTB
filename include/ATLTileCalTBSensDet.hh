@@ -43,6 +43,7 @@ class ATLTileCalTBSensDet : public G4VSensitiveDetector {
         ATLTileCalTBHitsCollection* fHitsCollection;
         G4double BirkLaw( const G4Step* aStep) const;
         ATLTileCalTBGeometry::CellID GetCellID( const G4Step* aStep ) const;
+        G4double Tile_1D_profileRescaled( G4int row, G4double x, G4double y, G4int PMT, G4int nDetector/*, G4int nSide*/);
 
 };
 
