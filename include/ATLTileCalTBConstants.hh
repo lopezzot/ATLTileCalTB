@@ -25,6 +25,9 @@ namespace ATLTileCalTBConstants {
     // Amount of photoelectrons created per energy (adjusted by the sampling fraction)
     constexpr G4double photoelectrons_per_energy = 70. / GeV / sampling_fraction;
 
+    // Sigma of the electronic noise (white noise / gaussian)
+    constexpr G4double noise_sigma = (30 * MeV) * photoelectrons_per_energy;
+
 };
 
 #endif //ATLTileCalTBConstants_h

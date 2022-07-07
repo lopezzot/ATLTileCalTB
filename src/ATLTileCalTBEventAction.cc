@@ -11,17 +11,18 @@
 //
 #include "ATLTileCalTBEventAction.hh"
 #include "ATLTileCalTBGeometry.hh"
+#include "ATLTileCalTBConstants.hh"
 
 //Includers from Geant4
 //
 #include "G4RunManager.hh"
 #include "G4Event.hh"
-#include "G4UnitsTable.hh"
+#include "G4SystemOfUnits.hh"
 #include "g4root.hh"
+#include "Randomize.hh"
 
 //Includers from C++
 //
-#include "Randomize.hh"
 #include <iomanip>
 #include <numeric>
 
@@ -69,18 +70,18 @@ ATLTileCalTBHitsCollection* ATLTileCalTBEventAction::GetHitsCollection(G4int hcI
 void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
 
     auto analysisManager = G4AnalysisManager::Instance();
-    
+
     G4int counter = 0;
     for ( auto& value : fAux ){ 
         analysisManager->FillNtupleDColumn( counter, value );    
         counter++;
     }
-    
+
     //Get hits collections and fill vector
     auto HC = GetHitsCollection(0, event);
     for (std::size_t n = 0; n < ATLTileCalTBGeometry::cellNoSize; ++n) {
         fEdepVector[n] = (*HC)[n]->GetEdep();
-        fSdepVector[n] = (*HC)[n]->GetSdep();
+        fSdepVector[n] = (*HC)[n]->GetSdep() + G4RandGauss::shoot(0., ATLTileCalTBConstants::noise_sigma); // Add electronic noise
     }
 
     //Add sums to Ntuple
