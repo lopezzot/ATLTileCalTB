@@ -53,7 +53,7 @@ int main(int argc,char** argv) {
     auto physicsList = new FTFP_BERT;
     runManager->SetUserInitialization(physicsList);
     G4GDMLParser parser;
-    parser.Read("TileTB_2B1EB_nobeamline.gdml");
+    parser.Read("TileTB_2B1EB_nobeamline.gdml", false);
     runManager->SetUserInitialization(new ATLTileCalTBDetConstruction(parser));
 
     //Classes via ActionInitialization
@@ -75,6 +75,8 @@ int main(int argc,char** argv) {
         // execute an argument macro file if exist (second parser argument)
         G4String command = "/control/execute ";
         G4String fileName = argv[1];
+        UImanager->ApplyCommand("/process/em/verbose 0"); //avoid printing em processes
+        UImanager->ApplyCommand("/process/had/verbose 0");//avoid printing had processes
         UImanager->ApplyCommand(command+fileName);
     }
     else {
