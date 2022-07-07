@@ -35,8 +35,6 @@ class ATLTileCalTBEventAction : public G4UserEventAction {
         virtual void EndOfEventAction( const G4Event* event );
 
         void Add( G4int index, G4double de );
-        void FillPerEvent();
-        void Reset();
 
         std::vector<G4double>& GetEdepVector() { return fEdepVector; };
         std::vector<G4double>& GetSdepVector() { return fSdepVector; };
@@ -50,12 +48,6 @@ class ATLTileCalTBEventAction : public G4UserEventAction {
 };
                      
 inline void ATLTileCalTBEventAction::Add( G4int index, G4double de ) { fAux[index] += de; }
-
-inline void ATLTileCalTBEventAction::Reset() { 
-
-    for ( auto& value : fAux ) { value = 0.; } 
-
-}
 
 #endif //ATLTileCalTBEventAction_h
 
