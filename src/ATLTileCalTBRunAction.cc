@@ -18,6 +18,7 @@
 #include "G4RunManager.hh"
 #include "G4UnitsTable.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4Version.hh"
 
 //Constructor and de-constructor
 //
@@ -47,9 +48,9 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction()
 }
 
 ATLTileCalTBRunAction::~ATLTileCalTBRunAction() {
-    
-    delete G4AnalysisManager::Instance();  
-
+    #if G4VERSION_NUMBER < 1100
+    delete G4AnalysisManager::Instance();  // not needed for G4 v11 and up
+    #endif
 }
 
 //BeginOfRunAction method
