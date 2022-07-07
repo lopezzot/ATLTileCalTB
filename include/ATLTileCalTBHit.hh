@@ -40,15 +40,12 @@ class ATLTileCalTBHit : public G4VHit {
         //Methods to handle data
         //
         void AddE( G4double de );
-        void SetHitName( const G4String& name );
 
         //Get methods
         G4double GetEdep() const;
-        G4String GetHitName() const;
-      
+
     private:
         G4double fEdep; 
-        G4String fHitName; 
 
 };
 
@@ -78,11 +75,7 @@ inline void ATLTileCalTBHit::operator delete(void *hit) {
 
 inline void ATLTileCalTBHit::AddE( G4double de ) { fEdep += de; }
 
-inline void ATLTileCalTBHit::SetHitName( const G4String& name ) { fHitName = name; }
-
 inline G4double ATLTileCalTBHit::GetEdep() const { return fEdep; }
-
-inline G4String ATLTileCalTBHit::GetHitName() const { return fHitName; } 
 
 #endif //ATLTileCalTBHit_h 1
 
