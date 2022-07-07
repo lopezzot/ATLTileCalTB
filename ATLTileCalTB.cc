@@ -39,7 +39,7 @@ namespace CLIOutputs {
                << G4endl;
     }
     void PrintError() {
-        G4cerr << "Wrong usage, see 'ATLTileCalTB --help' for more information" << G4endl;
+        G4cerr << "Wrong usage, see 'ATLTileCalTB -h' for more information" << G4endl;
     }
 }
 

@@ -67,7 +67,7 @@ std::size_t ATLTileCalTBGeometry::CellID::to_cellNo() const {
 std::string ATLTileCalTBGeometry::CellID::to_string() const {
     std::string ret;
 
-    ret += "module " + std::to_string(module_no) + " cell ";
+    ret += "module " + std::to_string(module_no) + " cellID ";
 
     switch (row_no)
     {
@@ -92,6 +92,9 @@ std::string ATLTileCalTBGeometry::CellID::to_string() const {
     }
 
     ret += std::to_string(row_idx);
+
+    ret += " cellNo ";
+    ret += std::to_string(to_cellNo());
 
     return ret;
 }

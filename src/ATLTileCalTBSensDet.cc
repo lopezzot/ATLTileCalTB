@@ -96,7 +96,7 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
     auto hit = (*fHitsCollection)[cellID.to_cellNo()];
     if ( ! hit ) {
         G4ExceptionDescription msg;
-        msg << "Cannot access hit "; 
+        msg << "Cannot access hit from " << cellID.to_string();
         G4Exception("ATLTileCalTBSensDet::ProcessHits()",
         "MyCode0004", FatalException, msg);
     }         
