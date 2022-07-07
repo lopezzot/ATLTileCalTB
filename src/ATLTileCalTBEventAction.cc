@@ -29,9 +29,9 @@
 //
 ATLTileCalTBEventAction::ATLTileCalTBEventAction()
     : G4UserEventAction(),
-      fAux{} {
-    fEdepVector = std::vector<G4double>(ATLTileCalTBGeometry::cellNoSize);
-    fSdepVector = std::vector<G4double>(ATLTileCalTBGeometry::cellNoSize);
+      fAux{0., 0.} {
+    fEdepVector = std::vector<G4double>(ATLTileCalTBGeometry::cellNoSize, 0.);
+    fSdepVector = std::vector<G4double>(ATLTileCalTBGeometry::cellNoSize, 0.);
 }
 
 ATLTileCalTBEventAction::~ATLTileCalTBEventAction() {
@@ -42,6 +42,8 @@ ATLTileCalTBEventAction::~ATLTileCalTBEventAction() {
 void ATLTileCalTBEventAction::BeginOfEventAction(const G4Event* /*event*/) {  
   
     for ( auto& value : fAux ){ value = 0.; } 
+    for ( auto& value : fEdepVector ) { value = 0.; }
+    for ( auto& value : fSdepVector ) { value = 0.; }
 
 }
 

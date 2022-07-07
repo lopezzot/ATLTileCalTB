@@ -27,6 +27,7 @@ The project targets a standalone Geant4 simulation of the ATLAS Tile Calorimeter
 <!--Authors and contacts-->
 ## Authors and contacts
 - 👨‍🔬 Lorenzo Pezzotti (CERN EP-SFT) - lorenzo.pezzotti@cern.ch 
+- 👨‍🔬 Stephan Lachnit (CERN EP-SFT Summer Student) - stephan.lachnit@cern.ch
 - 👨‍🔬 Supervisor: Alberto Ribon (CERN EP-SFT)
 
 <!--Selected ATLAS TileCal references-->
