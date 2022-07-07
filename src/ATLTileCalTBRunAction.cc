@@ -10,6 +10,7 @@
 //Includers from project files
 //
 #include "ATLTileCalTBRunAction.hh"
+#include "ATLTileCalTBEventAction.hh"
 
 //Includers from Geant4
 //
@@ -22,8 +23,9 @@
 
 //Constructor and de-constructor
 //
-ATLTileCalTBRunAction::ATLTileCalTBRunAction()
-    : G4UserRunAction() { 
+ATLTileCalTBRunAction::ATLTileCalTBRunAction( ATLTileCalTBEventAction* eventAction )
+    : G4UserRunAction(),
+      fEventAction(eventAction) { 
     
     //Printing event number per each event
     //
@@ -39,10 +41,13 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction()
   
     // Creating ntuple
     //
-    analysisManager->CreateNtuple("tree", "calo");
+    analysisManager->CreateNtuple("ATLTileCalTBout", "ATLTileCalTBoutput");
     analysisManager->CreateNtupleDColumn("ELeak");
-    analysisManager->CreateNtupleDColumn("Edep");
-    analysisManager->CreateNtupleDColumn("Etile");
+    analysisManager->CreateNtupleDColumn("Ecal");
+    analysisManager->CreateNtupleDColumn("EdepSum");
+    analysisManager->CreateNtupleDColumn("SdepSum");
+    analysisManager->CreateNtupleDColumn("Edep", fEventAction->GetEdepVector());
+    analysisManager->CreateNtupleDColumn("Sdep", fEventAction->GetSdepVector());
     analysisManager->FinishNtuple();
 
 }

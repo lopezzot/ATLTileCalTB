@@ -10,6 +10,7 @@
 //Includers from project files
 //
 #include "ATLTileCalTBEventAction.hh"
+#include "ATLTileCalTBGeometry.hh"
 
 //Includers from Geant4
 //
@@ -22,12 +23,15 @@
 //
 #include "Randomize.hh"
 #include <iomanip>
+#include <numeric>
 
 //Constructor and de-constructor
 //
 ATLTileCalTBEventAction::ATLTileCalTBEventAction()
     : G4UserEventAction(),
-      fAux{0.,0.} {
+      fAux{} {
+    fEdepVector = std::vector<G4double>(ATLTileCalTBGeometry::cellNoSize);
+    fSdepVector = std::vector<G4double>(ATLTileCalTBGeometry::cellNoSize);
 }
 
 ATLTileCalTBEventAction::~ATLTileCalTBEventAction() {
@@ -70,11 +74,16 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
         counter++;
     }
     
-    //Get hits collections and fill root ntuple
-    //
+    //Get hits collections and fill vector
     auto HC = GetHitsCollection(0, event);
-    auto hit = (*HC)[0];
-    analysisManager->FillNtupleDColumn( 2, hit->GetEdep() );
+    for (std::size_t n = 0; n < ATLTileCalTBGeometry::cellNoSize; ++n) {
+        fEdepVector[n] = (*HC)[n]->GetEdep();
+        fSdepVector[n] = (*HC)[n]->GetSdep();
+    }
+
+    //Add sums to Ntuple
+    analysisManager->FillNtupleDColumn(2, std::accumulate(fEdepVector.begin(), fEdepVector.end(), 0));
+    analysisManager->FillNtupleDColumn(3, std::accumulate(fSdepVector.begin(), fSdepVector.end(), 0));
 
     analysisManager->AddNtupleRow();
 

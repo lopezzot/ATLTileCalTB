@@ -46,7 +46,7 @@ void ATLTileCalTBSensDet::Initialize(G4HCofThisEvent* hce) {
 
     //Allocate hits in hce (currently just one hit)
     //
-    for ( G4int i=0; i<ATLTileCalTBGeometry::cellNoSize; i++ ) {
+    for ( std::size_t i=0; i<ATLTileCalTBGeometry::cellNoSize; i++ ) {
         fHitsCollection->insert(new ATLTileCalTBHit());
     }
 
@@ -87,7 +87,8 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
 
     //Add hit energy 
     //
-    hit->AddE( sdep );
+    hit->AddE( edep );
+    hit->AddS( sdep );
     return true;
 
 }

@@ -19,14 +19,19 @@
 //
 class G4Run;
 
+class ATLTileCalTBEventAction;
+
 class ATLTileCalTBRunAction : public G4UserRunAction {
   
     public:
-        ATLTileCalTBRunAction();
+        ATLTileCalTBRunAction( ATLTileCalTBEventAction* eventAction );
         virtual ~ATLTileCalTBRunAction();
 
         virtual void BeginOfRunAction(const G4Run*);
         virtual void EndOfRunAction(const G4Run*);
+
+    private:
+        ATLTileCalTBEventAction* fEventAction;
 
 };
 
