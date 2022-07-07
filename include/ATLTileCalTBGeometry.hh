@@ -65,7 +65,7 @@ namespace ATLTileCalTBGeometry {
     };
 
     // Total number of cells, calculated via module 5 cell D6
-    const std::size_t cellNoSize = CellID(5, 3, 5).to_cellNo() + 1;
+    const std::size_t cellNoSize = CellID(5, 3, 6).to_cellNo() + 1;
 };
 
 #endif //ATLTileCalTBGeometry_h
