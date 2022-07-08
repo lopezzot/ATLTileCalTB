@@ -10,6 +10,7 @@
 //Includers from project files
 //
 #include "ATLTileCalTBSensDet.hh"
+#include "ATLTileCalTBConstants.hh"
 
 //Includers from Geant4
 //
@@ -19,6 +20,7 @@
 #include "G4SDManager.hh"
 #include "G4ios.hh"
 #include "G4SystemOfUnits.hh"
+#include "G4Poisson.hh"
 
 //Constructor and de-constructor
 //
@@ -75,7 +77,11 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
 
     auto cellID = GetCellID( aStep );
 
+    // Adjust energy according to Birk's Law
     G4double sdep = BirkLaw( aStep );
+    // Convert energy to photoelectrons
+    sdep = static_cast<G4double>(G4Poisson(ATLTileCalTBConstants::photoelectrons_per_energy * sdep));
+
 
     //get local coordinates of PreStepPoint in scintillator
     //
@@ -90,6 +96,9 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
     G4int scintillator_copy_no = aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume(0)->GetCopyNo();
     G4double sdep_up = sdep * Tile_1D_profileRescaled( scintillator_copy_no, yLocal, zLocal, 1, cellID.module_no/*, 1*/ );
     G4double sdep_down = sdep * Tile_1D_profileRescaled( scintillator_copy_no, yLocal, zLocal, 0, cellID.module_no/*, 1*/ );
+
+    //Add the two signals together
+    sdep = sdep_up + sdep_down;
 
     //Get corresponding hit
     //
