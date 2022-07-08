@@ -49,7 +49,8 @@ void ATLTileCalTBSensDet::Initialize(G4HCofThisEvent* hce) {
 
     //Allocate hits in hce (currently just one hit)
     //
-    for ( std::size_t i=0; i<ATLTileCalTBGeometry::cellNoSize; i++ ) {
+    auto cellLUT = ATLTileCalTBGeometry::CellLUT::GetInstance();
+    for ( std::size_t i=0; i<cellLUT->GetNumberOfCells(); i++ ) {
         fHitsCollection->insert(new ATLTileCalTBHit());
     }
 
@@ -75,7 +76,9 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
     auto edep = aStep->GetTotalEnergyDeposit();
     if ( edep==0. ) return false; 
 
-    auto cellID = GetCellID( aStep );
+    auto cellLUT = ATLTileCalTBGeometry::CellLUT::GetInstance();
+    auto cellIndex = FindCellIndexFromG4( aStep );
+    auto cell = cellLUT->GetCell( cellIndex );
 
     // Adjust energy according to Birk's Law
     G4double sdep = BirkLaw( aStep );
@@ -94,18 +97,18 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
     //Apply U-shape and signal separation (up-down)
     //
     G4int scintillator_copy_no = aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume(0)->GetCopyNo();
-    G4double sdep_up = sdep * Tile_1D_profileRescaled( scintillator_copy_no, yLocal, zLocal, 1, cellID.module_no/*, 1*/ );
-    G4double sdep_down = sdep * Tile_1D_profileRescaled( scintillator_copy_no, yLocal, zLocal, 0, cellID.module_no/*, 1*/ );
+    G4double sdep_up = sdep * Tile_1D_profileRescaled( scintillator_copy_no, yLocal, zLocal, 1, cell/*, 1*/ );
+    G4double sdep_down = sdep * Tile_1D_profileRescaled( scintillator_copy_no, yLocal, zLocal, 0, cell/*, 1*/ );
 
     //Add the two signals together
     sdep = sdep_up + sdep_down;
 
     //Get corresponding hit
     //
-    auto hit = (*fHitsCollection)[cellID.to_cellNo()];
+    auto hit = (*fHitsCollection)[cellIndex];
     if ( ! hit ) {
         G4ExceptionDescription msg;
-        msg << "Cannot access hit from " << cellID.to_string();
+        msg << "Cannot access hit from " << cell;
         G4Exception("ATLTileCalTBSensDet::ProcessHits()",
         "MyCode0004", FatalException, msg);
     }         
@@ -170,148 +173,65 @@ G4double ATLTileCalTBSensDet::BirkLaw( const G4Step* aStep ) const {
 
 }
 
-// GetCellID method
+// FindCellIndexFromG4 method
 //
-ATLTileCalTBGeometry::CellID ATLTileCalTBSensDet::GetCellID( const G4Step* aStep ) const {
+std::size_t ATLTileCalTBSensDet::FindCellIndexFromG4( const G4Step* aStep ) const {
     auto handle = aStep->GetPreStepPoint()->GetTouchableHandle();
 
     // Get scintillator and period copy number, identical everywhere
     G4int scintillator_copy_no = handle->GetVolume(0)->GetCopyNo();
     G4int period_copy_no = handle->GetVolume(2)->GetCopyNo();
 
-    // Get module number via string, depends on module layout
-    G4int module_no = -1;
-    auto module_name = handle->GetVolume(5)->GetName();
-    if ( module_name == "Tile::BarrelModule" ) {
-        module_no = handle->GetVolume(5)->GetCopyNo();
-    }
-    else if ( module_name == "EBarrelPos" ) {
-        module_no = 5;
-    }
-    else if ( module_name == "Tile::ITCModule" ) {
-        auto plug_name = handle->GetVolume(4)->GetName();
-        if ( plug_name == "Tile::Plug1Module" ) {
-            module_no = 6;
-        }
-        else if ( plug_name == "Tile::Plug2Module" ) {
-            module_no = 7;
-        }
-    }
-
-    // lambda to get row and column number
-    auto get_row_column = [](const G4int row_depth_no, const G4int row_length_no,
-                             const std::vector<G4int>& row_depths,
-                             const std::vector<std::vector<G4int>>& row_lengths) {
-        // Get row
-        std::size_t row_depth_idx = 0;
-        for (; row_depth_idx < row_depths.size(); ++row_depth_idx) {
-            if ( row_depth_no <= row_depths[row_depth_idx] ) {
-                break;
-            }
-        }
-
-        // Get column
-        std::size_t row_length_idx = 0;
-        for (; row_length_idx < row_lengths[row_depth_idx].size(); ++row_length_idx) {
-            if ( row_length_no <= row_lengths[row_depth_idx][row_length_idx] ) {
-                break;
-            }
-        }
-
-        return std::pair<std::size_t, std::size_t>(row_depth_idx, row_length_idx);
+    auto throwGeometryError = [&handle]() -> std::size_t {
+        G4ExceptionDescription msg;
+        msg << "Fatal during geometry parsing:\n"
+            << handle->GetVolume(5)->GetName() << " [" << handle->GetVolume(5)->GetCopyNo() << "] "
+            << handle->GetVolume(4)->GetName() << " "
+            << handle->GetVolume(3)->GetName() << " "
+            << handle->GetVolume(2)->GetName() << " [" << handle->GetVolume(2)->GetCopyNo() << "] "
+            << handle->GetVolume(1)->GetName() << " "
+            << handle->GetVolume(0)->GetName() << " [" << handle->GetVolume(0)->GetCopyNo() << "] "
+            << G4endl;
+        G4Exception("ATLTileCalTBSensDet::FindCellIndexFromG4()",
+        "MyCode0005", FatalException, msg);
+        return SIZE_MAX; // Return impossible size
     };
 
-    G4int row_depth_idx = -1;
-    G4int row_length_idx = -1;
-    switch (module_no)
-    {
-    case 1: case 2: { // Long Barrel Module
+    // Get module number via string, depends on module layout
+    ATLTileCalTBGeometry::Module module;
 
-        // Contains two half barrel, thus split period_copy_no and module_no
-        if ( period_copy_no > 152 ) {
-            // Right module, adjust period_copy_no and module_no
-            period_copy_no = period_copy_no - 152;
-            module_no += 2;
+    auto module_name = handle->GetVolume(5)->GetName();
+    if ( module_name == "Tile::BarrelModule" ) {
+        switch( handle->GetVolume(5)->GetCopyNo() ) {
+            case 1:
+                module = ATLTileCalTBGeometry::Module::LONG_LOWER;
+                break;
+            case 2:
+                module = ATLTileCalTBGeometry::Module::LONG_UPPER;
+                break;
+            default:
+                return throwGeometryError();
         }
-        else {
-            // Left module, adjust period_copy_no and flip orientation
-            period_copy_no = 152 - period_copy_no;
-        }
-
-        // Get row and column
-        auto idx = get_row_column(scintillator_copy_no, period_copy_no,
-                                  ATLTileCalTBGeometry::lhb_row_depths,
-                                  ATLTileCalTBGeometry::lhb_row_lengths);
-        row_depth_idx = static_cast<G4int>(idx.first);
-        row_length_idx = static_cast<G4int>(idx.second);
-
-        // Row B and C are connected to form row BC
-        if ( row_depth_idx == 2 ) row_depth_idx = 1;
-
-        // Row A and BC start with index 1, only row D with index 0
-        if ( row_depth_idx != 3) row_length_idx += 1;
-
-        break;
     }
-    case 5: { // Extended Barrel Module
-
-        // Get row and column
-        auto idx = get_row_column(scintillator_copy_no, period_copy_no,
-                                  ATLTileCalTBGeometry::lhb_row_depths,
-                                  ATLTileCalTBGeometry::lhb_row_lengths);
-        row_depth_idx = static_cast<G4int>(idx.first);
-        row_length_idx = static_cast<G4int>(idx.second);
-
-        switch (row_depth_idx)
-        {
-        case 0: {  // Row A
-            // Cells start with A12
-            row_length_idx += 12;
-            break;
-        }
-        case 1: { // Row B
-            // Cells start with B11
-            row_length_idx += 11;
-            break;
-        }
-        case 2: { // Row D
-            // Cells start with D5
-            row_length_idx += 5;
-            // Adjust to be interpreted as row D
-            row_depth_idx = 3;
-            break;
-        }
-        default:
-            break;
-        }
-
-        break;
+    else if ( module_name == "EBarrelPos" ) {
+        module = ATLTileCalTBGeometry::Module::EXTENDED;
     }
-    case 6: { // ITCModule Plug 1
-        // Adjust to be interpreted as cell D4 from extended barrel
-        module_no = 5;
-        row_depth_idx = 3;
-        row_length_idx = 4;
-
-        break;
+    else if ( module_name == "Tile::Plug2Module" ) {
+        module = ATLTileCalTBGeometry::Module::EXTENDED_C10;
     }
-    case 7: { // ITCModule Plug 2
-        // Adjust to be interpreted as cell C10 from extended barrel
-        module_no = 5;
-        row_depth_idx = 2;
-        row_length_idx = 10;
-
-        break;
+    else if ( module_name == "Tile::ITCModule" ) {
+        // Tile::Plug1Module has no Tile::AbsorberChild
+        module = ATLTileCalTBGeometry::Module::EXTENDED_D4;
     }
-    default:
-        break;
+    else {
+        return throwGeometryError();
     }
 
-    ATLTileCalTBGeometry::CellID cellID = {module_no, row_depth_idx, row_length_idx};
+    // Get index from CellLUT
+    auto cellLUT = ATLTileCalTBGeometry::CellLUT::GetInstance();
+    auto index = cellLUT->FindCellIndex(module, scintillator_copy_no, period_copy_no);
 
-    //G4cout << cellID.to_string() << " no " << std::to_string(cellID.to_cellNo()) << G4endl;
-
-    return cellID;
+    return index;
 
 }
 
@@ -320,7 +240,7 @@ ATLTileCalTBGeometry::CellID ATLTileCalTBSensDet::GetCellID( const G4Step* aStep
 //athena/TileCalorimeter/TileG4/TileGeoG4SD/src/TileGeoG4SDCalc.cc
 //as on June 2022.
 //
-G4double ATLTileCalTBSensDet::Tile_1D_profileRescaled( G4int row, G4double x, G4double y, G4int PMT, G4int nDetector/*, G4int nSide*/ ){
+G4double ATLTileCalTBSensDet::Tile_1D_profileRescaled( G4int row, G4double x, G4double y, G4int PMT, ATLTileCalTBGeometry::Cell cell/*, G4int nSide*/ ){
 
     if (PMT) x *= -1.;
 
@@ -476,42 +396,65 @@ G4double ATLTileCalTBSensDet::Tile_1D_profileRescaled( G4int row, G4double x, G4
         return 0.;
     }
 
+    auto throwCellLogicError = [&cell]() -> G4double {
+        G4ExceptionDescription msg;
+        msg << "Given cell does not make sense:\n"
+            << cell << G4endl;
+        G4Exception("ATLTileCalTBSensDet::Tile_1D_profileRescaled",
+        "MyCode0006", FatalException, msg);
+        return 0.;
+    };
+
     G4double amplitude = 0.0;
 
-    if (nDetector <= 4) {      //Long Barrel
-        if (row < 3) {         //A layer
-            amplitude = LB_A_TilePMT[index];
-        } 
-        else if (row < 9) {    //BC layer
-            amplitude = LB_BC_TilePMT[index];
-        } 
-        else {                 //D layer
-            amplitude = LB_D_TilePMT[index];
-        }
-    }
-    else {                    //Extended barrel
-        /*
-        //if (nSide > 0) {     //at TB EBC was used
-        if (row < 3) {         //A layer
-            amplitude = EBA_A_TilePMT[index];
-        }
-        else if (row < 7) {    //BC layer
-            amplitude = EBA_BC_TilePMT[index];
-        }
-        else {                 //D layer
-            amplitude = EBA_D_TilePMT[index];
-        }
-        //}
-    } else {*/
-      if (row < 3) {           //A layer
-            amplitude = EBC_A_TilePMT[index];
-      } 
-      else if (row < 7) {      //BC layer
-            amplitude = EBC_BC_TilePMT[index];
-      } 
-      else { //D layer
-            amplitude = EBC_D_TilePMT[index];
-      }
+    switch (cell.module) {
+        case ATLTileCalTBGeometry::Module::LONG_LOWER:
+        case ATLTileCalTBGeometry::Module::LONG_UPPER:
+            switch (cell.row) {
+                case ATLTileCalTBGeometry::Row::A:
+                    amplitude = LB_A_TilePMT[index];
+                    break;
+                case ATLTileCalTBGeometry::Row::BC:
+                    amplitude = LB_BC_TilePMT[index];
+                    break;
+                case ATLTileCalTBGeometry::Row::D:
+                    amplitude = LB_D_TilePMT[index];
+                    break;
+                default:
+                    return throwCellLogicError();
+            }
+            break;
+        case ATLTileCalTBGeometry::Module::EXTENDED:
+        case ATLTileCalTBGeometry::Module::EXTENDED_C10:
+        case ATLTileCalTBGeometry::Module::EXTENDED_D4:
+            /*
+            //if (nSide > 0) {     //at TB EBC was used
+            if (row < 3) {         //A layer
+                amplitude = EBA_A_TilePMT[index];
+            }
+            else if (row < 7) {    //BC layer
+                amplitude = EBA_BC_TilePMT[index];
+            }
+            else {                 //D layer
+                amplitude = EBA_D_TilePMT[index];
+            }
+            //}
+            */
+            switch (cell.row) {
+                case ATLTileCalTBGeometry::Row::A:
+                    amplitude = EBC_A_TilePMT[index];
+                    break;
+                case ATLTileCalTBGeometry::Row::B:
+                case ATLTileCalTBGeometry::Row::C:
+                    amplitude = EBC_BC_TilePMT[index];
+                    break;
+                case ATLTileCalTBGeometry::Row::D:
+                    amplitude = EBC_D_TilePMT[index];
+                    break;
+                default:
+                    return throwCellLogicError();
+            }
+            break;
     }
 
   //G4cout<<amplitude<<G4endl;

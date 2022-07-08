@@ -30,9 +30,10 @@
 //
 ATLTileCalTBEventAction::ATLTileCalTBEventAction()
     : G4UserEventAction(),
+      fNoOfCells(ATLTileCalTBGeometry::CellLUT::GetInstance()->GetNumberOfCells()),
       fAux{0., 0.} {
-    fEdepVector = std::vector<G4double>(ATLTileCalTBGeometry::cellNoSize, 0.);
-    fSdepVector = std::vector<G4double>(ATLTileCalTBGeometry::cellNoSize, 0.);
+    fEdepVector = std::vector<G4double>(fNoOfCells, 0.);
+    fSdepVector = std::vector<G4double>(fNoOfCells, 0.);
 }
 
 ATLTileCalTBEventAction::~ATLTileCalTBEventAction() {
@@ -79,7 +80,7 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
 
     //Get hits collections and fill vector
     auto HC = GetHitsCollection(0, event);
-    for (std::size_t n = 0; n < ATLTileCalTBGeometry::cellNoSize; ++n) {
+    for (std::size_t n = 0; n < fNoOfCells; ++n) {
         fEdepVector[n] = (*HC)[n]->GetEdep();
         fSdepVector[n] = (*HC)[n]->GetSdep() + G4RandGauss::shoot(0., ATLTileCalTBConstants::noise_sigma); // Add electronic noise
     }
