@@ -18,10 +18,6 @@
 #include "ATLTileCalTBHit.hh"
 #include "ATLTileCalTBGeometry.hh"
 
-//Includers from C++
-//
-#include <vector>
-
 //Forward declaration from Geant4
 //
 class G4Step;
@@ -42,8 +38,8 @@ class ATLTileCalTBSensDet : public G4VSensitiveDetector {
     private:
         ATLTileCalTBHitsCollection* fHitsCollection;
         G4double BirkLaw( const G4Step* aStep) const;
-        ATLTileCalTBGeometry::CellID GetCellID( const G4Step* aStep ) const;
-        G4double Tile_1D_profileRescaled( G4int row, G4double x, G4double y, G4int PMT, G4int nDetector/*, G4int nSide*/);
+        std::size_t FindCellIndexFromG4( const G4Step* aStep ) const;
+        G4double Tile_1D_profileRescaled( G4int row, G4double x, G4double y, G4int PMT, ATLTileCalTBGeometry::Cell cell/*, G4int nSide*/);
 
 };
 

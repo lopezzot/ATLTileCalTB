@@ -41,6 +41,7 @@ class ATLTileCalTBEventAction : public G4UserEventAction {
 
     private:
         ATLTileCalTBHitsCollection* GetHitsCollection(G4int hcID, const G4Event* event) const;
+        std::size_t fNoOfCells;
         std::array<G4double, nAuxData> fAux;
         std::vector<G4double> fEdepVector;
         std::vector<G4double> fSdepVector;
