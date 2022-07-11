@@ -25,6 +25,7 @@
 //
 #include <iomanip>
 #include <numeric>
+#include <algorithm>
 
 //Constructor and de-constructor
 //
@@ -78,11 +79,35 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
         counter++;
     }
 
+    //Method to convolute signal for PMT response
+    auto ConvolutePMT = [](const std::vector<G4double>& sdep) {
+        //TODO: implement
+        return sdep;
+    };
+
+    //Method to get sdep from hit
+    auto GetSdep = [ConvolutePMT](const ATLTileCalTBHit* hit) -> G4double {
+        //PMT response
+        auto sdep_up_v = ConvolutePMT(hit->GetSdepUp());
+        auto sdep_down_v = ConvolutePMT(hit->GetSdepDown());
+
+        //Use maximum as signal
+        G4double sdep_up = *(std::max_element(sdep_up_v.begin(), sdep_up_v.end()));
+        G4double sdep_down = *(std::max_element(sdep_down_v.begin(), sdep_down_v.end()));
+
+        //Apply electronic noise
+        sdep_up += G4RandGauss::shoot(0., ATLTileCalTBConstants::noise_sigma);
+        sdep_down += G4RandGauss::shoot(0., ATLTileCalTBConstants::noise_sigma);
+
+        //Return sum
+        return sdep_up + sdep_down;
+    };
+
     //Get hits collections and fill vector
     auto HC = GetHitsCollection(0, event);
     for (std::size_t n = 0; n < fNoOfCells; ++n) {
         fEdepVector[n] = (*HC)[n]->GetEdep();
-        fSdepVector[n] = (*HC)[n]->GetSdep() + G4RandGauss::shoot(0., ATLTileCalTBConstants::noise_sigma); // Add electronic noise
+        fSdepVector[n] = GetSdep((*HC)[n]);
     }
 
     //Add sums to Ntuple

@@ -109,9 +109,6 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
     sdep_up = sdep * Tile_1D_profileRescaled( scintillator_copy_no, yLocal, zLocal, 1, cell/*, 1*/ );
     sdep_down = sdep * Tile_1D_profileRescaled( scintillator_copy_no, yLocal, zLocal, 0, cell/*, 1*/ );
 
-    //Add the two signals together
-    sdep = sdep_up + sdep_down;
-
     //Get corresponding hit
     //
     auto hit = (*fHitsCollection)[cellIndex];
@@ -124,8 +121,8 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
 
     //Add hit energy 
     //
-    hit->AddE( edep );
-    hit->AddS( sdep );
+    hit->AddEdep(edep);
+    hit->AddSdep(aStep->GetPreStepPoint()->GetGlobalTime(), sdep_up, sdep_down);
     return true;
 
 }

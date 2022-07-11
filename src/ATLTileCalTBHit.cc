@@ -9,6 +9,7 @@
 //Includers from project files
 //
 #include "ATLTileCalTBHit.hh"
+#include "ATLTileCalTBConstants.hh"
 
 //Includers from Geant4
 #include "G4UnitsTable.hh"
@@ -23,17 +24,19 @@ G4ThreadLocal G4Allocator<ATLTileCalTBHit>* ATLTileCalTBHitAllocator = 0;
 //
 ATLTileCalTBHit::ATLTileCalTBHit()
     : G4VHit(),
-      fEdep(0.),
-      fSdep(0.) {
+      fEdep(0.) {
+    fSdepUp = std::vector<G4double>(ATLTileCalTBConstants::total_frames, 0.);
+    fSdepDown = std::vector<G4double>(ATLTileCalTBConstants::total_frames, 0.);
+
 }
 
 ATLTileCalTBHit::~ATLTileCalTBHit() {}
 
 ATLTileCalTBHit::ATLTileCalTBHit(const ATLTileCalTBHit& right)
     : G4VHit() {
-  
     fEdep = right.fEdep;
-    fSdep = right.fSdep;
+    fSdepUp = std::vector<G4double>(right.fSdepUp);
+    fSdepDown = std::vector<G4double>(right.fSdepDown);
 
 }
 
@@ -42,7 +45,8 @@ ATLTileCalTBHit::ATLTileCalTBHit(const ATLTileCalTBHit& right)
 const ATLTileCalTBHit& ATLTileCalTBHit::operator=(const ATLTileCalTBHit& right) {
   
     fEdep = right.fEdep;
-    fSdep = right.fSdep;
+    fSdepUp = std::vector<G4double>(right.fSdepUp);
+    fSdepDown = std::vector<G4double>(right.fSdepDown);
 
     return *this;
 
@@ -54,6 +58,25 @@ G4bool ATLTileCalTBHit::operator==(const ATLTileCalTBHit& right) const {
   
     return ( this == &right ) ? true : false;
 
+}
+
+//ATLTileCalTBHit::GetBinFromTime method
+//
+std::size_t ATLTileCalTBHit::GetBinFromTime( G4double time ) {
+    using namespace ATLTileCalTBConstants;
+    if ( time < early_frame_time_window ) {
+        return static_cast<std::size_t>(std::ceil(time / early_frame_bin_time));
+    }
+    else if ( time < total_time_window ) {
+        return early_frames + static_cast<std::size_t>(std::ceil((time - early_frame_time_window) / late_frame_bin_time));
+    }
+    else {
+        G4ExceptionDescription msg;
+        msg << "Time " << G4BestUnit(time, "Time") << " is above the total time window." << G4endl; 
+        G4Exception("ATLTileCalTBHit::GetBinFromTime()",
+        "MyCode0008", FatalException, msg);
+        return SIZE_MAX; // Return impossible size
+    }
 }
 
 //**************************************************

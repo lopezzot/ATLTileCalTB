@@ -17,6 +17,10 @@
 #include "G4ThreeVector.hh"
 #include "G4Threading.hh"
 
+//Includers from C++
+//
+#include <vector>
+
 class ATLTileCalTBHit : public G4VHit {
   
     public:
@@ -37,18 +41,28 @@ class ATLTileCalTBHit : public G4VHit {
         virtual void Draw() {}
         virtual void Print(){};
 
+        //Method to get correct vector index from a given time
+        static std::size_t GetBinFromTime( G4double time );
+
         //Methods to handle data
         //
-        void AddE( G4double de );
-        void AddS( G4double ds );
+        void AddEdep( G4double dEdep );
+        void AddSdep( std::size_t index, G4double dSdepUp, G4double dSdepDown );
+        void AddSdep( G4double time, G4double dSdepUp, G4double dSdepDown );
 
         //Get methods
+        //
         G4double GetEdep() const;
-        G4double GetSdep() const;
+        const std::vector<G4double>& GetSdepUp() const;
+        const std::vector<G4double>& GetSdepDown() const;
 
     private:
-        G4double fEdep; 
-        G4double fSdep;
+        // Total energy deposition in the cell
+        G4double fEdep;
+
+        //Vectors containing the binned signal
+        std::vector<G4double> fSdepUp;
+        std::vector<G4double> fSdepDown;
 
 };
 
@@ -76,13 +90,22 @@ inline void ATLTileCalTBHit::operator delete(void *hit) {
 
 }
 
-inline void ATLTileCalTBHit::AddE( G4double de ) { fEdep += de; }
+inline void ATLTileCalTBHit::AddEdep(G4double dEdep) { fEdep += dEdep; };
 
-inline void ATLTileCalTBHit::AddS( G4double ds ) { fSdep += ds; }
+inline void ATLTileCalTBHit::AddSdep(std::size_t index, G4double dSdepUp, G4double dSdepDown) {
+    fSdepUp[index] += dSdepUp;
+    fSdepDown[index] += dSdepDown;
+};
 
-inline G4double ATLTileCalTBHit::GetEdep() const { return fEdep; }
+inline void ATLTileCalTBHit::AddSdep(G4double time, G4double dSdepUp, G4double dSdepDown) {
+    AddSdep(GetBinFromTime(time), dSdepUp, dSdepDown);
+}
 
-inline G4double ATLTileCalTBHit::GetSdep() const { return fSdep; }
+inline G4double ATLTileCalTBHit::GetEdep() const { return fEdep; };
+
+inline const std::vector<G4double>& ATLTileCalTBHit::GetSdepUp() const { return fSdepUp; };
+
+inline const std::vector<G4double>& ATLTileCalTBHit::GetSdepDown() const { return fSdepDown; };
 
 #endif //ATLTileCalTBHit_h 1
 
