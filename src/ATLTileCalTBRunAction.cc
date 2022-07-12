@@ -71,7 +71,11 @@ void ATLTileCalTBRunAction::BeginOfRunAction(const G4Run* run) {
     std::string runnumber = std::to_string( run->GetRunID() );
     G4String fileName = "ATLTileCalTBout_Run" + runnumber + ".root";
     analysisManager->OpenFile(fileName);
-    
+
+    #ifdef ATLTileCalTB_PulseOutput
+    system(("rm -rf ATLTileCalTBpulse_Run" + runnumber).c_str());
+    #endif
+
 }
 
 void ATLTileCalTBRunAction::EndOfRunAction(const G4Run* /*run*/) {
