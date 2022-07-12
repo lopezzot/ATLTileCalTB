@@ -79,7 +79,6 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
     auto cellLUT = ATLTileCalTBGeometry::CellLUT::GetInstance();
     auto cellIndex = FindCellIndexFromG4( aStep );
     auto cell = cellLUT->GetCell( cellIndex );
-
     // Adjust energy according to Birk's Law
     G4double sdep = BirkLaw( aStep );
     // Convert energy to photoelectrons
@@ -96,9 +95,19 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
     
     //Apply U-shape and signal separation (up-down)
     //
+    G4double sdep_up = 0;
+    G4double sdep_down = 0;
     G4int scintillator_copy_no = aStep->GetPreStepPoint()->GetTouchableHandle()->GetVolume(0)->GetCopyNo();
-    G4double sdep_up = sdep * Tile_1D_profileRescaled( scintillator_copy_no, yLocal, zLocal, 1, cell/*, 1*/ );
-    G4double sdep_down = sdep * Tile_1D_profileRescaled( scintillator_copy_no, yLocal, zLocal, 0, cell/*, 1*/ );
+    if (cell.module==ATLTileCalTBGeometry::Module::EXTENDED_C10 ){ 
+        //add 6 missing rows for cell C10
+        scintillator_copy_no += 6;
+    }
+    if ( cell.module==ATLTileCalTBGeometry::Module::EXTENDED_D4 ){
+        //add 9 missing rows for cell D4
+        scintillator_copy_no += 9;
+    }
+    sdep_up = sdep * Tile_1D_profileRescaled( scintillator_copy_no, yLocal, zLocal, 1, cell/*, 1*/ );
+    sdep_down = sdep * Tile_1D_profileRescaled( scintillator_copy_no, yLocal, zLocal, 0, cell/*, 1*/ );
 
     //Add the two signals together
     sdep = sdep_up + sdep_down;
