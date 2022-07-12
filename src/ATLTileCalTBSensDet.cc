@@ -76,6 +76,10 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
     auto edep = aStep->GetTotalEnergyDeposit();
     if ( edep==0. ) return false; 
 
+    // we only record data within the time window of the digitization
+    auto time = aStep->GetPreStepPoint()->GetGlobalTime();
+    if ( time > ATLTileCalTBConstants::total_time_window ) return false;
+
     auto cellLUT = ATLTileCalTBGeometry::CellLUT::GetInstance();
     auto cellIndex = FindCellIndexFromG4( aStep );
     auto cell = cellLUT->GetCell( cellIndex );
@@ -122,7 +126,7 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
     //Add hit energy 
     //
     hit->AddEdep(edep);
-    hit->AddSdep(aStep->GetPreStepPoint()->GetGlobalTime(), sdep_up, sdep_down);
+    hit->AddSdep(time, sdep_up, sdep_down);
     return true;
 
 }
