@@ -68,6 +68,8 @@ set(ATLTileCalTB_SCRIPTS
     init_vis.mac
     vis.mac
     TBrun.mac
+    single.mac
+    pulse_viewer.py
   )
 
 foreach(_script ${ATLTileCalTB_SCRIPTS})

@@ -1,0 +1,9 @@
+/process/em/verbose 0
+/process/had/verbose 0
+#
+/run/initialize
+#
+/gun/particle pi-
+/gun/energy 10 GeV
+#
+/run/beamOn 1
