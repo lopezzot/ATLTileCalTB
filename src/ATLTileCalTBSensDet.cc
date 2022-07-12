@@ -78,7 +78,7 @@ G4bool ATLTileCalTBSensDet::ProcessHits( G4Step* aStep, G4TouchableHistory* ) {
 
     // we only record data within the time window of the digitization
     auto time = aStep->GetPreStepPoint()->GetGlobalTime();
-    if ( time > ATLTileCalTBConstants::total_time_window ) return false;
+    if ( time > ATLTileCalTBConstants::frame_time_window ) return false;
 
     auto cellLUT = ATLTileCalTBGeometry::CellLUT::GetInstance();
     auto cellIndex = FindCellIndexFromG4( aStep );

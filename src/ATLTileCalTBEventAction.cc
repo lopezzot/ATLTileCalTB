@@ -90,11 +90,11 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
     //Method to create a file containing the pulse
     #ifdef ATLTileCalTB_PulseOutput
     auto CreatePulseOutput = [event]
-    (std::array<G4double, ATLTileCalTBConstants::total_frames> sdep_up,
-     std::array<G4double, ATLTileCalTBConstants::total_frames> sdep_down,
+    (std::array<G4double, ATLTileCalTBConstants::frames> sdep_up,
+     std::array<G4double, ATLTileCalTBConstants::frames> sdep_down,
      std::size_t cell_index) {
         // Add signals
-        std::array<G4double, ATLTileCalTBConstants::total_frames> sdep;
+        std::array<G4double, ATLTileCalTBConstants::frames> sdep;
         for (std::size_t n = 0; n < sdep.size(); ++n) {
             sdep[n] = sdep_up[n] + sdep_down[n];
         }
@@ -141,14 +141,14 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
         ofs.close();
     };
     #else
-    auto CreatePulseOutput = [](std::array<G4double, ATLTileCalTBConstants::total_frames>, std::array<G4double, ATLTileCalTBConstants::total_frames>, std::size_t) {};
+    auto CreatePulseOutput = [](std::array<G4double, ATLTileCalTBConstants::frames>, std::array<G4double, ATLTileCalTBConstants::frames>, std::size_t) {};
     #endif
 
     //Method to convolute signal for PMT response
     //From https://gitlab.cern.ch/allpix-squared/allpix-squared/-/blob/86fe21ad37d353e36a509a0827562ab7fadd5104/src/modules/CSADigitizer/CSADigitizerModule.cpp#L271-L283
     auto ConvolutePMT = [](const std::vector<G4double>& sdep) {
         // TODO: check algorithm
-        auto outvec = std::array<G4double, ATLTileCalTBConstants::total_frames>();
+        auto outvec = std::array<G4double, ATLTileCalTBConstants::frames>();
         for (std::size_t k = 0; k < outvec.size(); ++k) {
             G4double outsum = 0.;
             std::size_t jmin = (k >= sdep.size() - 1) ? k - (sdep.size() - 1) : 0;

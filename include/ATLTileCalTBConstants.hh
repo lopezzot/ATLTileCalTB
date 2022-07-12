@@ -29,28 +29,13 @@ namespace ATLTileCalTBConstants {
     constexpr G4double noise_sigma = (30 * MeV) * photoelectrons_per_energy;
 
     // Digitization: bin width of early hit frames
-    constexpr G4double early_frame_bin_time = 0.5 * ns;
+    constexpr G4double frame_bin_time = 0.5 * ns;
 
     // Digitization: time window where hit frames are marked as early
-    constexpr G4double early_frame_time_window = 150 * ns;
+    constexpr G4double frame_time_window = 350 * ns;
 
     // Digitization: amount of early time frames
-    constexpr std::size_t early_frames = static_cast<std::size_t>(early_frame_time_window / early_frame_bin_time);
-
-    // Digitization: bin width of late hit frames
-    constexpr G4double late_frame_bin_time = 5 * ns;
-
-    // Digitization: time window where hit frames are marked as late
-    constexpr G4double late_frame_time_window = 200 * ns;
-
-    // Digitization: amount of late time frames
-    constexpr std::size_t late_frames = static_cast<std::size_t>(late_frame_time_window / late_frame_bin_time);
-
-    // Digitization: total time window
-    constexpr G4double total_time_window = early_frame_time_window + late_frame_time_window;
-
-    // Digitization: total amount of time frames
-    constexpr std::size_t total_frames = early_frames + late_frames;
+    constexpr std::size_t frames = static_cast<std::size_t>(frame_time_window / frame_bin_time);
 
     // Digitization: analog response of the PMT to one photoelectron (0.5ns bins)
     // From https://gitlab.cern.ch/atlas/athena/-/blob/1a58a6b7cc3d6e02c664814502796aa9f86eab7c/TileCalorimeter/TileConditions/share/pulsehi_physics.dat

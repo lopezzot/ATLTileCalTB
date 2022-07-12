@@ -25,8 +25,8 @@ G4ThreadLocal G4Allocator<ATLTileCalTBHit>* ATLTileCalTBHitAllocator = 0;
 ATLTileCalTBHit::ATLTileCalTBHit()
     : G4VHit(),
       fEdep(0.) {
-    fSdepUp = std::vector<G4double>(ATLTileCalTBConstants::total_frames, 0.);
-    fSdepDown = std::vector<G4double>(ATLTileCalTBConstants::total_frames, 0.);
+    fSdepUp = std::vector<G4double>(ATLTileCalTBConstants::frames, 0.);
+    fSdepDown = std::vector<G4double>(ATLTileCalTBConstants::frames, 0.);
 
 }
 
@@ -64,11 +64,8 @@ G4bool ATLTileCalTBHit::operator==(const ATLTileCalTBHit& right) const {
 //
 std::size_t ATLTileCalTBHit::GetBinFromTime( G4double time ) {
     using namespace ATLTileCalTBConstants;
-    if ( time < early_frame_time_window ) {
-        return static_cast<std::size_t>(std::ceil(time / early_frame_bin_time));
-    }
-    else if ( time < total_time_window ) {
-        return early_frames + static_cast<std::size_t>(std::ceil((time - early_frame_time_window) / late_frame_bin_time));
+    if ( time < frame_time_window ) {
+        return static_cast<std::size_t>(std::ceil(time / frame_bin_time));
     }
     else {
         G4ExceptionDescription msg;
