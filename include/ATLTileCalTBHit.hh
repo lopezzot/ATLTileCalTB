@@ -17,8 +17,6 @@
 //
 #include "G4VHit.hh"
 #include "G4THitsCollection.hh"
-#include "G4Allocator.hh"
-#include "G4Threading.hh"
 
 //Includers from C++
 //
@@ -35,9 +33,6 @@ class ATLTileCalTBHit : public G4VHit {
         //
         const ATLTileCalTBHit& operator=( const ATLTileCalTBHit& );
         G4bool operator==( const ATLTileCalTBHit& ) const;
-
-        inline void* operator new(size_t);
-        inline void  operator delete(void*);
 
         //Methods from base class
         //
@@ -70,28 +65,6 @@ class ATLTileCalTBHit : public G4VHit {
 };
 
 using ATLTileCalTBHitsCollection = G4THitsCollection<ATLTileCalTBHit>;
-
-extern G4ThreadLocal G4Allocator<ATLTileCalTBHit>* ATLTileCalTBHitAllocator;
-
-inline void* ATLTileCalTBHit::operator new(size_t) {
-  
-    if (!ATLTileCalTBHitAllocator) {
-        ATLTileCalTBHitAllocator = new G4Allocator<ATLTileCalTBHit>;
-    }
-    void *hit;
-    hit = (void *) ATLTileCalTBHitAllocator->MallocSingle();
-    return hit;
-
-}
-
-inline void ATLTileCalTBHit::operator delete(void *hit) {
-  
-    if (!ATLTileCalTBHitAllocator) {
-        ATLTileCalTBHitAllocator = new G4Allocator<ATLTileCalTBHit>;
-    }
-    ATLTileCalTBHitAllocator->FreeSingle((ATLTileCalTBHit*) hit);
-
-}
 
 inline void ATLTileCalTBHit::AddEdep(G4double dEdep) { fEdep += dEdep; };
 

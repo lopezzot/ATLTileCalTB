@@ -14,8 +14,6 @@
 //Includers from Geant4
 #include "G4UnitsTable.hh"
 
-G4ThreadLocal G4Allocator<ATLTileCalTBHit>* ATLTileCalTBHitAllocator = 0;
-
 //Constructor and de-constructor
 //
 ATLTileCalTBHit::ATLTileCalTBHit()
