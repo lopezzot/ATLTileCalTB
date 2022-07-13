@@ -23,7 +23,7 @@
 //
 #include <array>
 
-const G4int nAuxData = 2; //0->Leakage, 1->Energy Deposited in Calo
+constexpr G4int nAuxData = 2; //0->Leakage, 1->Energy Deposited in Calo
 
 class ATLTileCalTBEventAction : public G4UserEventAction {
     

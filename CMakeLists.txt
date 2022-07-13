@@ -55,6 +55,7 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #
 add_executable(ATLTileCalTB ATLTileCalTB.cc ${sources} ${headers})
 target_link_libraries(ATLTileCalTB ${Geant4_LIBRARIES})
+set_target_properties(ATLTileCalTB PROPERTIES CXX_STANDARD 17)
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we

@@ -49,7 +49,7 @@ namespace ATLTileCalTBGeometry {
         const std::size_t lastRow;
         const std::array<const std::size_t, 6> nTilesRow;
 
-        Cell(Module module_, Row row_, int nCell_,
+        constexpr Cell(Module module_, Row row_, int nCell_,
              std::size_t firstRow_, std::size_t lastRow_,
              std::size_t nTilesRow0, std::size_t nTilesRow1,
              std::size_t nTilesRow2, std::size_t nTilesRow3,
@@ -71,13 +71,13 @@ namespace ATLTileCalTBGeometry {
             }
 
             // Returns the total number of cells
-            inline std::size_t GetNumberOfCells() const { return fNoOfCells; };
+            inline constexpr std::size_t GetNumberOfCells() const { return fNoOfCells; };
 
             // Finds the cell index given a module, the row index and the cell index
             std::size_t FindCellIndex(Module module, std::size_t rowIdx, std::size_t tileIdx) const;
 
             // Returns a constant reference of the cell corresponding to the cell index 
-            inline const Cell& GetCell(std::size_t index) const { return fCellVector[index]; };
+            inline constexpr Cell GetCell(std::size_t index) const { return fCellVector[index]; };
 
         private:
             // Private constructor
@@ -89,7 +89,7 @@ namespace ATLTileCalTBGeometry {
             // Cell vector
             // https://atlas-geometry-db.web.cern.ch/atlas-geometry-db/node_tag_browser.php
             // TileCal -> TICL -> TICL-00
-            const std::array<const Cell, fNoOfCells> fCellVector = {
+            static constexpr std::array<const Cell, fNoOfCells> fCellVector {
                 // Lower long module
                 Cell(Module::LONG_LOWER,   Row::A, -10,  1,  3, 16, 16, 16,  0,  0,  0),
                 Cell(Module::LONG_LOWER,   Row::A,  -9,  1,  3, 18, 19, 18,  0,  0,  0),

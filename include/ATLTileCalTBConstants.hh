@@ -39,7 +39,7 @@ namespace ATLTileCalTBConstants {
 
     // Digitization: analog response of the PMT to one photoelectron (0.5ns bins)
     // From https://gitlab.cern.ch/atlas/athena/-/blob/1a58a6b7cc3d6e02c664814502796aa9f86eab7c/TileCalorimeter/TileConditions/share/pulsehi_physics.dat
-    constexpr std::array<G4double, 401> pmt_response = {
+    constexpr std::array<G4double, 401> pmt_response {
         0.00000000,
         0.00002304,
         0.00005178,
