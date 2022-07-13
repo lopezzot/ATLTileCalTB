@@ -21,6 +21,12 @@
 #include "G4SystemOfUnits.hh"
 #include "G4Version.hh"
 
+//Includers from C++
+//
+#ifdef ATLTileCalTB_PulseOutput
+#include <filesystem>
+#endif
+
 //Constructor and de-constructor
 //
 ATLTileCalTBRunAction::ATLTileCalTBRunAction( ATLTileCalTBEventAction* eventAction )
@@ -73,7 +79,9 @@ void ATLTileCalTBRunAction::BeginOfRunAction(const G4Run* run) {
     analysisManager->OpenFile(fileName);
 
     #ifdef ATLTileCalTB_PulseOutput
-    system(("rm -rf ATLTileCalTBpulse_Run" + runnumber).c_str());
+    auto pulse_run_path = std::filesystem::path("ATLTileCalTBpulse_Run" + runnumber);
+    std::filesystem::remove_all(pulse_run_path);
+    std::filesystem::create_directory(pulse_run_path);
     #endif
 
 }

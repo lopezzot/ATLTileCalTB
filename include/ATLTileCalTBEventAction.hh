@@ -22,6 +22,9 @@
 //Includers from C++
 //
 #include <array>
+#ifdef ATLTileCalTB_PulseOutput
+#include <filesystem>
+#endif
 
 constexpr G4int nAuxData = 2; //0->Leakage, 1->Energy Deposited in Calo
 
@@ -45,7 +48,9 @@ class ATLTileCalTBEventAction : public G4UserEventAction {
         std::array<G4double, nAuxData> fAux;
         std::vector<G4double> fEdepVector;
         std::vector<G4double> fSdepVector;
-    
+        #ifdef ATLTileCalTB_PulseOutput
+        std::filesystem::path pulse_event_path;
+        #endif
 };
                      
 inline void ATLTileCalTBEventAction::Add( G4int index, G4double de ) { fAux[index] += de; }

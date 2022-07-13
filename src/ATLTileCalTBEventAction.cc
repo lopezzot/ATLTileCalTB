@@ -33,6 +33,7 @@
 #ifdef ATLTileCalTB_PulseOutput
 #include <fstream>
 #include <sstream>
+#include <filesystem>
 #endif
 
 //Constructor and de-constructor
@@ -50,11 +51,17 @@ ATLTileCalTBEventAction::~ATLTileCalTBEventAction() {
 
 //BeginOfEvent() method
 //
-void ATLTileCalTBEventAction::BeginOfEventAction(const G4Event* /*event*/) {  
-  
+void ATLTileCalTBEventAction::BeginOfEventAction([[maybe_unused]] const G4Event* event) {
     for ( auto& value : fAux ){ value = 0.; } 
     for ( auto& value : fEdepVector ) { value = 0.; }
     for ( auto& value : fSdepVector ) { value = 0.; }
+
+    #ifdef ATLTileCalTB_PulseOutput
+    auto runNumber = G4RunManager::GetRunManager()->GetCurrentRun()->GetRunID();
+    auto eventNumber = event->GetEventID();
+    pulse_event_path = std::filesystem::path("ATLTileCalTBpulse_Run" + std::to_string(runNumber) + "/Ev" + std::to_string(eventNumber));
+    std::filesystem::create_directory(pulse_event_path);
+    #endif
 
 }
 
@@ -87,63 +94,6 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
         counter++;
     }
 
-    //Method to create a file containing the pulse
-    #ifdef ATLTileCalTB_PulseOutput
-    auto CreatePulseOutput = [event]
-    (std::array<G4double, ATLTileCalTBConstants::frames> sdep_up,
-     std::array<G4double, ATLTileCalTBConstants::frames> sdep_down,
-     std::size_t cell_index) {
-        // Add signals
-        std::array<G4double, ATLTileCalTBConstants::frames> sdep;
-        for (std::size_t n = 0; n < sdep.size(); ++n) {
-            sdep[n] = sdep_up[n] + sdep_down[n];
-        }
-
-        // Check that vector is not empty
-        if (std::accumulate(sdep.begin(), sdep.end(), 0) == 0.) return;
-
-        // Generate file name
-        auto runNumber = G4RunManager::GetRunManager()->GetCurrentRun()->GetRunID();
-        auto eventNumber = event->GetEventID();
-        auto cell = ATLTileCalTBGeometry::CellLUT::GetInstance()->GetCell(cell_index);
-        std::string dirName1 = "ATLTileCalTBpulse_Run" + std::to_string(runNumber);
-        std::string dirName2 = dirName1 + "/Ev" + std::to_string(eventNumber);
-        std::ostringstream fileName;
-        fileName << dirName2 << "/Mod";
-        switch (cell.module) {
-            case ATLTileCalTBGeometry::Module::LONG_LOWER:
-                fileName << "LL";
-                break;
-            case ATLTileCalTBGeometry::Module::LONG_UPPER:
-                fileName << "LU";
-                break;
-            case ATLTileCalTBGeometry::Module::EXTENDED:
-            case ATLTileCalTBGeometry::Module::EXTENDED_C10:
-            case ATLTileCalTBGeometry::Module::EXTENDED_D4:
-                fileName << "EX";
-                break;
-        }
-        fileName << "_Cell" << cell.row << cell.nCell << ".dat";
-
-        // Create folder
-        mkdir(dirName1.c_str(), 0777);
-        mkdir(dirName2.c_str(), 0777);
-
-        // Open file and add cell label
-        std::ofstream ofs;
-        ofs.open(fileName.str());
-        ofs << "# " << cell << "\n";
-
-        // Fill with values and close
-        for (auto val : sdep) {
-            ofs << val << "\n";
-        }
-        ofs.close();
-    };
-    #else
-    auto CreatePulseOutput = [](std::array<G4double, ATLTileCalTBConstants::frames>, std::array<G4double, ATLTileCalTBConstants::frames>, std::size_t) {};
-    #endif
-
     //Method to convolute signal for PMT response
     //From https://gitlab.cern.ch/allpix-squared/allpix-squared/-/blob/86fe21ad37d353e36a509a0827562ab7fadd5104/src/modules/CSADigitizer/CSADigitizerModule.cpp#L271-L283
     auto ConvolutePMT = [](const std::vector<G4double>& sdep) {
@@ -164,7 +114,7 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
     };
 
     //Method to get sdep from hit
-    auto GetSdep = [ConvolutePMT, CreatePulseOutput]
+    auto GetSdep = [ConvolutePMT, this]
     (const ATLTileCalTBHitsCollection* HC, std::size_t cell_index) -> G4double {
         auto hit = (*HC)[cell_index];
 
@@ -173,7 +123,48 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
         auto sdep_down_v = ConvolutePMT(hit->GetSdepDown());
 
         //Create output pulses if requested
-        CreatePulseOutput(sdep_up_v, sdep_down_v, cell_index);
+        #ifdef ATLTileCalTB_PulseOutput
+        {
+            // Add signals
+            std::array<G4double, ATLTileCalTBConstants::frames> sdep_sum_v;
+            for (std::size_t n = 0; n < sdep_sum_v.size(); ++n) {
+                sdep_sum_v[n] = sdep_up_v[n] + sdep_down_v[n];
+            }
+
+            // Check that vector is not empty
+            if (std::accumulate(sdep_sum_v.begin(), sdep_sum_v.end(), 0) != 0.) {
+                // Generate file name
+                auto cell = ATLTileCalTBGeometry::CellLUT::GetInstance()->GetCell(cell_index);
+                std::ostringstream fileName;
+                fileName << pulse_event_path.string() << "/Mod";
+                switch (cell.module) {
+                    case ATLTileCalTBGeometry::Module::LONG_LOWER:
+                        fileName << "LL";
+                        break;
+                    case ATLTileCalTBGeometry::Module::LONG_UPPER:
+                        fileName << "LU";
+                        break;
+                    case ATLTileCalTBGeometry::Module::EXTENDED:
+                    case ATLTileCalTBGeometry::Module::EXTENDED_C10:
+                    case ATLTileCalTBGeometry::Module::EXTENDED_D4:
+                        fileName << "EX";
+                        break;
+                }
+                fileName << "_Cell" << cell.row << cell.nCell << ".dat";
+
+                // Open file and add cell label
+                std::ofstream ofs;
+                ofs.open(fileName.str());
+                ofs << "# " << cell << "\n";
+
+                // Fill with values and close
+                for (auto val : sdep_sum_v) {
+                    ofs << val << "\n";
+                }
+                ofs.close();
+            }
+        };
+        #endif
 
         //Use maximum as signal
         G4double sdep_up = *(std::max_element(sdep_up_v.begin(), sdep_up_v.end()));
