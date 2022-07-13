@@ -37,7 +37,18 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction( ATLTileCalTBEventAction* eventActi
     //Get analysis manager
     //
     auto analysisManager = G4AnalysisManager::Instance();
-    G4cout << "Using " << analysisManager->GetType() << G4endl;
+
+    //Print useful information
+    //
+    if (IsMaster()) {
+        G4cout << "Using " << analysisManager->GetType() << G4endl;
+        #ifdef ATLTileCalTB_PulseOutput
+        G4cout << "Creating pulse plots" << G4endl;
+        #endif
+        #ifdef ATLTileCalTB_NoNoise
+        G4cout << "Electronic noise disabled" << G4endl;
+        #endif
+    }
 
     analysisManager->SetVerboseLevel(1);
     analysisManager->SetNtupleMerging(true);
