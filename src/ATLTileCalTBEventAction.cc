@@ -94,7 +94,6 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
     //Method to convolute signal for PMT response
     //From https://gitlab.cern.ch/allpix-squared/allpix-squared/-/blob/86fe21ad37d353e36a509a0827562ab7fadd5104/src/modules/CSADigitizer/CSADigitizerModule.cpp#L271-L283
     auto ConvolutePMT = [](const std::array<G4double, ATLTileCalTBConstants::frames>& sdep) {
-        // TODO: check algorithm
         constexpr auto pmt_response_size = ATLTileCalTBConstants::pmt_response.size();
         auto outvec = std::array<G4double, ATLTileCalTBConstants::frames>();
         for (std::size_t k = 0; k < outvec.size(); ++k) {
