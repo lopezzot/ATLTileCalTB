@@ -22,9 +22,7 @@
 
 //Includers from C++
 //
-#ifdef ATLTileCalTB_PulseOutput
 #include <filesystem>
-#endif
 
 //Constructor and de-constructor
 //
@@ -77,9 +75,9 @@ void ATLTileCalTBRunAction::BeginOfRunAction(const G4Run* run) {
     G4String fileName = "ATLTileCalTBout_Run" + runnumber + ".root";
     analysisManager->OpenFile(fileName);
 
-    #ifdef ATLTileCalTB_PulseOutput
     auto pulse_run_path = std::filesystem::path("ATLTileCalTBpulse_Run" + runnumber);
     std::filesystem::remove_all(pulse_run_path);
+    #ifdef ATLTileCalTB_PulseOutput
     std::filesystem::create_directory(pulse_run_path);
     #endif
 
