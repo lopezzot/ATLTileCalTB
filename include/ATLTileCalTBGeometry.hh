@@ -12,7 +12,6 @@
 
 //Includers from Geant4
 //
-#include "globals.hh"
 #include "G4ThreadLocalSingleton.hh"
 
 //Includers from C++

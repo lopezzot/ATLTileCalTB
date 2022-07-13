@@ -15,19 +15,10 @@
 //Includers from Geant4
 //
 #include "G4LogicalVolume.hh"
-#include "G4ThreeVector.hh"
-#include "G4PVPlacement.hh"
-#include "G4NistManager.hh"
-#include "G4SystemOfUnits.hh"
 #include "G4GDMLParser.hh"
 #include "G4LogicalVolumeStore.hh"
 #include "G4VisAttributes.hh"
 #include "G4SDManager.hh"
-
-//Includers from C++
-//
-#include <iostream>
-#include <vector>
 
 //Constructors and de-constructor
 //

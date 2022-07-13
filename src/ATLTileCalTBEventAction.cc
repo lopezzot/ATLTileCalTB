@@ -15,9 +15,7 @@
 
 //Includers from Geant4
 //
-#include "G4RunManager.hh"
 #include "G4Event.hh"
-#include "G4SystemOfUnits.hh"
 #include "g4root.hh"
 #include "Randomize.hh"
 #ifdef ATLTileCalTB_PulseOutput
@@ -27,7 +25,6 @@
 
 //Includers from C++
 //
-#include <iomanip>
 #include <numeric>
 #include <algorithm>
 #ifdef ATLTileCalTB_PulseOutput

@@ -13,7 +13,7 @@
 
 //Includers from Geant4
 //
-#include "globals.hh"
+#include "G4Types.hh"
 #include "G4SystemOfUnits.hh"
 
 

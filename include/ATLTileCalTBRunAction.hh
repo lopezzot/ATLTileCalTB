@@ -13,13 +13,14 @@
 //Includers from Geant4
 //
 #include "G4UserRunAction.hh"
-#include "globals.hh"
+
+//Forward declaration from project
+//
+class ATLTileCalTBEventAction;
 
 //Forward declaration from Geant4
 //
 class G4Run;
-
-class ATLTileCalTBEventAction;
 
 class ATLTileCalTBRunAction : public G4UserRunAction {
   

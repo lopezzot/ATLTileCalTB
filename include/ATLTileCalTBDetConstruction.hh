@@ -13,6 +13,9 @@
 //Includers from Geant4
 //
 #include "G4VUserDetectorConstruction.hh"
+
+//Forward declaration from Geant4
+//
 class G4GDMLParser;
 class G4VPhysicalVolume;
 
