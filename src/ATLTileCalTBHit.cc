@@ -9,31 +9,30 @@
 //Includers from project files
 //
 #include "ATLTileCalTBHit.hh"
+#include "ATLTileCalTBConstants.hh"
 
 //Includers from Geant4
 #include "G4UnitsTable.hh"
-#include "G4VVisManager.hh"
-#include "G4Circle.hh"
-#include "G4Colour.hh"
-#include "G4VisAttributes.hh"
-
-G4ThreadLocal G4Allocator<ATLTileCalTBHit>* ATLTileCalTBHitAllocator = 0;
 
 //Constructor and de-constructor
 //
 ATLTileCalTBHit::ATLTileCalTBHit()
     : G4VHit(),
       fEdep(0.),
-      fSdep(0.) {
+      fSdepUp(),
+      fSdepDown() {
+    fSdepUp.fill(0.);
+    fSdepDown.fill(0.);
+
 }
 
 ATLTileCalTBHit::~ATLTileCalTBHit() {}
 
 ATLTileCalTBHit::ATLTileCalTBHit(const ATLTileCalTBHit& right)
     : G4VHit() {
-  
     fEdep = right.fEdep;
-    fSdep = right.fSdep;
+    fSdepUp = std::array<G4double, ATLTileCalTBConstants::frames>(right.fSdepUp);
+    fSdepDown = std::array<G4double, ATLTileCalTBConstants::frames>(right.fSdepDown);
 
 }
 
@@ -42,7 +41,8 @@ ATLTileCalTBHit::ATLTileCalTBHit(const ATLTileCalTBHit& right)
 const ATLTileCalTBHit& ATLTileCalTBHit::operator=(const ATLTileCalTBHit& right) {
   
     fEdep = right.fEdep;
-    fSdep = right.fSdep;
+    fSdepUp = std::array<G4double, ATLTileCalTBConstants::frames>(right.fSdepUp);
+    fSdepDown = std::array<G4double, ATLTileCalTBConstants::frames>(right.fSdepDown);
 
     return *this;
 
@@ -54,6 +54,22 @@ G4bool ATLTileCalTBHit::operator==(const ATLTileCalTBHit& right) const {
   
     return ( this == &right ) ? true : false;
 
+}
+
+//ATLTileCalTBHit::GetBinFromTime method
+//
+std::size_t ATLTileCalTBHit::GetBinFromTime( G4double time ) {
+    using namespace ATLTileCalTBConstants;
+    if ( time < frame_time_window ) {
+        return static_cast<std::size_t>(std::ceil(time / frame_bin_time));
+    }
+    else {
+        G4ExceptionDescription msg;
+        msg << "Time " << G4BestUnit(time, "Time") << " is above the total time window." << G4endl; 
+        G4Exception("ATLTileCalTBHit::GetBinFromTime()",
+        "MyCode0008", FatalException, msg);
+        return SIZE_MAX; // Return impossible size
+    }
 }
 
 //**************************************************

@@ -11,10 +11,6 @@
 //
 #include "ATLTileCalTBStepAction.hh"
 
-//Includers from Geant4
-//
-#include "G4RunManager.hh"
-
 //Constructor and de-constructor
 //
 ATLTileCalTBStepAction::ATLTileCalTBStepAction(ATLTileCalTBEventAction* EventAction)

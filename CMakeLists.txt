@@ -9,7 +9,7 @@
 #----------------------------------------------------------------------------
 # Setup the project
 #
-cmake_minimum_required(VERSION 3.8...3.18)
+cmake_minimum_required(VERSION 3.12...3.18)
 if(${CMAKE_VERSION} VERSION_LESS 3.12)
   cmake_policy(VERSION ${CMAKE_MAJOR_VERSION}.${CMAKE_MINOR_VERSION})
 endif()
@@ -25,6 +25,14 @@ if(WITH_GEANT4_UIVIS)
   find_package(Geant4 REQUIRED ui_all vis_all)
 else()
   find_package(Geant4 REQUIRED)
+endif()
+
+#----------------------------------------------------------------------------
+# Option to enable pulse outputs
+#
+option(WITH_ATLTileCalTB_PulseOutput "enable pulse output (slow)" OFF)
+if(WITH_ATLTileCalTB_PulseOutput)
+  add_compile_definitions(ATLTileCalTB_PulseOutput)
 endif()
 
 #----------------------------------------------------------------------------
@@ -47,6 +55,7 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 #
 add_executable(ATLTileCalTB ATLTileCalTB.cc ${sources} ${headers})
 target_link_libraries(ATLTileCalTB ${Geant4_LIBRARIES})
+set_target_properties(ATLTileCalTB PROPERTIES CXX_STANDARD 17)
 
 #----------------------------------------------------------------------------
 # Copy all scripts to the build directory, i.e. the directory in which we
@@ -60,6 +69,8 @@ set(ATLTileCalTB_SCRIPTS
     init_vis.mac
     vis.mac
     TBrun.mac
+    single.mac
+    pulse_viewer.py
   )
 
 foreach(_script ${ATLTileCalTB_SCRIPTS})

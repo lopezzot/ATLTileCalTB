@@ -13,8 +13,10 @@
 //Includers from Geant4
 //
 #include "G4VUserPrimaryGeneratorAction.hh"
-#include "globals.hh"
+#include "G4Types.hh"
 
+//Forward declaration from Geant4
+//
 class G4ParticleGun;
 class G4Event;
 

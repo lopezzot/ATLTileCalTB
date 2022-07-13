@@ -13,16 +13,11 @@
 
 //Includers from Geant4
 //
-#include "G4RunManager.hh"
-#include "G4LogicalVolumeStore.hh"
-#include "G4LogicalVolume.hh"
-#include "G4Box.hh"
 #include "G4Event.hh"
 #include "G4ParticleGun.hh"
 #include "G4ParticleTable.hh"
 #include "G4ParticleDefinition.hh"
 #include "G4SystemOfUnits.hh"
-#include "Randomize.hh"
 
 //Constructor and de-constructor
 //
@@ -39,7 +34,7 @@ ATLTileCalTBPrimaryGenAction::ATLTileCalTBPrimaryGenAction()
       fParticleGun->SetParticleEnergy( 10.*GeV );
       fParticleGun->SetParticlePosition( G4ThreeVector(2298.,0.,0.) );
 
-      const G4double PrimaryAngle = 76*deg; //set TB angle as on ATLAS reference paper
+      constexpr G4double PrimaryAngle = 76*deg; //set TB angle as on ATLAS reference paper
       fParticleGun->SetParticleMomentumDirection( G4ThreeVector( sin(PrimaryAngle),0.,cos(PrimaryAngle) ) );
 
 }

@@ -13,7 +13,7 @@
 //Includers from Geant4
 //
 #include "G4UserEventAction.hh"
-#include "globals.hh"
+#include "G4Types.hh"
 
 //Includers from project files
 //
@@ -22,8 +22,12 @@
 //Includers from C++
 //
 #include <array>
+#include <vector>
+#ifdef ATLTileCalTB_PulseOutput
+#include <filesystem>
+#endif
 
-const G4int nAuxData = 2; //0->Leakage, 1->Energy Deposited in Calo
+constexpr std::size_t nAuxData = 2; //0->Leakage, 1->Energy Deposited in Calo
 
 class ATLTileCalTBEventAction : public G4UserEventAction {
     
@@ -34,7 +38,7 @@ class ATLTileCalTBEventAction : public G4UserEventAction {
         virtual void BeginOfEventAction( const G4Event* event );
         virtual void EndOfEventAction( const G4Event* event );
 
-        void Add( G4int index, G4double de );
+        void Add( std::size_t index, G4double de );
 
         std::vector<G4double>& GetEdepVector() { return fEdepVector; };
         std::vector<G4double>& GetSdepVector() { return fSdepVector; };
@@ -45,10 +49,12 @@ class ATLTileCalTBEventAction : public G4UserEventAction {
         std::array<G4double, nAuxData> fAux;
         std::vector<G4double> fEdepVector;
         std::vector<G4double> fSdepVector;
-    
+        #ifdef ATLTileCalTB_PulseOutput
+        std::filesystem::path pulse_event_path;
+        #endif
 };
                      
-inline void ATLTileCalTBEventAction::Add( G4int index, G4double de ) { fAux[index] += de; }
+inline void ATLTileCalTBEventAction::Add( std::size_t index, G4double de ) { fAux[index] += de; }
 
 #endif //ATLTileCalTBEventAction_h
 

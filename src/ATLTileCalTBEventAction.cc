@@ -15,16 +15,23 @@
 
 //Includers from Geant4
 //
-#include "G4RunManager.hh"
 #include "G4Event.hh"
-#include "G4SystemOfUnits.hh"
 #include "g4root.hh"
 #include "Randomize.hh"
+#ifdef ATLTileCalTB_PulseOutput
+#include "G4RunManager.hh"
+#include "G4Run.hh"
+#endif
 
 //Includers from C++
 //
-#include <iomanip>
 #include <numeric>
+#include <algorithm>
+#ifdef ATLTileCalTB_PulseOutput
+#include <fstream>
+#include <sstream>
+#include <filesystem>
+#endif
 
 //Constructor and de-constructor
 //
@@ -41,11 +48,17 @@ ATLTileCalTBEventAction::~ATLTileCalTBEventAction() {
 
 //BeginOfEvent() method
 //
-void ATLTileCalTBEventAction::BeginOfEventAction(const G4Event* /*event*/) {  
-  
+void ATLTileCalTBEventAction::BeginOfEventAction([[maybe_unused]] const G4Event* event) {
     for ( auto& value : fAux ){ value = 0.; } 
     for ( auto& value : fEdepVector ) { value = 0.; }
     for ( auto& value : fSdepVector ) { value = 0.; }
+
+    #ifdef ATLTileCalTB_PulseOutput
+    auto runNumber = G4RunManager::GetRunManager()->GetCurrentRun()->GetRunID();
+    auto eventNumber = event->GetEventID();
+    pulse_event_path = std::filesystem::path("ATLTileCalTBpulse_Run" + std::to_string(runNumber) + "/Ev" + std::to_string(eventNumber));
+    std::filesystem::create_directory(pulse_event_path);
+    #endif
 
 }
 
@@ -78,11 +91,93 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
         counter++;
     }
 
+    //Method to convolute signal for PMT response
+    //From https://gitlab.cern.ch/allpix-squared/allpix-squared/-/blob/86fe21ad37d353e36a509a0827562ab7fadd5104/src/modules/CSADigitizer/CSADigitizerModule.cpp#L271-L283
+    auto ConvolutePMT = [](const std::array<G4double, ATLTileCalTBConstants::frames>& sdep) {
+        // TODO: check algorithm
+        constexpr auto pmt_response_size = ATLTileCalTBConstants::pmt_response.size();
+        auto outvec = std::array<G4double, ATLTileCalTBConstants::frames>();
+        for (std::size_t k = 0; k < outvec.size(); ++k) {
+            G4double outsum = 0.;
+            auto jmax = (k >= pmt_response_size) ? pmt_response_size - 1 : k;
+            for (std::size_t j = 0; j <= jmax; ++j) {
+                outsum += sdep.at(k - j) * ATLTileCalTBConstants::pmt_response.at(j);
+            }
+            outvec.at(k) = outsum;
+        }
+        return outvec;
+    };
+
+    //Method to get sdep from hit
+    auto GetSdep = [ConvolutePMT, this]
+    (const ATLTileCalTBHitsCollection* HC, std::size_t cell_index) -> G4double {
+        auto hit = (*HC)[cell_index];
+
+        //PMT response
+        auto sdep_up_v = ConvolutePMT(hit->GetSdepUp());
+        auto sdep_down_v = ConvolutePMT(hit->GetSdepDown());
+
+        //Create output pulses if requested
+        #ifdef ATLTileCalTB_PulseOutput
+        {
+            // Add signals
+            std::array<G4double, ATLTileCalTBConstants::frames> sdep_sum_v;
+            for (std::size_t n = 0; n < sdep_sum_v.size(); ++n) {
+                sdep_sum_v[n] = sdep_up_v[n] + sdep_down_v[n];
+            }
+
+            // Check that vector is not empty
+            if (std::accumulate(sdep_sum_v.begin(), sdep_sum_v.end(), 0) != 0.) {
+                // Generate file name
+                auto cell = ATLTileCalTBGeometry::CellLUT::GetInstance()->GetCell(cell_index);
+                std::ostringstream fileName;
+                fileName << pulse_event_path.string() << "/Mod";
+                switch (cell.module) {
+                    case ATLTileCalTBGeometry::Module::LONG_LOWER:
+                        fileName << "LL";
+                        break;
+                    case ATLTileCalTBGeometry::Module::LONG_UPPER:
+                        fileName << "LU";
+                        break;
+                    case ATLTileCalTBGeometry::Module::EXTENDED:
+                    case ATLTileCalTBGeometry::Module::EXTENDED_C10:
+                    case ATLTileCalTBGeometry::Module::EXTENDED_D4:
+                        fileName << "EX";
+                        break;
+                }
+                fileName << "_Cell" << cell.row << cell.nCell << ".dat";
+
+                // Open file and add cell label
+                std::ofstream ofs;
+                ofs.open(fileName.str());
+                ofs << "# " << cell << "\n";
+
+                // Fill with values and close
+                for (auto val : sdep_sum_v) {
+                    ofs << val << "\n";
+                }
+                ofs.close();
+            }
+        };
+        #endif
+
+        //Use maximum as signal
+        G4double sdep_up = *(std::max_element(sdep_up_v.begin(), sdep_up_v.end()));
+        G4double sdep_down = *(std::max_element(sdep_down_v.begin(), sdep_down_v.end()));
+
+        //Apply electronic noise
+        sdep_up += G4RandGauss::shoot(0., ATLTileCalTBConstants::noise_sigma);
+        sdep_down += G4RandGauss::shoot(0., ATLTileCalTBConstants::noise_sigma);
+
+        //Return sum
+        return sdep_up + sdep_down;
+    };
+
     //Get hits collections and fill vector
     auto HC = GetHitsCollection(0, event);
     for (std::size_t n = 0; n < fNoOfCells; ++n) {
         fEdepVector[n] = (*HC)[n]->GetEdep();
-        fSdepVector[n] = (*HC)[n]->GetSdep() + G4RandGauss::shoot(0., ATLTileCalTBConstants::noise_sigma); // Add electronic noise
+        fSdepVector[n] = GetSdep(HC, n);
     }
 
     //Add sums to Ntuple
