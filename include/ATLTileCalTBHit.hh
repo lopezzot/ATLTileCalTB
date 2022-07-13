@@ -9,6 +9,10 @@
 #ifndef ATLTileCalTBHit_h
 #define ATLTileCalTBHit_h 1
 
+//Includers from project files
+//
+#include "ATLTileCalTBConstants.hh"
+
 //Includers from Geant4
 //
 #include "G4VHit.hh"
@@ -18,7 +22,7 @@
 
 //Includers from C++
 //
-#include <vector>
+#include <array>
 
 class ATLTileCalTBHit : public G4VHit {
   
@@ -52,16 +56,16 @@ class ATLTileCalTBHit : public G4VHit {
         //Get methods
         //
         G4double GetEdep() const;
-        const std::vector<G4double>& GetSdepUp() const;
-        const std::vector<G4double>& GetSdepDown() const;
+        const std::array<G4double, ATLTileCalTBConstants::frames>& GetSdepUp() const;
+        const std::array<G4double, ATLTileCalTBConstants::frames>& GetSdepDown() const;
 
     private:
         // Total energy deposition in the cell
         G4double fEdep;
 
         //Vectors containing the binned signal
-        std::vector<G4double> fSdepUp;
-        std::vector<G4double> fSdepDown;
+        std::array<G4double, ATLTileCalTBConstants::frames> fSdepUp;
+        std::array<G4double, ATLTileCalTBConstants::frames> fSdepDown;
 
 };
 
@@ -102,9 +106,9 @@ inline void ATLTileCalTBHit::AddSdep(G4double time, G4double dSdepUp, G4double d
 
 inline G4double ATLTileCalTBHit::GetEdep() const { return fEdep; };
 
-inline const std::vector<G4double>& ATLTileCalTBHit::GetSdepUp() const { return fSdepUp; };
+inline const std::array<G4double, ATLTileCalTBConstants::frames>& ATLTileCalTBHit::GetSdepUp() const { return fSdepUp; };
 
-inline const std::vector<G4double>& ATLTileCalTBHit::GetSdepDown() const { return fSdepDown; };
+inline const std::array<G4double, ATLTileCalTBConstants::frames>& ATLTileCalTBHit::GetSdepDown() const { return fSdepDown; };
 
 #endif //ATLTileCalTBHit_h 1
 

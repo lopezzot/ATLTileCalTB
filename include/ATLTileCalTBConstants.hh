@@ -16,6 +16,9 @@
 #include "G4Types.hh"
 #include "G4SystemOfUnits.hh"
 
+//Includers from C++
+//
+#include <array>
 
 namespace ATLTileCalTBConstants {
 

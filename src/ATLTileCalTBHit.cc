@@ -20,9 +20,11 @@ G4ThreadLocal G4Allocator<ATLTileCalTBHit>* ATLTileCalTBHitAllocator = 0;
 //
 ATLTileCalTBHit::ATLTileCalTBHit()
     : G4VHit(),
-      fEdep(0.) {
-    fSdepUp = std::vector<G4double>(ATLTileCalTBConstants::frames, 0.);
-    fSdepDown = std::vector<G4double>(ATLTileCalTBConstants::frames, 0.);
+      fEdep(0.),
+      fSdepUp(),
+      fSdepDown() {
+    fSdepUp.fill(0.);
+    fSdepDown.fill(0.);
 
 }
 
@@ -31,8 +33,8 @@ ATLTileCalTBHit::~ATLTileCalTBHit() {}
 ATLTileCalTBHit::ATLTileCalTBHit(const ATLTileCalTBHit& right)
     : G4VHit() {
     fEdep = right.fEdep;
-    fSdepUp = std::vector<G4double>(right.fSdepUp);
-    fSdepDown = std::vector<G4double>(right.fSdepDown);
+    fSdepUp = std::array<G4double, ATLTileCalTBConstants::frames>(right.fSdepUp);
+    fSdepDown = std::array<G4double, ATLTileCalTBConstants::frames>(right.fSdepDown);
 
 }
 
@@ -41,8 +43,8 @@ ATLTileCalTBHit::ATLTileCalTBHit(const ATLTileCalTBHit& right)
 const ATLTileCalTBHit& ATLTileCalTBHit::operator=(const ATLTileCalTBHit& right) {
   
     fEdep = right.fEdep;
-    fSdepUp = std::vector<G4double>(right.fSdepUp);
-    fSdepDown = std::vector<G4double>(right.fSdepDown);
+    fSdepUp = std::array<G4double, ATLTileCalTBConstants::frames>(right.fSdepUp);
+    fSdepDown = std::array<G4double, ATLTileCalTBConstants::frames>(right.fSdepDown);
 
     return *this;
 
