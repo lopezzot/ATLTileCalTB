@@ -164,12 +164,17 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
         G4double sdep_up = *(std::max_element(sdep_up_v.begin(), sdep_up_v.end()));
         G4double sdep_down = *(std::max_element(sdep_down_v.begin(), sdep_down_v.end()));
 
-        //Apply electronic noise
-        sdep_up += G4RandGauss::shoot(0., ATLTileCalTBConstants::noise_sigma);
-        sdep_down += G4RandGauss::shoot(0., ATLTileCalTBConstants::noise_sigma);
-
-        //Return sum
+        #ifdef ATLTileCalTB_NoNoise
         return sdep_up + sdep_down;
+        #else
+        //Apply electronic noise
+        sdep_up += G4RandGauss::shoot(0., ATLTileCalTBConstants::signal_noise_sigma);
+        sdep_down += G4RandGauss::shoot(0., ATLTileCalTBConstants::signal_noise_sigma);
+
+        //Return sum if signal is larger than 2 * noise
+        auto sdep_sum = sdep_up + sdep_down;
+        return (sdep_sum > 2 * ATLTileCalTBConstants::signal_noise_sigma) ? sdep_sum : 0.;
+        #endif
     };
 
     //Get hits collections and fill vector
