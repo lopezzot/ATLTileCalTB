@@ -32,7 +32,7 @@ namespace ATLTileCalTBConstants {
     constexpr G4double photoelectrons_per_energy = 70. / GeV / sampling_fraction * pe_conversion_correction;
 
     // Signal output per energy normed to absorption of 10 GeV electrons
-    constexpr G4double signal_energy_equivalent = 657. / (10. * GeV);
+    constexpr G4double signal_energy_equivalent = 706. / (10. * GeV);
 
     // Sigma of the electronic noise (white noise / gaussian)
     constexpr G4double signal_noise_sigma = (12 * MeV) * signal_energy_equivalent;

@@ -26,4 +26,4 @@ correction is obtained by dividing the expect 700 pe by the fitted mean.
 
 The electronic noise of the PMT is given as an effective uncertainty of 12 MeV by ATLAS. To convert
 this to ADC units, 10 GeV electrons were simulated and the signal linearly scaled to 12 MeV. The
-noise level is about 0.8 ADC units.
+noise level is about 0.85 ADC units.
