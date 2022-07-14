@@ -25,11 +25,14 @@ namespace ATLTileCalTBConstants {
     // Amount of energy deposited in the tiles compared to the total energy in the calorimeter
     constexpr G4double sampling_fraction = 3.27 * perCent;
 
+    // Correction factor photoelectron conversion, as we expect 70 pe per GeV after applying Birk's Law
+    constexpr G4double pe_conversion_correction = 700. / 653.;
+
     // Amount of photoelectrons created per energy (adjusted by the sampling fraction)
-    constexpr G4double photoelectrons_per_energy = 70. / GeV / sampling_fraction;
+    constexpr G4double photoelectrons_per_energy = 70. / GeV / sampling_fraction * pe_conversion_correction;
 
     // Signal output per energy normed to absorption of 10 GeV electrons
-    constexpr G4double signal_energy_equivalent = 657. / (10. * GeV);
+    constexpr G4double signal_energy_equivalent = 706. / (10. * GeV);
 
     // Sigma of the electronic noise (white noise / gaussian)
     constexpr G4double signal_noise_sigma = (12 * MeV) * signal_energy_equivalent;
