@@ -36,6 +36,14 @@ if(WITH_ATLTileCalTB_PulseOutput)
 endif()
 
 #----------------------------------------------------------------------------
+# Option to disable noise
+#
+option(WITH_ATLTileCalTB_NoNoise "disable electronic noise" OFF)
+if(WITH_ATLTileCalTB_NoNoise)
+  add_compile_definitions(ATLTileCalTB_NoNoise)
+endif()
+
+#----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
 # Setup include directory for this project
 #

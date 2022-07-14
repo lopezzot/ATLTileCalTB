@@ -22,9 +22,7 @@
 
 //Includers from C++
 //
-#ifdef ATLTileCalTB_PulseOutput
 #include <filesystem>
-#endif
 
 //Constructor and de-constructor
 //
@@ -39,7 +37,18 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction( ATLTileCalTBEventAction* eventActi
     //Get analysis manager
     //
     auto analysisManager = G4AnalysisManager::Instance();
-    G4cout << "Using " << analysisManager->GetType() << G4endl;
+
+    //Print useful information
+    //
+    if (IsMaster()) {
+        G4cout << "Using " << analysisManager->GetType() << G4endl;
+        #ifdef ATLTileCalTB_PulseOutput
+        G4cout << "Creating pulse plots" << G4endl;
+        #endif
+        #ifdef ATLTileCalTB_NoNoise
+        G4cout << "Electronic noise disabled" << G4endl;
+        #endif
+    }
 
     analysisManager->SetVerboseLevel(1);
     analysisManager->SetNtupleMerging(true);
@@ -77,9 +86,9 @@ void ATLTileCalTBRunAction::BeginOfRunAction(const G4Run* run) {
     G4String fileName = "ATLTileCalTBout_Run" + runnumber + ".root";
     analysisManager->OpenFile(fileName);
 
-    #ifdef ATLTileCalTB_PulseOutput
     auto pulse_run_path = std::filesystem::path("ATLTileCalTBpulse_Run" + runnumber);
     std::filesystem::remove_all(pulse_run_path);
+    #ifdef ATLTileCalTB_PulseOutput
     std::filesystem::create_directory(pulse_run_path);
     #endif
 
