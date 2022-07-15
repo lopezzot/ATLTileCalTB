@@ -44,6 +44,12 @@ if(WITH_ATLTileCalTB_NoNoise)
 endif()
 
 #----------------------------------------------------------------------------
+# Output pedantic warnings
+#
+
+add_compile_options(-Wall -Wextra -Wpedantic)
+
+#----------------------------------------------------------------------------
 # Setup Geant4 include directories and compile definitions
 # Setup include directory for this project
 #
