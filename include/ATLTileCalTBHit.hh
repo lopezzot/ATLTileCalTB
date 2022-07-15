@@ -66,22 +66,22 @@ class ATLTileCalTBHit : public G4VHit {
 
 using ATLTileCalTBHitsCollection = G4THitsCollection<ATLTileCalTBHit>;
 
-inline void ATLTileCalTBHit::AddEdep(G4double dEdep) { fEdep += dEdep; };
+inline void ATLTileCalTBHit::AddEdep(G4double dEdep) { fEdep += dEdep; }
 
 inline void ATLTileCalTBHit::AddSdep(std::size_t index, G4double dSdepUp, G4double dSdepDown) {
     fSdepUp[index] += dSdepUp;
     fSdepDown[index] += dSdepDown;
-};
+}
 
 inline void ATLTileCalTBHit::AddSdep(G4double time, G4double dSdepUp, G4double dSdepDown) {
     AddSdep(GetBinFromTime(time), dSdepUp, dSdepDown);
 }
 
-inline G4double ATLTileCalTBHit::GetEdep() const { return fEdep; };
+inline G4double ATLTileCalTBHit::GetEdep() const { return fEdep; }
 
-inline const std::array<G4double, ATLTileCalTBConstants::frames>& ATLTileCalTBHit::GetSdepUp() const { return fSdepUp; };
+inline const std::array<G4double, ATLTileCalTBConstants::frames>& ATLTileCalTBHit::GetSdepUp() const { return fSdepUp; }
 
-inline const std::array<G4double, ATLTileCalTBConstants::frames>& ATLTileCalTBHit::GetSdepDown() const { return fSdepDown; };
+inline const std::array<G4double, ATLTileCalTBConstants::frames>& ATLTileCalTBHit::GetSdepDown() const { return fSdepDown; }
 
 #endif //ATLTileCalTBHit_h 1
 
