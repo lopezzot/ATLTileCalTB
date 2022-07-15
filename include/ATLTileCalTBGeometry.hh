@@ -203,7 +203,7 @@ namespace ATLTileCalTBGeometry {
             void operator=(CellLUT const&) = delete;
     };
 
-};
+}
 
 #endif //ATLTileCalTBGeometry_h
 

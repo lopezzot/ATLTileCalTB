@@ -452,7 +452,7 @@ namespace ATLTileCalTBConstants {
         0.00185470,
     };
 
-};
+}
 
 #endif //ATLTileCalTBConstants_h
 
