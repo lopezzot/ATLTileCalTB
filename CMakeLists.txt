@@ -77,6 +77,7 @@ set(ATLTileCalTB_SCRIPTS
     init_vis.mac
     vis.mac
     TBrun.mac
+    TBrun_all.mac
     single.mac
     pulse_viewer.py
   )

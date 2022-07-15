@@ -1,0 +1,42 @@
+# Macro to reproduce the Electron / Pion Testbeam with 20k events per run
+/run/initialize
+
+# Run 1: Electrons 16 GeV
+/gun/particle e-
+/gun/energy 16 GeV
+/run/beamOn 20000
+
+# Run 2: Electrons 18 GeV
+/gun/particle e-
+/gun/energy 18 GeV
+/run/beamOn 20000
+
+# Run 3: Electrons 20 GeV
+/gun/particle e-
+/gun/energy 20 GeV
+/run/beamOn 20000
+
+# Run 4: Electrons 30 GeV
+/gun/particle e-
+/gun/energy 30 GeV
+/run/beamOn 20000
+
+# Run 5: Pions 16 GeV
+/gun/particle pi-
+/gun/energy 16 GeV
+/run/beamOn 20000
+
+# Run 6: Pions 18 GeV
+/gun/particle pi-
+/gun/energy 18 GeV
+/run/beamOn 20000
+
+# Run 7: Pions 20 GeV
+/gun/particle pi-
+/gun/energy 20 GeV
+/run/beamOn 20000
+
+# Run 8: Pions 30 GeV
+/gun/particle pi-
+/gun/energy 30 GeV
+/run/beamOn 20000
