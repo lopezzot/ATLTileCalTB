@@ -15,6 +15,7 @@
 //
 #ifdef G4MULTITHREADED
 #include "G4MTRunManager.hh"
+#include "G4Threading.hh"
 #else
 #include "G4RunManager.hh"
 #endif
@@ -50,7 +51,7 @@ int main(int argc,char** argv) {
     G4String session;
     G4String custom_pl = "FTFP_BERT"; //default physics list
     #ifdef G4MULTITHREADED
-    G4int nThreads = 0;
+    G4int nThreads = G4Threading::G4GetNumberOfCores();
     #endif
 
     // CLI parsing
