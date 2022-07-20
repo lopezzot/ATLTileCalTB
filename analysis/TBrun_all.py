@@ -69,7 +69,7 @@ def create_signal_plot(rdfs: list[ROOT.RDataFrame], name: str) -> ROOT.TCanvas:
         th1 = rdfs[count].Histo1D('SdepSum').GetValue()
         fitres = th1.Fit('gaus', 'SQN').Get()
         means.append(fitres.Parameter(1))
-        sigmas.append(fitres.Parameter(2))
+        sigmas.append(fitres.Parameter(2) / np.sqrt(th1.GetEntries()))
 
     tge = ROOT.TGraphErrors(len(BEAM_ENERGIES), array('f', BEAM_ENERGIES), array('f', means), 0, array('f', sigmas))
     tge.SetTitle(f'Signal {name};Beam Energy [GeV];Signal [a.u.]')
@@ -91,7 +91,7 @@ def create_r_plot(rdfs: list[ROOT.RDataFrame], name: str) -> ROOT.TCanvas:
         th1 = rdfs[count].Histo1D('SdepSum').GetValue()
         fitres = th1.Fit('gaus', 'SQN').Get()
         means.append(fitres.Parameter(1) / beam_energy)
-        sigmas.append(fitres.Parameter(2) / beam_energy)
+        sigmas.append(fitres.Parameter(2)  / np.sqrt(th1.GetEntries()) / beam_energy)
 
     tge = ROOT.TGraphErrors(len(BEAM_ENERGIES), array('f', BEAM_ENERGIES), array('f', means), 0, array('f', sigmas))
     tge.SetTitle(f'R {name};Beam Energy [GeV];R [a.u. / GeV]')
