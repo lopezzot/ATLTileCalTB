@@ -27,13 +27,12 @@ def parse_args(args: list[str]) -> argparse.Namespace:
     return parser.parse_args(args=args)
 
 
-def main(args: list[str] = None):
+def main(args: list[str] = None) -> None:
     """
     Runs the command-line interace.
+
     Args:
         args: List of strings to parse as command-line arguments. Defaults to sys.argv if set to None.
-    Returns:
-        Int with return code.
     """
     if args is None:
         args = sys.argv[1:]
