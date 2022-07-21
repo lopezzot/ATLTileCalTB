@@ -27,12 +27,16 @@
 #include <filesystem>
 #endif
 
+//Forward declaration from project
+//
+class ATLTileCalTBPrimaryGenAction;
+
 constexpr std::size_t nAuxData = 2; //0->Leakage, 1->Energy Deposited in Calo
 
 class ATLTileCalTBEventAction : public G4UserEventAction {
     
     public:
-        ATLTileCalTBEventAction();
+        ATLTileCalTBEventAction(ATLTileCalTBPrimaryGenAction* pga);
         virtual ~ATLTileCalTBEventAction();
 
         virtual void BeginOfEventAction( const G4Event* event );
@@ -45,6 +49,7 @@ class ATLTileCalTBEventAction : public G4UserEventAction {
 
     private:
         ATLTileCalTBHitsCollection* GetHitsCollection(G4int hcID, const G4Event* event) const;
+        ATLTileCalTBPrimaryGenAction* fPrimaryGenAction;
         std::size_t fNoOfCells;
         std::array<G4double, nAuxData> fAux;
         std::vector<G4double> fEdepVector;

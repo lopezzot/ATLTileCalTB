@@ -12,12 +12,14 @@
 #include "ATLTileCalTBEventAction.hh"
 #include "ATLTileCalTBGeometry.hh"
 #include "ATLTileCalTBConstants.hh"
+#include "ATLTileCalTBPrimaryGenAction.hh"
 
 //Includers from Geant4
 //
 #include "G4Event.hh"
 #include "g4root.hh"
 #include "Randomize.hh"
+#include "G4ParticleGun.hh"
 #ifdef ATLTileCalTB_PulseOutput
 #include "G4RunManager.hh"
 #include "G4Run.hh"
@@ -35,8 +37,9 @@
 
 //Constructor and de-constructor
 //
-ATLTileCalTBEventAction::ATLTileCalTBEventAction()
+ATLTileCalTBEventAction::ATLTileCalTBEventAction(ATLTileCalTBPrimaryGenAction* pga)
     : G4UserEventAction(),
+      fPrimaryGenAction(pga),
       fNoOfCells(ATLTileCalTBGeometry::CellLUT::GetInstance()->GetNumberOfCells()),
       fAux{0., 0.} {
     fEdepVector = std::vector<G4double>(fNoOfCells, 0.);
@@ -187,6 +190,9 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
     //Add sums to Ntuple
     analysisManager->FillNtupleDColumn(2, std::accumulate(fEdepVector.begin(), fEdepVector.end(), 0));
     analysisManager->FillNtupleDColumn(3, std::accumulate(fSdepVector.begin(), fSdepVector.end(), 0));
+
+    analysisManager->FillNtupleIColumn(6, fPrimaryGenAction->GetParticlenGun()->GetParticleDefinition()->GetPDGEncoding());
+    analysisManager->FillNtupleFColumn(7, fPrimaryGenAction->GetParticlenGun()->GetParticleEnergy());
 
     analysisManager->AddNtupleRow();
 
