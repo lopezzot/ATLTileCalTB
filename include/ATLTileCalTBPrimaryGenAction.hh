@@ -30,10 +30,14 @@ class ATLTileCalTBPrimaryGenAction : public G4VUserPrimaryGeneratorAction {
 
         void SetRandomFlag( G4bool value );
 
+        const G4ParticleGun* GetParticlenGun() const;
+
     private:
         G4ParticleGun* fParticleGun;
 
 };
+
+inline const G4ParticleGun* ATLTileCalTBPrimaryGenAction::GetParticlenGun() const { return fParticleGun; } 
 
 #endif //ATLTileCalTBPrimaryGenAction_h
 
