@@ -26,6 +26,7 @@ const std::string RUN_FILE_PATH_POSTFIX {".root"};
 const std::string RUN_FILE_TTREE_NAME {"ATLTileCalTBout"};
 const int PDG_ID_EL = 11;
 const int PDG_ID_PI = -211;
+const double EMSCALE_MUON_ERAW_CUT_GEV = 5.;
 
 const std::array<double, 4> ATL_BEAM_ENERGIES {16., 18., 20., 30.};
 const std::array<ValErr, ATL_BEAM_ENERGIES.size()> ATL_RATIO_PIE {
@@ -108,9 +109,10 @@ void TBrun_all() {
     auto r_means_el = std::get<0>(r_res_el);
     double r_mean_el = std::reduce(r_means_el.begin(), r_means_el.end()) / r_means_el.size();  // TODO: error of r_mean_el?
     auto rdf_pi_ems = rdf_pi.Define("SdepSumEMScale", "SdepSum/"+std::to_string(r_mean_el));
+    auto rdf_pi_ems_filt = rdf_pi_ems.Filter("SdepSumEMScale>"+std::to_string(EMSCALE_MUON_ERAW_CUT_GEV));
     std::array<ROOT::RDF::RResultPtr<TH1D>, BEAM_ENERGIES.size()> th1s_ems;
     for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
-        th1s_ems[n] = book_ems_hist(rdf_pi_ems, BEAM_ENERGIES[n]);
+        th1s_ems[n] = book_ems_hist(rdf_pi_ems_filt, BEAM_ENERGIES[n]);
     }
 
     // Fit EM-Scale histograms
