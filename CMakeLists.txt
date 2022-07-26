@@ -107,4 +107,12 @@ add_custom_target(G4ATLTileCalTB DEPENDS ATLTileCalTB)
 #
 install(TARGETS ATLTileCalTB DESTINATION bin)
 
+#----------------------------------------------------------------------------
+# Add analysis
+#
+option(BUILD_ANALYSIS "build analysis (requires ROOT)" ON)
+if(BUILD_ANALYSIS)
+  add_subdirectory(analysis)
+endif()
+
 ##**************************************************
