@@ -27,6 +27,14 @@ const std::string RUN_FILE_TTREE_NAME {"ATLTileCalTBout"};
 const int PDG_ID_EL = 11;
 const int PDG_ID_PI = -211;
 
+const std::array<double, 4> ATL_BEAM_ENERGIES {16., 18., 20., 30.};
+const std::array<ValErr, ATL_BEAM_ENERGIES.size()> ATL_RATIO_PIE {
+    ValErr({0.7924, 0.0116}),
+    ValErr({0.7941, 0.0108}),
+    ValErr({0.7948, 0.0101}),
+    ValErr({0.8019, 0.0098}),
+};
+
 
 void TBrun_all() {
     ROOT::EnableImplicitMT();
@@ -133,6 +141,19 @@ void TBrun_all() {
         tge.Write((name + " Ratio").c_str());
     };
     xer_graph(ems_res_pi, "pi/e");
+
+    // Create x/e ratio graph (ATLAS data)
+    auto atl_xer_graph = [](std::array<ValErr, ATL_BEAM_ENERGIES.size()> ratios, const std::string& name) {
+        std::array<double, ATL_BEAM_ENERGIES.size()> ratio_means, ratio_errors;
+        for (std::size_t n = 0; n < ATL_BEAM_ENERGIES.size(); ++n) {
+           ratio_means[n] = ratios[n].value;
+           ratio_errors[n] = ratios[n].error;
+        }
+        auto tge = TGraphErrors(BEAM_ENERGIES.size(), BEAM_ENERGIES.data(), ratio_means.data(), nullptr, ratio_errors.data());
+        tge.SetTitle(("ATLAS " + name + " Ratio;Beam Energy [GeV];Ratio").c_str());
+        tge.Write(("ATLAS " + name + " Ratio").c_str());
+    };
+    atl_xer_graph(ATL_RATIO_PIE, "pi/e");
 
     // Write and close
     output.Write();
