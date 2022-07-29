@@ -16,7 +16,9 @@
 #include <TF1.h>
 #include <TFitResult.h>
 #include <TGraphErrors.h>
-#include <RtypesCore.h>
+#include <TMultiGraph.h>
+#include <TLegend.h>
+#include <Rtypes.h>
 #include <ROOT/RVec.hxx>
 #include <ROOT/RDataFrame.hxx>
 #include <Math/MinimizerOptions.h>
@@ -59,6 +61,7 @@ const std::array<ValErr, ATL_BEAM_ENERGIES.size()> ATL_ERESOLUTION_PIE {
 void TBrun_all() {
     //ROOT::EnableImplicitMT();
     ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2", "Minimize");
+    gROOT->SetStyle("Modern");
 
     // Create TChain with input files    
     TChain chain {RUN_FILE_TTREE_NAME.c_str()};
@@ -290,7 +293,7 @@ void TBrun_all() {
         tge2.Write(("Energy resolution " + name).c_str());
         return std::make_tuple(tge, tge2);
     };
-    xer_graphs(ems_res_pi, "pi/e");
+    auto sim_pier_graphs = xer_graphs(ems_res_pi, "pi/e");
 
     // Create x/e ratio graph (ATLAS data)
     auto atl_xer_graphs = [reverse_copy_vector](std::array<ValErr, ATL_BEAM_ENERGIES.size()> eresp, std::array<ValErr, ATL_BEAM_ENERGIES.size()> eres, const std::string& name) {
@@ -310,7 +313,66 @@ void TBrun_all() {
         tge2.Write(("ATLAS Energy resolution " + name).c_str());
         return std::make_tuple(tge, tge2);
     };
-    atl_xer_graphs(ATL_ERESPONSE_PIE, ATL_ERESOLUTION_PIE, "pi/e");
+    auto atl_pier_graphs = atl_xer_graphs(ATL_ERESPONSE_PIE, ATL_ERESOLUTION_PIE, "pi/e");
+
+    // Create comparision plots
+    gROOT->SetStyle("ATLAS");
+    auto xer_graphs_comp_canvas = [&canvas](auto sim_xer_graphs_t, auto atl_xer_graphs_t, double eresp_ymin, double eresp_ymax, double eres_ymin, double eres_ymax, const std::string& name) {
+        // Energy response
+        TCanvas canvas_eresp {"canvas_eresp", "canvas_eresp", -1280, 720};
+        gROOT->SetSelectedPad(&canvas_eresp);
+        TMultiGraph tmg_eresp {};
+        auto tge_sim_eresp = std::get<0>(sim_xer_graphs_t);
+        auto tge_atl_eresp = std::get<0>(atl_xer_graphs_t);
+        tge_sim_eresp.SetMarkerStyle(kCircle);
+        tge_atl_eresp.SetLineColor(kBlue);
+        tge_atl_eresp.SetMarkerColor(kBlue);
+        tge_atl_eresp.SetMarkerStyle(kFullCircle);
+        tmg_eresp.Add(&tge_sim_eresp, "AP");
+        tmg_eresp.Add(&tge_atl_eresp, "AP");
+        tmg_eresp.GetYaxis()->SetRangeUser(eresp_ymin, eresp_ymax);
+        tmg_eresp.GetYaxis()->SetTitle("R^{E^\\text{raw}}");
+        tmg_eresp.GetXaxis()->SetTitle("E_\\text{beam} \\text{[GeV]}");
+        tmg_eresp.Draw("a");
+        TLegend leg_eresp {0.6, 0.75, 0.9, 0.9};
+        leg_eresp.AddEntry((TObject*)nullptr, name.c_str(), "");
+        leg_eresp.AddEntry(&tge_atl_eresp, "Experimental data", "P");
+        leg_eresp.AddEntry(&tge_sim_eresp, "Simulated data", "P");
+        leg_eresp.SetBorderSize(0);
+        leg_eresp.Draw();
+        canvas_eresp.Modified();
+        canvas_eresp.Update();
+        canvas_eresp.Write(("Comparision Energy Response " + name).c_str());
+        // Energy resolution
+        TCanvas canvas_eres {"canvas_eres", "canvas_eres", -1280, 720};
+        gROOT->SetSelectedPad(&canvas_eres);
+        TMultiGraph tmg_eres {};
+        auto tge_sim_eres = std::get<1>(sim_xer_graphs_t);
+        auto tge_atl_eres = std::get<1>(atl_xer_graphs_t);
+        tge_sim_eres.SetMarkerStyle(kCircle);
+        tge_atl_eres.SetLineColor(kBlue);
+        tge_atl_eres.SetMarkerColor(kBlue);
+        tge_atl_eres.SetMarkerStyle(kFullCircle);
+        tmg_eres.Add(&tge_sim_eres, "AP");
+        tmg_eres.Add(&tge_atl_eres, "AP");
+        tmg_eres.GetYaxis()->SetRangeUser(eres_ymin, eres_ymax);
+        tmg_eres.GetYaxis()->SetTitle("R^{\\sigma^\\text{raw}}");
+        tmg_eres.GetXaxis()->SetTitle("E_\\text{beam} \\text{[GeV]}");
+        tmg_eres.Draw("a");
+        TLegend leg_eres {0.5, 0.75, 0.8, 0.9};
+        leg_eres.AddEntry((TObject*)nullptr, name.c_str(), "");
+        leg_eres.AddEntry(&tge_atl_eres, "Experimental data", "P");
+        leg_eres.AddEntry(&tge_sim_eres, "Simulated data", "P");
+        leg_eres.SetBorderSize(0);
+        leg_eres.Draw();
+        canvas_eres.Modified();
+        canvas_eres.Update();
+        canvas_eres.Write(("Comparision Energy Resolution " + name).c_str());
+        gROOT->SetSelectedPad(&canvas);
+    };
+    xer_graphs_comp_canvas(sim_pier_graphs, atl_pier_graphs, 0.77, 0.85, 0.086, 0.135, "Pions");
+
+    //std::string tmp; std::cin >> tmp;
 
     // Write and close
     output.Write();
