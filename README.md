@@ -73,7 +73,8 @@ Parser options
 2. cmake build directory and make (using geant4.10.07_p03, check for gcc and cmake dependencies for other versions)
    ```sh
    mkdir ATLTileCalTB-build; cd ATLTileCalTB-build/
-   source ../ATLTileCalTB/scripts/ATLTileCalTB_lxplus_10.7.p03.sh
+   cp ../ATLTileCalTB/scripts/ATLTileCalTB_cvmfs_setup.sh ../ATLTileCalTB/scripts/ATLTileCalTB_lxplus_10.7.p03.sh .
+   source ./ATLTileCalTB_lxplus_10.7.p03.sh -DBUILD_ANALYSIS=OFF
    ```
 3. execute (example with TBrun.mac macro card, 4 threads and FTFP_BERT physics list)
    ```sh
@@ -84,12 +85,11 @@ Parser options
 1. [First follow the build instructions on lxplus](#build-compile-and-execute-on-lxplus)
 3. prepare for HTCondor submission (example with Geant4.10.07_p03, TBrun.mac, 4 threads, FTFP_BERT physics list)
     ```sh
-    mkdir error log output
-    cp ../ATLTileCalTB/scripts/ATLTileCalTB_HTCondor* .
-    export MYHOME=`pwd`
-    echo cd $MYHOME >> ATLTileCalTB_HTCondor_10.7.p03.sh
-    echo $MYHOME/ATLTileCalTB -m $MYHOME/TBrun.mac -t 4 -p FTFP_BERT >> ATLTileCalTB_HTCondor_10.7.p03.sh
-    sed -i '1 i executable = ATLTileCalTB_HTCondor_10.7.p03.sh' ATLTileCalTB_HTCondor.sub
+    mkdir -p error log output
+    cp ../ATLTileCalTB/scripts/ATLTileCalTB_HTCondor.sub ../ATLTileCalTB/scripts/ATLTileCalTB_HTCondor_10.7.p03.sh .
+    sed -i "2 i cd $(pwd)" ATLTileCalTB_HTCondor_10.7.p03.sh
+    echo ./ATLTileCalTB -m TBrun.mac -t 4 -p FTFP_BERT >> ATLTileCalTB_HTCondor_10.7.p03.sh
+    sed -i "1 i executable = ATLTileCalTB_HTCondor_10.7.p03.sh" ATLTileCalTB_HTCondor.sub
     ```
 4. submit a job
    ```sh
