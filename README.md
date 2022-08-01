@@ -60,10 +60,11 @@ The project targets a standalone Geant4 simulation of the ATLAS Tile Calorimeter
     ```sh
     ./ATLTileCalTB -m TBrun.mac -t 2 -p FTFP_BERT
     ```
+
 Parser options
-    * `-m macro.mac`: pass a Geant4 macro card (example `-m ATLHECTB_run.mac` available in source directory and automatically copied in build directory) 
-    * `-t integer`: pass number of threads for multi-thread execution (example `-t 3`, default is the number of threads on the machine)
-    * `-p Physics_List`: select Geant4 physics list (example `-p FTFP_BERT`)
+- `-m macro.mac`: pass a Geant4 macro card (example `-m ATLHECTB_run.mac` available in source directory and automatically copied in build directory) 
+- `-t integer`: pass number of threads for multi-thread execution (example `-t 2`, default is the number of threads on the machine)
+- `-p Physics_List`: select Geant4 physics list (example `-p FTFP_BERT`)
 
 ### Build, compile and execute on lxplus
 1. git clone the repo
@@ -83,7 +84,7 @@ Parser options
    
 ### Submit a job with HTCondor on lxplus
 1. [First follow the build instructions on lxplus](#build-compile-and-execute-on-lxplus)
-3. prepare for HTCondor submission (example with Geant4.10.07_p03, TBrun.mac, 4 threads, FTFP_BERT physics list)
+2. prepare for HTCondor submission (example with Geant4.10.07_p03, TBrun.mac, 4 threads, FTFP_BERT physics list)
     ```sh
     mkdir -p error log output
     cp ../ATLTileCalTB/scripts/ATLTileCalTB_HTCondor.sub ../ATLTileCalTB/scripts/ATLTileCalTB_HTCondor_10.7.p03.sh .
@@ -91,11 +92,11 @@ Parser options
     echo ./ATLTileCalTB -m TBrun.mac -t 4 -p FTFP_BERT >> ATLTileCalTB_HTCondor_10.7.p03.sh
     sed -i "1 i executable = ATLTileCalTB_HTCondor_10.7.p03.sh" ATLTileCalTB_HTCondor.sub
     ```
-4. submit a job
+3. submit a job
    ```sh
    condor_submit ATLTileCalTB_HTCondor.sub 
    ```
-5. monitor the job
+4. monitor the job
    ```sh
    condor_q
    ```
@@ -103,7 +104,7 @@ Parser options
    ```sh
    condor_wait -status log/*.log
    ```
-6. additional info from HTCondor (optional) \
+5. additional info from HTCondor (optional) \
    rm all your jobs
     ```sh
    condor_rm username
