@@ -169,7 +169,7 @@ void TBrun_all() {
         return std::make_tuple(rdfi_eraw, rdfi_mr, rdfi_er);
     };
     auto r_means_el = std::get<0>(sdeppeb_res_el);
-    double r_mean_el = std::reduce(r_means_el.begin(), r_means_el.end()) / r_means_el.size();  // TODO: error of r_mean_el?
+    double r_mean_el = std::accumulate(r_means_el.begin(), r_means_el.end(), 0.) / r_means_el.size();  // TODO: error of r_mean_el?
     auto rdfs_pi_filters = eraw_rejection_filters(rdf_pi, r_mean_el);
 
     // Cut statistics
