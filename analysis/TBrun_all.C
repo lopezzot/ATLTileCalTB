@@ -34,8 +34,7 @@ struct GausFitRes {
 };
 
 const std::array<double, 4> BEAM_ENERGIES {16., 18., 20., 30.};
-const std::string RUN_FILE_PATH_PREFIX {"ATLTileCalTBout_Run"};
-const std::string RUN_FILE_PATH_POSTFIX {".root"};
+const std::string MERGED_RUN_FILE {"ATLTileCalTBout_RunAll.root"};
 const std::string RUN_FILE_TTREE_NAME {"ATLTileCalTBout"};
 const int PDG_ID_EL = 11;
 const int PDG_ID_PI = -211;
@@ -63,16 +62,9 @@ void TBrun_all() {
     ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2", "Minimize");
     gROOT->SetStyle("Modern");
 
-    // Create TChain with input files    
-    TChain chain {RUN_FILE_TTREE_NAME.c_str()};
-    for(std::size_t n = 0; n < 2 * BEAM_ENERGIES.size(); ++n) {
-        auto file_name = RUN_FILE_PATH_PREFIX + std::to_string(n) + RUN_FILE_PATH_POSTFIX;
-        chain.Add(file_name.c_str());
-    }
-
     // Create output file and RDataFrame
     TFile output {"analysis.root", "RECREATE"};
-    ROOT::RDataFrame rdf {chain};
+    ROOT::RDataFrame rdf {RUN_FILE_TTREE_NAME, MERGED_RUN_FILE};
 
     // Create default canvas
     TCanvas canvas {"canvas", "canvas", -1280, 720};

@@ -23,6 +23,7 @@ A Geant4 simulation of the ATLAS Tile Calorimeter beam tests.
       </ul>
     </li>
     <li><a href="#geant-val-integration">Geant Val integration</a></li>
+    <li><a href="#run-the-analysis"></a>Run the analysis</li>
     <li><a href="#selected-atlas-tilecal-references">Selected ATLAS TileCal references</a></li>
   </ol>
 </details>
@@ -177,6 +178,20 @@ The following are instructions to use ATLTileCalTB within Geant Val for batch su
    ```
    ATLTileCalTB-env.log  ATLTileCalTB.json  ATLTileCalTB.mac  ATLTileCalTBout_Run0.root  ATLTileCalTB.sh  bsub.sh  config.sh  test_stderr.txt  test_stdout.txt
    ```
+
+<!--Run the analysis-->
+## Run the analysis
+1. For the analysis both electron and pion data is required, which can be obtained by running for example `ATLTileCalTB -m TBrun_all.mac`.
+2. After the run, all the ROOT files and their containing TTree need to merged into a single file called `ATLTileCalTBout_All.root`. This can be done with `hadd`:
+   ```sh
+   hadd -f ATLTileCalTBout_All.root ATLTileCalTBout_Run*.root
+   ```
+3. To run the analysis, execute the analysis macro in the folder containing the root file:
+   ```sh
+   root /path/to/ATLTileCalTB/analysis/TBrun_all.C
+   ```
+   Alternatively, the analysis marco can also be build as executable for slightly faster executation time.
+4. The plots created during the analysis are stored in the `analysis.root` file.
 
 <!--Selected ATLAS TileCal references-->
 ## Selected ATLAS TileCal references
