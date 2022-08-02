@@ -22,6 +22,7 @@ A Geant4 simulation of the ATLAS Tile Calorimeter beam tests.
         <li><a href="#submit-a-job-with-htcondor-on-lxplus">Submit a job with HTCondor on lxplus</a></li>
       </ul>
     </li>
+    <li><a href="#geant-val-integration">Geant Val integration</a></li>
     <li><a href="#selected-atlas-tilecal-references">Selected ATLAS TileCal references</a></li>
   </ol>
 </details>
@@ -60,10 +61,11 @@ The project targets a standalone Geant4 simulation of the ATLAS Tile Calorimeter
     ```sh
     ./ATLTileCalTB -m TBrun.mac -t 2 -p FTFP_BERT
     ```
+
 Parser options
-    * `-m macro.mac`: pass a Geant4 macro card (example `-m ATLHECTB_run.mac` available in source directory and automatically copied in build directory) 
-    * `-t integer`: pass number of threads for multi-thread execution (example `-t 3`, default is the number of threads on the machine)
-    * `-p Physics_List`: select Geant4 physics list (example `-p FTFP_BERT`)
+- `-m macro.mac`: pass a Geant4 macro card (example `-m ATLTileCalTB_run.mac` available in source directory and automatically copied in build directory) 
+- `-t integer`: pass number of threads for multi-thread execution (example `-t 2`, default is the number of threads on the machine)
+- `-p Physics_List`: select Geant4 physics list (example `-p FTFP_BERT`)
 
 ### Build, compile and execute on lxplus
 1. git clone the repo
@@ -73,7 +75,8 @@ Parser options
 2. cmake build directory and make (using geant4.10.07_p03, check for gcc and cmake dependencies for other versions)
    ```sh
    mkdir ATLTileCalTB-build; cd ATLTileCalTB-build/
-   source ../ATLTileCalTB/scripts/ATLTileCalTB_lxplus_10.7.p03.sh
+   cp ../ATLTileCalTB/scripts/ATLTileCalTB_cvmfs_setup.sh ../ATLTileCalTB/scripts/ATLTileCalTB_lxplus_10.7.p03.sh .
+   source ./ATLTileCalTB_lxplus_10.7.p03.sh -DBUILD_ANALYSIS=OFF
    ```
 3. execute (example with TBrun.mac macro card, 4 threads and FTFP_BERT physics list)
    ```sh
@@ -82,20 +85,19 @@ Parser options
    
 ### Submit a job with HTCondor on lxplus
 1. [First follow the build instructions on lxplus](#build-compile-and-execute-on-lxplus)
-3. prepare for HTCondor submission (example with Geant4.10.07_p03, TBrun.mac, 4 threads, FTFP_BERT physics list)
+2. prepare for HTCondor submission (example with Geant4.10.07_p03, TBrun.mac, 4 threads, FTFP_BERT physics list)
     ```sh
-    mkdir error log output
-    cp ../ATLTileCalTB/scripts/ATLTileCalTB_HTCondor* .
-    export MYHOME=`pwd`
-    echo cd $MYHOME >> ATLTileCalTB_HTCondor_10.7.p03.sh
-    echo $MYHOME/ATLTileCalTB -m $MYHOME/TBrun.mac -t 4 -p FTFP_BERT >> ATLTileCalTB_HTCondor_10.7.p03.sh
-    sed -i '1 i executable = ATLTileCalTB_HTCondor_10.7.p03.sh' ATLTileCalTB_HTCondor.sub
+    mkdir -p error log output
+    cp ../ATLTileCalTB/scripts/ATLTileCalTB_HTCondor.sub ../ATLTileCalTB/scripts/ATLTileCalTB_HTCondor_10.7.p03.sh .
+    sed -i "2 i cd $(pwd)" ATLTileCalTB_HTCondor_10.7.p03.sh
+    echo ./ATLTileCalTB -m TBrun.mac -t 4 -p FTFP_BERT >> ATLTileCalTB_HTCondor_10.7.p03.sh
+    sed -i "1 i executable = ATLTileCalTB_HTCondor_10.7.p03.sh" ATLTileCalTB_HTCondor.sub
     ```
-4. submit a job
+3. submit a job
    ```sh
    condor_submit ATLTileCalTB_HTCondor.sub 
    ```
-5. monitor the job
+4. monitor the job
    ```sh
    condor_q
    ```
@@ -103,7 +105,7 @@ Parser options
    ```sh
    condor_wait -status log/*.log
    ```
-6. additional info from HTCondor (optional) \
+5. additional info from HTCondor (optional) \
    rm all your jobs
     ```sh
    condor_rm username
@@ -135,6 +137,45 @@ Parser options
    ssh to machine where job is running
    ```sh
    condor_ssh_to_job jobid.0
+   ```
+
+<!--Geant Val integration-->
+## Geant Val integration
+[Geant Val](https://geant-val.cern.ch/) is the Geant4 testing and validation suite. It is a project hosted on [gitlab.cern.ch](https://gitlab.cern.ch/GeantValidation) used to facilitate the maintenance and validation of Geant4 applications, referred to as <em>tests</em>.\
+The following are instructions to use ATLTileCalTB within Geant Val for batch submission.
+1. **On lxplus**, clone ATLTileCalTB and the Geant Val geant-config-generator
+   ```sh
+   git clone https://github.com/lopezzot/ATLTileCalTB
+   git clone https://gitlab.cern.ch/GeantValidation/geant-config-generator.git
+   ```
+2. [Follow the build instructions on lxplus](#build-compile-and-execute-on-lxplus)
+3. Copy the ATLTileCalTB geant val scripts into ```tests/geant4/```
+   ```sh
+   cp -r ATLTileCalTB/geantval_scripts/ATLTileCalTB/ geant-config-generator/tests/geant4/
+   mkdir -p geant-config-generator/tests/geant4/ATLTileCalTB/files
+   cp ATLTileCalTB/TileTB_2B1EB_nobeamline.gdml geant-config-generator/tests/geant4/ATLTileCalTB/files/
+   ```
+3. We will execute ATLTileCalTB via Geant Val using Geant4.10.7.p03, therefore we must make sure the file ```10.7.p03.sh``` exists in ```configs/geant/```. In the file ```10.7.p03.sh``` we also export the path to the ATLTileCalTB executable (compiled with 10.7.p03). \
+   Copy the config file using:
+   ```sh
+   ./ATLTileCalTB/geantval_scripts/cpconf.sh \
+      ATLTileCalTB/geantval_scripts/configs/10.7.p03.sh \
+      geant-config-generator/configs/geant4/ \
+      $(pwd)/ATLTileCalTB-build
+   ```
+4. Create macros and metadata for Geant Val execution
+   ```sh
+   cd geant-config-generator
+   ./mc-config-generator.py submit -t ATLTileCalTB -d OUTPUT -v 10.7.p03 -q "testmatch" -r
+   ```
+   this command creates the Geant Val files for batch submission using HTCondor under the ```OUTPUT``` folder, using ATLTileCalTB, Geant4.10.7.p03 and the ```testmatch``` job flavour.
+5. To monitor the jobs use
+   ```sh
+   ./mc-config-generator.py status -t ATLTileCalTB -d OUTPUT
+   ```
+   When the job execution ends, the root output files are stored in the corresponding job folder. Each job folder will look like this:
+   ```
+   ATLTileCalTB-env.log  ATLTileCalTB.json  ATLTileCalTB.mac  ATLTileCalTBout_Run0.root  ATLTileCalTB.sh  bsub.sh  config.sh  test_stderr.txt  test_stdout.txt
    ```
 
 <!--Selected ATLAS TileCal references-->
