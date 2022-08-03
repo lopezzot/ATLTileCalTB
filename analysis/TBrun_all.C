@@ -360,8 +360,8 @@ void xer_graphs_comp_canvas(std::tuple<TGraphErrors, TGraphErrors> sim_xer_graph
 
 // Macro entry
 void TBrun_all() {
-    ROOT::EnableImplicitMT(); // TODO: Buggy?
-    ROOT::Math::MinimizerOptions::SetDefaultMinimizer("Minuit2", "Minimize");
+    ROOT::EnableImplicitMT();
+    ROOT::Math::MinimizerOptions::SetDefaultMinimizer("TMinuit", "Minimize");
     gROOT->SetStyle("Modern");
 
     // Create output file and RDataFrame
