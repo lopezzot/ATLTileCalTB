@@ -103,8 +103,8 @@ std::tuple<BEarray<double>, BEarray<double>> sdeppeb_graph(BEarray<GausFitRes> s
         sdeppeb_errors[n] = sdep_res[n].mean.error / BEAM_ENERGIES[n];
     }
     auto tge = TGraphErrors(BEAM_ENERGIES.size(), BEAM_ENERGIES.data(), sdeppeb_means.data(), nullptr, sdeppeb_errors.data());
-    tge.SetTitle(("Signal per EBeam " + name + ";Beam Energy [GeV];Signal/EBeam [a.u./GeV]").c_str());
-    tge.Write(("Signal per EBeam " + name).c_str());
+    tge.SetTitle(("Signal per Ebeam " + name + ";E_\\text{beam}\\,\\text{[GeV]};\\text{Signal}/E_\\text{beam}\\ \\text{[a.u./GeV]}").c_str());
+    tge.Write(("Signal per Ebeam " + name).c_str());
     return std::make_tuple(sdeppeb_means, sdeppeb_errors);
 }
 
@@ -236,7 +236,7 @@ GausFitRes fit_eraw_hist(TF1& tf1_gaus, TH1* th1ptr,
     th1ptr->Fit(&tf1_gaus, "RQ");
     std::ostringstream write_name;
     write_name << "Signal EM-Scale " << name << " " << beam_energy << " GeV";
-    th1ptr->SetTitle((write_name.str()+";E^{raw} [GeV];count").c_str());
+    th1ptr->SetTitle((write_name.str()+";E^\\text{raw}\\,\\text{[GeV]};count").c_str());
     th1ptr->Write(write_name.str().c_str());
     return GausFitRes({tf1_gaus.GetParameter(1), tf1_gaus.GetParError(1),
                         tf1_gaus.GetParameter(2), tf1_gaus.GetParError(2),
@@ -264,11 +264,11 @@ std::tuple<TGraphErrors, TGraphErrors> xer_graphs(BEarray<GausFitRes> eraw_res,
         invsqrtbe[n] = 1 / sqrt(BEAM_ENERGIES[n]);
     }
     auto tge = TGraphErrors(BEAM_ENERGIES.size(), BEAM_ENERGIES.data(), eresp_vals.data(), nullptr, eresp_errors.data());
-    tge.SetTitle(("Energy response " + name + ";Beam Energy [GeV];R^{E^{raw}}").c_str());
-    tge.Write(("Energy response " + name).c_str());
+    tge.SetTitle(("Energy Response " + name + ";E_\\text{beam}\\,\\text{[GeV]};R^{E^\\text{raw}}").c_str());
+    tge.Write(("Energy Response " + name).c_str());
     auto tge2 = TGraphErrors(BEAM_ENERGIES.size(), reverse_copy_vector(invsqrtbe).data(), reverse_copy_vector(eres_vals).data(), nullptr, reverse_copy_vector(eres_errors).data());
-    tge2.SetTitle(("Energy resolution " + name + ";1/\\sqrt{E_{Beam} [GeV]};R^{\\sigma^{raw}}").c_str());
-    tge2.Write(("Energy resolution " + name).c_str());
+    tge2.SetTitle(("Energy Resolution " + name + ";1/\\sqrt{E_\\text{beam}\\,\\text{[GeV]}};R^{\\sigma^\\text{raw}}").c_str());
+    tge2.Write(("Energy Resolution " + name).c_str());
     return std::make_tuple(tge, tge2);
 }
 
@@ -286,11 +286,11 @@ std::tuple<TGraphErrors, TGraphErrors> atl_xer_graphs(ATLBEarray<ValErr> eresp,
         invsqrtbe[n] = 1 / sqrt(BEAM_ENERGIES[n]);
     }
     auto tge = TGraphErrors(BEAM_ENERGIES.size(), BEAM_ENERGIES.data(), eresp_vals.data(), nullptr, eresp_errors.data());
-    tge.SetTitle(("ATLAS Energy response " + name + ";Beam Energy [GeV];R^{E^{raw}}").c_str());
-    tge.Write(("ATLAS Energy response " + name).c_str());
+    tge.SetTitle(("ATLAS Energy Response " + name + ";E_\\text{beam}\\,\\text{[GeV]};R^{E^\\text{raw}}").c_str());
+    tge.Write(("ATLAS Energy Response " + name).c_str());
     auto tge2 = TGraphErrors(BEAM_ENERGIES.size(), reverse_copy_vector(invsqrtbe).data(), reverse_copy_vector(eres_vals).data(), nullptr, reverse_copy_vector(eres_errors).data());
-    tge2.SetTitle(("ATLAS Energy resolution " + name + ";1/\\sqrt{E_{Beam} [GeV]};R^{\\sigma^{raw}}").c_str());
-    tge2.Write(("ATLAS Energy resolution " + name).c_str());
+    tge2.SetTitle(("ATLAS Energy Resolution " + name + ";1/\\sqrt{E_\\text{beam}\\,\\text{[GeV]}};R^{\\sigma^\\text{raw}}").c_str());
+    tge2.Write(("ATLAS Energy Resolution " + name).c_str());
     return std::make_tuple(tge, tge2);
 }
 
@@ -317,7 +317,7 @@ void xer_graphs_comp_canvas(std::tuple<TGraphErrors, TGraphErrors> sim_xer_graph
     tmg_eresp.Add(&tge_atl_eresp, "AP");
     tmg_eresp.GetYaxis()->SetRangeUser(eresp_ymin, eresp_ymax);
     tmg_eresp.GetYaxis()->SetTitle("R^{E^\\text{raw}}");
-    tmg_eresp.GetXaxis()->SetTitle("E_\\text{beam} \\text{[GeV]}");
+    tmg_eresp.GetXaxis()->SetTitle("E_\\text{beam}\\,\\text{[GeV]}");
     tmg_eresp.Draw("a");
     TLegend leg_eresp {0.6, 0.75, 0.9, 0.9};
     leg_eresp.AddEntry((TObject*)nullptr, name.c_str(), "");
@@ -342,7 +342,7 @@ void xer_graphs_comp_canvas(std::tuple<TGraphErrors, TGraphErrors> sim_xer_graph
     tmg_eres.Add(&tge_atl_eres, "AP");
     tmg_eres.GetYaxis()->SetRangeUser(eres_ymin, eres_ymax);
     tmg_eres.GetYaxis()->SetTitle("R^{\\sigma^\\text{raw}}");
-    tmg_eres.GetXaxis()->SetTitle("E_\\text{beam} \\text{[GeV]}");
+    tmg_eres.GetXaxis()->SetTitle("1/\\sqrt{E_\\text{beam}\\,\\text{[GeV]}}");
     tmg_eres.Draw("a");
     TLegend leg_eres {0.5, 0.75, 0.8, 0.9};
     leg_eres.AddEntry((TObject*)nullptr, name.c_str(), "");
