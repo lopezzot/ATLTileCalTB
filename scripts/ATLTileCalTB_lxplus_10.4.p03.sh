@@ -1,5 +1,7 @@
 #!/bin/sh
 
+export ROOT_VERSION="6.24.06"
+export ROOT_PLATFORM="x86_64-centos7-gcc48-opt"
 export G4GCC_VERSION="6.3"
 export G4GCC_PLATFORM="x86_64-centos7-gcc63-opt"
 export GEANT4_VERSION="10.4.p03"
