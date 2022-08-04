@@ -22,21 +22,21 @@
 /run/beamOn 20000
 
 # Run 5: Pions 16 GeV
-/gun/particle pi-
+/gun/particle pi+
 /gun/energy 16 GeV
 /run/beamOn 20000
 
 # Run 6: Pions 18 GeV
-/gun/particle pi-
+/gun/particle pi+
 /gun/energy 18 GeV
 /run/beamOn 20000
 
 # Run 7: Pions 20 GeV
-/gun/particle pi-
+/gun/particle pi+
 /gun/energy 20 GeV
 /run/beamOn 20000
 
 # Run 8: Pions 30 GeV
-/gun/particle pi-
+/gun/particle pi+
 /gun/energy 30 GeV
 /run/beamOn 20000

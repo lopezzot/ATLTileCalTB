@@ -40,7 +40,7 @@ template<typename T> using BEarray = std::array<T, BEAM_ENERGIES.size()>;
 const std::string MERGED_RUN_FILE {"ATLTileCalTBout_RunAll.root"};
 const std::string RUN_FILE_TTREE_NAME {"ATLTileCalTBout"};
 const int PDG_ID_EL = 11;
-const int PDG_ID_PI = -211;
+const int PDG_ID_PI = 211;
 const double EMSCALE_MUON_ERAW_CUT_GEV = 5.;
 const double EMSCALE_ELECTRON_CLONG_CUT = 0.6;
 const double EMSCALE_ELECTRON_CTOT_CUT = 0.125;

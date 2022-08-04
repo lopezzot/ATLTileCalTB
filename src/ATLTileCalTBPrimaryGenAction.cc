@@ -29,7 +29,7 @@ ATLTileCalTBPrimaryGenAction::ATLTileCalTBPrimaryGenAction()
 
       //default particle gun parameters (can be changed via UI)
       //
-      auto particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle( "pi-" );
+      auto particleDefinition = G4ParticleTable::GetParticleTable()->FindParticle( "pi+" );
       fParticleGun->SetParticleDefinition( particleDefinition );
       fParticleGun->SetParticleEnergy( 10.*GeV );
       fParticleGun->SetParticlePosition( G4ThreeVector(2298.,0.,0.) );
