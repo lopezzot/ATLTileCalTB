@@ -143,7 +143,7 @@ Parser options
 <!--Geant Val integration-->
 ## Geant Val integration
 [Geant Val](https://geant-val.cern.ch/) is the Geant4 testing and validation suite. It is a project hosted on [gitlab.cern.ch](https://gitlab.cern.ch/GeantValidation) used to facilitate the maintenance and validation of Geant4 applications, referred to as <em>tests</em>.\
-The following are instructions to use ATLTileCalTB within Geant Val for batch submission.
+The following are instructions to use ATLTileCalTB within Geant Val, from batch submission to website deployment.
 1. **On lxplus**, clone ATLTileCalTB and the Geant Val geant-config-generator
    ```sh
    git clone https://github.com/lopezzot/ATLTileCalTB
@@ -176,7 +176,25 @@ The following are instructions to use ATLTileCalTB within Geant Val for batch su
    ```
    When the job execution ends, the root output files are stored in the corresponding job folder. Each job folder will look like this:
    ```
-   ATLTileCalTB-env.log  ATLTileCalTB.json  ATLTileCalTB.mac  ATLTileCalTBout_Run0.root  ATLTileCalTB.sh  bsub.sh  config.sh  test_stderr.txt  test_stdout.txt
+   ATLTileCalTB-env.log  test_stderr.txt  test_stdout.txt
+   ATLTileCalTB.json  ATLTileCalTB.mac  ATLTileCalTBout_Run0.root
+   ATLTileCalTB.sh  bsub.sh  config.sh  
+   ```
+6. Execute the analysis on the root files in the `OUTPUT` folder to create Geant Val JSON output files
+   ```sh
+   ./mc-config-generator.py parse -t ATLTileCalTB -d OUTPUT
+   ```
+   Make sure to source ROOT on CVMFS before, for example by sourcing the provided lxplus scripts.\
+   Besides the JSON files in the `OUTPUTJSON` folder, the parser script will also create some
+   temporary folder that contain the merged ROOT files for each run and the analysis output.
+7. The last part is to deploy the results on Geant Val. The ATLTileCalTB layout on the Geant Val
+   website is defined in the ATLTileCalTB.xml file on [gitlab.com/thegriglat/geant-val-layouts](https://gitlab.com/thegriglat/geant-val-layouts)
+   (additional info are in the tags.json file).
+   Deploy JSON files on the Geant Val database
+   ```sh
+    find . -name '*.json' | while read i; \
+      do curl -H "Content-Type: application/json" -H "token: askauthor" --data @$i https://geant-val.cern.ch/upload; \
+      echo; done
    ```
 
 <!--Run the analysis-->
