@@ -154,7 +154,7 @@ The following are instructions to use ATLTileCalTB within Geant Val for batch su
    ```sh
    cp -r ATLTileCalTB/geantval_scripts/ATLTileCalTB/ geant-config-generator/tests/geant4/
    mkdir -p geant-config-generator/tests/geant4/ATLTileCalTB/files
-   cp ATLTileCalTB/TileTB_2B1EB_nobeamline.gdml geant-config-generator/tests/geant4/ATLTileCalTB/files/
+   cp ATLTileCalTB/TileTB_2B1EB_nobeamline.gdml ATLTileCalTB/analysis/main.cc geant-config-generator/tests/geant4/ATLTileCalTB/files/
    ```
 3. We will execute ATLTileCalTB via Geant Val using Geant4.10.7.p03, therefore we must make sure the file ```10.7.p03.sh``` exists in ```configs/geant/```. In the file ```10.7.p03.sh``` we also export the path to the ATLTileCalTB executable (compiled with 10.7.p03). \
    Copy the config file using:

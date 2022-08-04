@@ -32,7 +32,7 @@ class Test(BaseParser):
         print('merged ROOT files for ' + physlist + ' in ' + tempdir)
 
         # run analysis
-        cmd = ['root', '-b', '-l', '-q', '/afs/cern.ch/user/s/slachnit/ATLTileCalTB/analysis/TBrun_all.C']  # FIXME: don't hardcode
+        cmd = ['root', '-b', '-l', '-q', os.path.join(jobs[0]['path'], 'TBrun_all.C')]
         proc = subprocess.Popen(cmd, cwd=tempdir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         proc.wait()
         proc_out = 'ROOT output for ' + physlist + ':\n' + proc.stdout.read().strip() + '\n' + proc.stderr.read().strip()
