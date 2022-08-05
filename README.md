@@ -23,7 +23,7 @@ A Geant4 simulation of the ATLAS Tile Calorimeter beam tests.
       </ul>
     </li>
     <li><a href="#geant-val-integration">Geant Val integration</a></li>
-    <li><a href="#run-the-analysis"></a>Run the analysis</li>
+    <li><a href="#run-the-analysis">Run the analysis</a></li>
     <li><a href="#selected-atlas-tilecal-references">Selected ATLAS TileCal references</a></li>
   </ol>
 </details>
