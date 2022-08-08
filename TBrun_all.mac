@@ -1,4 +1,4 @@
-# Macro to reproduce the Electron / Pion Testbeam with 20k events per run
+# Macro to reproduce the Electron, Pion, Kaon and Proton Testbeam with 20k events per run
 /run/initialize
 
 # Run 1: Electrons 16 GeV
@@ -22,21 +22,61 @@
 /run/beamOn 20000
 
 # Run 5: Pions 16 GeV
-/gun/particle pi-
+/gun/particle pi+
 /gun/energy 16 GeV
 /run/beamOn 20000
 
 # Run 6: Pions 18 GeV
-/gun/particle pi-
+/gun/particle pi+
 /gun/energy 18 GeV
 /run/beamOn 20000
 
 # Run 7: Pions 20 GeV
-/gun/particle pi-
+/gun/particle pi+
 /gun/energy 20 GeV
 /run/beamOn 20000
 
 # Run 8: Pions 30 GeV
-/gun/particle pi-
+/gun/particle pi+
+/gun/energy 30 GeV
+/run/beamOn 20000
+
+# Run 9: Kaons 16 GeV
+/gun/particle kaon+
+/gun/energy 16 GeV
+/run/beamOn 20000
+
+# Run 10: Kaons 18 GeV
+/gun/particle kaon+
+/gun/energy 18 GeV
+/run/beamOn 20000
+
+# Run 11: Kaons 20 GeV
+/gun/particle kaon+
+/gun/energy 20 GeV
+/run/beamOn 20000
+
+# Run 12: Kaons 30 GeV
+/gun/particle kaon+
+/gun/energy 30 GeV
+/run/beamOn 20000
+
+# Run 13: Protons 16 GeV
+/gun/particle proton
+/gun/energy 16 GeV
+/run/beamOn 20000
+
+# Run 14: Protons 18 GeV
+/gun/particle proton
+/gun/energy 18 GeV
+/run/beamOn 20000
+
+# Run 15: Pions 20 GeV
+/gun/particle proton
+/gun/energy 20 GeV
+/run/beamOn 20000
+
+# Run 16: Protons 30 GeV
+/gun/particle proton
 /gun/energy 30 GeV
 /run/beamOn 20000

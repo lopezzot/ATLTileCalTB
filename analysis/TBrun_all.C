@@ -40,7 +40,9 @@ template<typename T> using BEarray = std::array<T, BEAM_ENERGIES.size()>;
 const std::string MERGED_RUN_FILE {"ATLTileCalTBout_RunAll.root"};
 const std::string RUN_FILE_TTREE_NAME {"ATLTileCalTBout"};
 const int PDG_ID_EL = 11;
-const int PDG_ID_PI = -211;
+const int PDG_ID_PI = 211;
+const int PDG_ID_K = 321;
+const int PDG_ID_P = 2212;
 const double EMSCALE_MUON_ERAW_CUT_GEV = 5.;
 const double EMSCALE_ELECTRON_CLONG_CUT = 0.6;
 const double EMSCALE_ELECTRON_CTOT_CUT = 0.125;
@@ -48,17 +50,41 @@ const double EMSCALE_ELECTRON_CTOT_CUT = 0.125;
 // ATLAS data
 const std::array<double, 4> ATL_BEAM_ENERGIES {16., 18., 20., 30.};
 template<typename T> using ATLBEarray = std::array<T, ATL_BEAM_ENERGIES.size()>;
-const ATLBEarray<ValErr> ATL_ERESPONSE_PIE {
+const ATLBEarray<ValErr> ATL_ERESPONSE_PI {
     ValErr({0.7924, 0.0116}),
     ValErr({0.7941, 0.0108}),
     ValErr({0.7948, 0.0101}),
     ValErr({0.8019, 0.0098}),
 };
-const ATLBEarray<ValErr> ATL_ERESOLUTION_PIE {
+const ATLBEarray<ValErr> ATL_ERESOLUTION_PI {
     ValErr({0.1258, 0.0039}),
     ValErr({0.1188, 0.0023}),
     ValErr({0.1159, 0.0013}),
     ValErr({0.0987, 0.0006}),
+};
+const ATLBEarray<ValErr> ATL_ERESPONSE_K {
+    ValErr({0.7682, 0.0184}),
+    ValErr({0.7714, 0.0113}),
+    ValErr({0.7723, 0.0095}),
+    ValErr({0.7748, 0.0094}),
+};
+const ATLBEarray<ValErr> ATL_ERESOLUTION_K {
+    ValErr({0.1356, 0.0276}),
+    ValErr({0.1209, 0.0126}),
+    ValErr({0.1131, 0.0019}),
+    ValErr({0.0930, 0.0012}),
+};
+const ATLBEarray<ValErr> ATL_ERESPONSE_P {
+    ValErr({0.7195, 0.0086}),
+    ValErr({0.7288, 0.0087}),
+    ValErr({0.7303, 0.0088}),
+    ValErr({0.7549, 0.0091}),
+};
+const ATLBEarray<ValErr> ATL_ERESOLUTION_P {
+    ValErr({0.1122, 0.0004}),
+    ValErr({0.1055, 0.0005}),
+    ValErr({0.1024, 0.0008}),
+    ValErr({0.0877, 0.0004}),
 };
 
 
@@ -372,66 +398,90 @@ void TBrun_all() {
     TCanvas canvas {"canvas", "canvas", -1280, 720};
     auto tf1_gaus = TF1("tf1_gaus", "gaus");
 
-    // Book electron / pion filters
+    // Book electron, pion, kaon and proton filters
     auto rdf_el = rdf.Filter("PDGID=="+std::to_string(PDG_ID_EL));
     auto rdf_pi = rdf.Filter("PDGID=="+std::to_string(PDG_ID_PI));
+    auto rdf_k  = rdf.Filter("PDGID=="+std::to_string(PDG_ID_K));
+    auto rdf_p  = rdf.Filter("PDGID=="+std::to_string(PDG_ID_P));
 
     // Book Sdep histograms
     ROOT::RDF::TH1DModel th1dm_sdep {"th1dm_sdep", "th1dm_sdep", 300, 0., 3000.};
-    BEarray<ROOT::RDF::RResultPtr<TH1D>> th1s_sdep_el, th1s_sdep_pi;
+    BEarray<ROOT::RDF::RResultPtr<TH1D>> th1s_sdep_el, th1s_sdep_pi, th1s_sdep_k, th1s_sdep_p;
     for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
         th1s_sdep_el[n] = book_sdep_hist(th1dm_sdep, rdf_el, BEAM_ENERGIES[n]);
         th1s_sdep_pi[n] = book_sdep_hist(th1dm_sdep, rdf_pi, BEAM_ENERGIES[n]);
+        th1s_sdep_k[n]  = book_sdep_hist(th1dm_sdep, rdf_k,  BEAM_ENERGIES[n]);
+        th1s_sdep_p[n]  = book_sdep_hist(th1dm_sdep, rdf_p,  BEAM_ENERGIES[n]);
     }
 
     // Fit Sdep histograms
-    BEarray<GausFitRes> sdep_res_el, sdep_res_pi;
+    BEarray<GausFitRes> sdep_res_el, sdep_res_pi, sdep_res_k, sdep_res_p;
     for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
         sdep_res_el[n] = fit_sdep_hist(tf1_gaus, th1s_sdep_el[n].GetPtr(), BEAM_ENERGIES[n], "Electrons");
         sdep_res_pi[n] = fit_sdep_hist(tf1_gaus, th1s_sdep_pi[n].GetPtr(), BEAM_ENERGIES[n], "Pions");
+        sdep_res_k[n] =  fit_sdep_hist(tf1_gaus, th1s_sdep_k[n].GetPtr(),  BEAM_ENERGIES[n], "Kaons");
+        sdep_res_p[n] =  fit_sdep_hist(tf1_gaus, th1s_sdep_p[n].GetPtr(),  BEAM_ENERGIES[n], "Protons");
     }
 
     // Create Signal per EBeam graphs
     auto sdeppeb_res_el = sdeppeb_graph(sdep_res_el, "Electrons");
     sdeppeb_graph(sdep_res_pi, "Pions");
+    sdeppeb_graph(sdep_res_k,  "Kaons");
+    sdeppeb_graph(sdep_res_p,  "Protons");
 
     // Apply rejection filter
     auto r_means_el = std::get<0>(sdeppeb_res_el);
     double r_mean_el = std::accumulate(r_means_el.begin(), r_means_el.end(), 0.) / r_means_el.size();  // TODO: error of r_mean_el?
     auto rdfs_pi_filters = eraw_rejection_filters(rdf_pi, r_mean_el);
+    auto rdfs_k_filters =  eraw_rejection_filters(rdf_k,  r_mean_el);
+    auto rdfs_p_filters =  eraw_rejection_filters(rdf_p,  r_mean_el);
 
     // Cut statistics
     print_cut_statistics(rdfs_pi_filters, "Pions");
+    print_cut_statistics(rdfs_k_filters,  "Kaons");
+    print_cut_statistics(rdfs_p_filters,  "Protons");
 
     // Clong and Ctot histograms
     #if ATLTileCalTBana_CtotClongHists
     for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
         clong_ctot_hist(std::get<1>(rdfs_pi_filters), BEAM_ENERGIES[n], "Pions");
+        clong_ctot_hist(std::get<1>(rdfs_k_filters),  BEAM_ENERGIES[n], "Kaons");
+        clong_ctot_hist(std::get<1>(rdfs_p_filters),  BEAM_ENERGIES[n], "Protons");
     }
     #endif
 
     // Book EM-Scale histograms
     ROOT::RDF::TH1DModel th1dm_eraw {"th1dm_eraw", "th1dm_eraw", 200, 5., 45.};
-    BEarray<ROOT::RDF::RResultPtr<TH1D>> th1s_eraw;
+    BEarray<ROOT::RDF::RResultPtr<TH1D>> th1s_eraw_pi, th1s_eraw_k, th1s_eraw_p;
     for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
-        th1s_eraw[n] = book_eraw_hist(th1dm_eraw, std::get<2>(rdfs_pi_filters), BEAM_ENERGIES[n]);
+        th1s_eraw_pi[n] = book_eraw_hist(th1dm_eraw, std::get<2>(rdfs_pi_filters), BEAM_ENERGIES[n]);
+        th1s_eraw_k[n]  = book_eraw_hist(th1dm_eraw, std::get<2>(rdfs_k_filters),  BEAM_ENERGIES[n]);
+        th1s_eraw_p[n]  = book_eraw_hist(th1dm_eraw, std::get<2>(rdfs_p_filters),  BEAM_ENERGIES[n]);
     }
 
     // Fit EM-Scale histograms
-    BEarray<GausFitRes> eraw_res_pi;
+    BEarray<GausFitRes> eraw_res_pi, eraw_res_k, eraw_res_p;
     for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
-        eraw_res_pi[n] = fit_eraw_hist(tf1_gaus, th1s_eraw[n].GetPtr(), BEAM_ENERGIES[n], "Pions");
+        eraw_res_pi[n] = fit_eraw_hist(tf1_gaus, th1s_eraw_pi[n].GetPtr(), BEAM_ENERGIES[n], "Pions");
+        eraw_res_k[n]  = fit_eraw_hist(tf1_gaus, th1s_eraw_k[n].GetPtr(),  BEAM_ENERGIES[n], "Kaons");
+        eraw_res_p[n]  = fit_eraw_hist(tf1_gaus, th1s_eraw_p[n].GetPtr(),  BEAM_ENERGIES[n], "Protons");
     }
 
     // Create x/e ratio graphs
     auto sim_pier_graphs = xer_graphs(eraw_res_pi, "Pions");
+    auto sim_ker_graphs  = xer_graphs(eraw_res_k,  "Kaons");
+    auto sim_per_graphs  = xer_graphs(eraw_res_p,  "Protons");
 
     // Create x/e ratio graph (ATLAS data)
-    auto atl_pier_graphs = atl_xer_graphs(ATL_ERESPONSE_PIE, ATL_ERESOLUTION_PIE, "Pions");
+    auto atl_pier_graphs = atl_xer_graphs(ATL_ERESPONSE_PI, ATL_ERESOLUTION_PI, "Pions");
+    auto atl_ker_graphs  = atl_xer_graphs(ATL_ERESPONSE_K,  ATL_ERESOLUTION_K,  "Kaons");
+    auto atl_per_graphs  = atl_xer_graphs(ATL_ERESPONSE_P,  ATL_ERESOLUTION_P,  "Protons");
 
     // Create comparision plots
     gROOT->SetStyle("ATLAS");
     xer_graphs_comp_canvas(sim_pier_graphs, atl_pier_graphs, 0.77, 0.85, 0.086, 0.135, "Pions");
+    xer_graphs_comp_canvas(sim_ker_graphs,  atl_ker_graphs,  0.74, 0.82, 0.082, 0.160, "Kaons");
+    xer_graphs_comp_canvas(sim_per_graphs,  atl_per_graphs,  0.68, 0.80, 0.076, 0.130, "Protons");
 
     // Uncomment to see comparison plots directly when executing script
     //std::string tmp; std::cin >> tmp;

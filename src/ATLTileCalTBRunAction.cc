@@ -14,11 +14,15 @@
 
 //Includers from Geant4
 //
-#include "g4root.hh"
 #include "G4Run.hh"
 #include "G4RunManager.hh"
 #include "G4SystemOfUnits.hh"
 #include "G4Version.hh"
+#if G4VERSION_NUMBER < 1100
+#include "g4root.hh"  // replaced by G4AnalysisManager.h  in G4 v11 and up
+#else
+#include "G4AnalysisManager.hh"
+#endif
 
 //Includers from C++
 //
