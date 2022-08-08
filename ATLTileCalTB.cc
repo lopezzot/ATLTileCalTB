@@ -21,7 +21,8 @@
 #endif
 //#include "G4RunManagerFactory.hh" //only available from 10.7 on
 #include "G4UImanager.hh"
-#include "G4PhysListFactory.hh"
+//#include "G4PhysListFactory.hh"
+#include "FTFP_BERT_ATL.hh"
 #include "G4VisExecutive.hh"
 #include "G4UIExecutive.hh"
 #include "G4UIcommand.hh"
@@ -93,8 +94,9 @@ int main(int argc,char** argv) {
 
     //Manadatory Geant4 classes
     //
-    auto physListFactory = new G4PhysListFactory();
-    auto physicsList = physListFactory->GetReferencePhysList( custom_pl );
+    //auto physListFactory = new G4PhysListFactory();
+    //auto physicsList = physListFactory->GetReferencePhysList( custom_pl );
+    auto physicsList = new FTFP_BERT_ATL();
     runManager->SetUserInitialization(physicsList);
 
     G4GDMLParser parser;

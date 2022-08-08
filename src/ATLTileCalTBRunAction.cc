@@ -40,7 +40,7 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction( ATLTileCalTBEventAction* eventActi
 
     //Get analysis manager
     //
-    auto analysisManager = G4AnalysisManager::Instance();
+    auto analysisManager = G4RootAnalysisManager::Instance();
 
     //Print useful information
     //
@@ -55,7 +55,7 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction( ATLTileCalTBEventAction* eventActi
     }
 
     analysisManager->SetVerboseLevel(1);
-    analysisManager->SetNtupleMerging(true);
+    //analysisManager->SetNtupleMerging(true);  // Not available in 10.1
 
     #if G4VERSION_NUMBER > 1050
     analysisManager->SetNtupleRowWise(false);
@@ -68,8 +68,8 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction( ATLTileCalTBEventAction* eventActi
     analysisManager->CreateNtupleDColumn("Ecal");
     analysisManager->CreateNtupleDColumn("EdepSum");
     analysisManager->CreateNtupleDColumn("SdepSum");
-    analysisManager->CreateNtupleDColumn("Edep", fEventAction->GetEdepVector());
-    analysisManager->CreateNtupleDColumn("Sdep", fEventAction->GetSdepVector());
+    analysisManager->CreateNtupleDColumn("Edep"/*, fEventAction->GetEdepVector()*/);  // G4 10.1 can't handle vectors
+    analysisManager->CreateNtupleDColumn("Sdep"/*, fEventAction->GetSdepVector()*/);  // G4 10.1 can't handle vectors
     analysisManager->CreateNtupleIColumn("PDGID");
     analysisManager->CreateNtupleFColumn("EBeam");
     analysisManager->FinishNtuple();

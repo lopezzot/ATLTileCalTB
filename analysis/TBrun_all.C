@@ -173,15 +173,15 @@ std::tuple<RDFI, RDFI, RDFI> eraw_rejection_filters(RDFI rdfi, const double r_me
         }
         return std::sqrt(sum_2 / contiguous_cells.size()) / sum_1;
     };
-    auto rdfi_eraw = rdfi.Define("ErawSum", "SdepSum/"+std::to_string(r_mean_el))
-                         .Define("ErawCell", "Sdep/"+std::to_string(r_mean_el))
+    auto rdfi_eraw = rdfi.Define("ErawSum", "SdepSum/"+std::to_string(r_mean_el));  // G4 10.1 sim has no per Cell information
+                         /*.Define("ErawCell", "Sdep/"+std::to_string(r_mean_el))
                          .Define("Clong", clong, {"ErawCell", "EBeam"})
-                         .Define("Ctot", ctot, {"ErawCell"});
+                         .Define("Ctot", ctot, {"ErawCell"});*/
     // Muon rejection
     auto rdfi_mr = rdfi_eraw.Filter("ErawSum>"+std::to_string(EMSCALE_MUON_ERAW_CUT_GEV));
     // Electron rejection
-    auto rdfi_er = rdfi_mr.Filter("Clong<"+std::to_string(EMSCALE_ELECTRON_CLONG_CUT))
-                          .Filter("Ctot<="+std::to_string(EMSCALE_ELECTRON_CTOT_CUT));
+    auto rdfi_er = rdfi_mr;/*.Filter("Clong<"+std::to_string(EMSCALE_ELECTRON_CLONG_CUT))
+                          .Filter("Ctot<="+std::to_string(EMSCALE_ELECTRON_CTOT_CUT));*/
     rdfi_er = rdfi_mr; // FIXME: include electron rejection once Ctot is fixed
     // Return rdfi_eraw, rdfi_mr and rdfi_er for statistics
     return std::make_tuple(rdfi_eraw, rdfi_mr, rdfi_er);

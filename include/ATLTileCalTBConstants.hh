@@ -23,28 +23,28 @@
 namespace ATLTileCalTBConstants {
 
     // Amount of energy deposited in the tiles compared to the total energy in the calorimeter
-    constexpr G4double sampling_fraction = 3.27 * perCent;
+    const G4double sampling_fraction = 3.27 * perCent;
 
     // Correction factor photoelectron conversion, as we expect 70 pe per GeV after applying Birk's Law
     constexpr G4double pe_conversion_correction = 700. / 653.;
 
     // Amount of photoelectrons created per energy (adjusted by the sampling fraction)
-    constexpr G4double photoelectrons_per_energy = 70. / GeV / sampling_fraction * pe_conversion_correction;
+    const G4double photoelectrons_per_energy = 70. / GeV / sampling_fraction * pe_conversion_correction;
 
     // Signal output per energy normed to absorption of 10 GeV electrons
-    constexpr G4double signal_energy_equivalent = 706. / (10. * GeV);
+    const G4double signal_energy_equivalent = 706. / (10. * GeV);
 
     // Sigma of the electronic noise (white noise / gaussian)
-    constexpr G4double signal_noise_sigma = (12 * MeV) * signal_energy_equivalent;
+    const G4double signal_noise_sigma = (12 * MeV) * signal_energy_equivalent;
 
     // Digitization: bin width of early hit frames
-    constexpr G4double frame_bin_time = 0.5 * ns;
+    const G4double frame_bin_time = 0.5 * ns;
 
     // Digitization: time window where hit frames are marked as early
-    constexpr G4double frame_time_window = 350 * ns;
+    const G4double frame_time_window = 350 * ns;
 
     // Digitization: amount of early time frames
-    constexpr std::size_t frames = static_cast<std::size_t>(frame_time_window / frame_bin_time);
+    const std::size_t frames = static_cast<std::size_t>(frame_time_window / frame_bin_time);
 
     // Digitization: analog response of the PMT to one photoelectron (0.5ns bins)
     // From https://gitlab.cern.ch/atlas/athena/-/blob/1a58a6b7cc3d6e02c664814502796aa9f86eab7c/TileCalorimeter/TileConditions/share/pulsehi_physics.dat

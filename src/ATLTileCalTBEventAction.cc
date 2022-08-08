@@ -196,6 +196,9 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
     analysisManager->FillNtupleDColumn(2, std::accumulate(fEdepVector.begin(), fEdepVector.end(), 0));
     analysisManager->FillNtupleDColumn(3, std::accumulate(fSdepVector.begin(), fSdepVector.end(), 0));
 
+    analysisManager->FillNtupleDColumn(4, 0.);  // G4 10.1 can't handle vectors
+    analysisManager->FillNtupleDColumn(5, 0.);  // G4 10.1 can't handle vectors
+
     analysisManager->FillNtupleIColumn(6, fPrimaryGenAction->GetParticlenGun()->GetParticleDefinition()->GetPDGEncoding());
     analysisManager->FillNtupleFColumn(7, fPrimaryGenAction->GetParticlenGun()->GetParticleEnergy());
 
