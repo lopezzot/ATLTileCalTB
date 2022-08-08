@@ -23,19 +23,20 @@ class Test(BaseParser):
 
     def parse(self, jobs):
         physlist = jobs[0]['PHYSLIST']
-        print('start parsing for ' + physlist)
+        g4ver = jobs[0]['VERSION']
+        print('start parsing for Geant4 ' + g4ver + ' with ' + physlist)
 
         # merge ROOT files
         root_files = [os.path.join(job["path"],"ATLTileCalTBout_Run0.root") for job in jobs]
-        tempdir = mktemp(isDir=True)
+        tempdir = mktemp(template='analysis_'+g4ver+'_'+physlist+'_XXXXXXX', isDir=True)
         mergeROOT(root_files, os.path.join(tempdir, 'ATLTileCalTBout_RunAll.root'))
-        print('merged ROOT files for ' + physlist + ' in ' + tempdir)
+        print('merged ROOT files for Geant4 ' + g4ver + ' with ' + physlist + ' in ' + tempdir)
 
         # run analysis
         cmd = ['root', '-b', '-l', '-q', os.path.join(jobs[0]['path'], 'TBrun_all.C')]
         proc = subprocess.Popen(cmd, cwd=tempdir, stdout=subprocess.PIPE, stderr=subprocess.PIPE, universal_newlines=True)
         proc.wait()
-        proc_out = 'ROOT output for ' + physlist + ':\n' + proc.stdout.read().strip() + '\n' + proc.stderr.read().strip()
+        proc_out = 'ROOT output for Geant4 ' + g4ver + ' with ' + physlist + ':\n' + proc.stdout.read().strip() + '\n' + proc.stderr.read().strip()
         print(proc_out)
 
         # get data from analysis
@@ -251,4 +252,4 @@ class Test(BaseParser):
             )
         """
 
-        print('end parsing for ' + physlist)
+        print('end parsing for Geant4 ' + g4ver + ' with ' + physlist)
