@@ -23,6 +23,7 @@ A Geant4 simulation of the ATLAS Tile Calorimeter beam tests.
       </ul>
     </li>
     <li><a href="#geant-val-integration">Geant Val integration</a></li>
+    <li><a href="#cmake-options">CMake options</a></li>
     <li><a href="#run-the-analysis">Run the analysis</a></li>
     <li><a href="#selected-atlas-tilecal-references">Selected ATLAS TileCal references</a></li>
   </ol>
@@ -58,6 +59,7 @@ The project targets a standalone Geant4 simulation of the ATLAS Tile Calorimeter
     cmake -DGeant4_DIR=/absolute_path_to/geant4.10.07_p03-install/lib/Geant4-10.7.3/ relative_path_to/ATLTileCalTB/
     make
     ```
+    See [CMake options](#cmake-options) for all build options
 4.  execute (example with TBrun.mac macro card, 2 threads and FTFP_BERT physics list)
     ```sh
     ./ATLTileCalTB -m TBrun.mac -t 2 -p FTFP_BERT
@@ -196,6 +198,29 @@ The following are instructions to use ATLTileCalTB within Geant Val, from batch 
       do curl -H "Content-Type: application/json" -H "token: askauthor" --data @$i https://geant-val.cern.ch/upload; \
       echo; done
    ```
+
+<!--CMake options-->
+## CMake options
+Custom options:
+-  `BUILD_ANALYSIS`: if set to `ON` (default), it will be an executable of the analysis, which is
+   slightly faster. The analysis can also be run directly with the `root` executable (see
+   [Run the analysis](#run-the-analysis)), which is recommended if the compilation fails.
+-  `WITH_ATLTileCalTB_PulseOutput`: if set to `ON`, the simulation will output the pulse response
+   of the PMTs. These can be viewed by running `./pulse_viewer.py` in the build directory. Since
+   this slows the simulation considerably, it is recommended to leave this option disabled except
+   for debugging purposes.
+-  `WITH_ATLTileCalTB_NoNoise`: if set to `ON`, the simulation will not put electronic noise on the
+   signal (per cell) and disable the 2 sigma noise cut. Only relevant for noise calibration.
+-  `WITH_GEANT4_UIVIS`: if set to `ON` (default), build with UI and visualization drivers.
+
+Relevant built-in options:
+-  `CMAKE_BUILD_TYPE`: set to `Debug` for debugging and to `Release` for production (faster).
+-  `CMAKE_EXPORT_COMPILE_COMMANDS`: if `ON`, creates `compile_commands.json` in the build folder.
+   Might help some syntax highlighters to properly parse the analysis script if building with
+   `BUILD_ANALYSIS=ON`.
+-  `Geant4_DIR`: set to the path containing the `Geant4Config.cmake` file of your Geant4 installation.
+-  `ROOT_DIR`: set to the path containing th `ROOTConfig.cmake` of your ROOT installation. Only
+   used if building with `BUILD_ANALYSIS=ON`.
 
 <!--Run the analysis-->
 ## Run the analysis
