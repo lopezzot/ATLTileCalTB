@@ -108,7 +108,13 @@ GausFitRes fit_sdep_hist(TF1& tf1_gaus, TH1* th1ptr,
     tf1_gaus.SetParameter(2, 0.45 * th1_2std);
     // Fit only in two sigma range
     tf1_gaus.SetRange(th1_mean-th1_2std, th1_mean+th1_2std);
+    th1ptr->Fit(&tf1_gaus, "RQN");
+    // Second fit with adjusted two sigma range
+    auto fit1_mean = tf1_gaus.GetParameter(1);
+    auto fit1_2std = 2 * tf1_gaus.GetParameter(2);
+    tf1_gaus.SetRange(fit1_mean-fit1_2std, fit1_mean+fit1_2std);
     th1ptr->Fit(&tf1_gaus, "RQ");
+
     std::ostringstream write_name;
     write_name << "Signal " << name << " " << beam_energy << " GeV";
     th1ptr->SetTitle((write_name.str()+";Signal [a.u.];count").c_str());
@@ -259,7 +265,13 @@ GausFitRes fit_eraw_hist(TF1& tf1_gaus, TH1* th1ptr,
     tf1_gaus.SetParameter(2, 0.45 * th1_2std);
     // Fit only in two sigma range
     tf1_gaus.SetRange(th1_mean-th1_2std, th1_mean+th1_2std);
+    th1ptr->Fit(&tf1_gaus, "RQN");
+    // Second fit with adjusted two sigma range
+    auto fit1_mean = tf1_gaus.GetParameter(1);
+    auto fit1_2std = 2 * tf1_gaus.GetParameter(2);
+    tf1_gaus.SetRange(fit1_mean-fit1_2std, fit1_mean+fit1_2std);
     th1ptr->Fit(&tf1_gaus, "RQ");
+
     std::ostringstream write_name;
     write_name << "Signal EM-Scale " << name << " " << beam_energy << " GeV";
     th1ptr->SetTitle((write_name.str()+";E^\\text{raw}\\,\\text{[GeV]};count").c_str());
@@ -451,7 +463,8 @@ void TBrun_all() {
     #endif
 
     // Book EM-Scale histograms
-    ROOT::RDF::TH1DModel th1dm_eraw {"th1dm_eraw", "th1dm_eraw", 200, 5., 45.};
+    ROOT::RDF::TH1DModel th1dm_eraw {"th1dm_eraw", "th1dm_eraw", th1dm_sdep.fNbinsX,
+                                     th1dm_sdep.fXLow / r_mean_el, th1dm_sdep.fXUp  / r_mean_el};
     BEarray<ROOT::RDF::RResultPtr<TH1D>> th1s_eraw_pi, th1s_eraw_k, th1s_eraw_p;
     for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
         th1s_eraw_pi[n] = book_eraw_hist(th1dm_eraw, std::get<2>(rdfs_pi_filters), BEAM_ENERGIES[n]);
