@@ -290,10 +290,10 @@ std::tuple<TGraphErrors, TGraphErrors> xer_graphs(BEarray<GausFitRes> eraw_res,
         invsqrtbe[n] = 1 / sqrt(BEAM_ENERGIES[n]);
     }
     auto tge = TGraphErrors(BEAM_ENERGIES.size(), BEAM_ENERGIES.data(), eresp_vals.data(), nullptr, eresp_errors.data());
-    tge.SetTitle(("Energy Response " + name + ";E_\\text{beam}\\,\\text{[GeV]};R^{E^\\text{raw}}").c_str());
+    tge.SetTitle(("Energy Response " + name + ";E_{beam} [GeV];R^{E^{raw}}").c_str());
     tge.Write(("Energy Response " + name).c_str());
     auto tge2 = TGraphErrors(BEAM_ENERGIES.size(), reverse_copy_vector(invsqrtbe).data(), reverse_copy_vector(eres_vals).data(), nullptr, reverse_copy_vector(eres_errors).data());
-    tge2.SetTitle(("Energy Resolution " + name + ";1/\\sqrt{E_\\text{beam}\\,\\text{[GeV]}};R^{\\sigma^\\text{raw}}").c_str());
+    tge2.SetTitle(("Energy Resolution " + name + ";1/#sqrt{E_{beam} [GeV]};R^{#sigma^{raw}}").c_str());
     tge2.Write(("Energy Resolution " + name).c_str());
     return std::make_tuple(tge, tge2);
 }
@@ -312,10 +312,10 @@ std::tuple<TGraphErrors, TGraphErrors> atl_xer_graphs(ATLBEarray<ValErr> eresp,
         invsqrtbe[n] = 1 / sqrt(BEAM_ENERGIES[n]);
     }
     auto tge = TGraphErrors(BEAM_ENERGIES.size(), BEAM_ENERGIES.data(), eresp_vals.data(), nullptr, eresp_errors.data());
-    tge.SetTitle(("ATLAS Energy Response " + name + ";E_\\text{beam}\\,\\text{[GeV]};R^{E^\\text{raw}}").c_str());
+    tge.SetTitle(("ATLAS Energy Response " + name + ";E_{beam} [GeV];R^{E^{raw}}").c_str());
     tge.Write(("ATLAS Energy Response " + name).c_str());
     auto tge2 = TGraphErrors(BEAM_ENERGIES.size(), reverse_copy_vector(invsqrtbe).data(), reverse_copy_vector(eres_vals).data(), nullptr, reverse_copy_vector(eres_errors).data());
-    tge2.SetTitle(("ATLAS Energy Resolution " + name + ";1/\\sqrt{E_\\text{beam}\\,\\text{[GeV]}};R^{\\sigma^\\text{raw}}").c_str());
+    tge2.SetTitle(("ATLAS Energy Resolution " + name + ";1/#sqrt{E_{beam} [GeV]};R^{#sigma^{raw}}").c_str());
     tge2.Write(("ATLAS Energy Resolution " + name).c_str());
     return std::make_tuple(tge, tge2);
 }
