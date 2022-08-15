@@ -227,7 +227,7 @@ Relevant built-in options:
 1. For the analysis both electron and pion data is required, which can be obtained by running for example `ATLTileCalTB -m TBrun_all.mac`.
 2. After the run, all the ROOT files and their containing TTree need to merged into a single file called `ATLTileCalTBout_All.root`. This can be done with `hadd`:
    ```sh
-   hadd -f ATLTileCalTBout_All.root ATLTileCalTBout_Run*.root
+   hadd -f ATLTileCalTBout_RunAll.root ATLTileCalTBout_Run*.root
    ```
 3. To run the analysis, execute the analysis macro in the folder containing the root file:
    ```sh
