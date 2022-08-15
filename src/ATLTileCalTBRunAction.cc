@@ -56,6 +56,10 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction( ATLTileCalTBEventAction* eventActi
 
     analysisManager->SetVerboseLevel(1);
     analysisManager->SetNtupleMerging(true);
+
+    #if G4VERSION_NUMBER > 1050
+    analysisManager->SetNtupleRowWise(false);
+    #endif
   
     // Creating ntuple
     //
