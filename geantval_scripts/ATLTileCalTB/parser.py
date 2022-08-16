@@ -141,7 +141,7 @@ class Test(BaseParser):
         )
 
         #-------------------------------------------------------------
-	    # Create JSON files for experimental data
+        # Create JSON files for experimental data
         # uncomment this part only if you want to recreate these files
         # usually this is done in one upload and the never again
         #-------------------------------------------------------------
@@ -159,6 +159,7 @@ class Test(BaseParser):
                 mctool_name="experiment",
                 mctool_version="experiment",
                 mctool_model="experiment",
+                testName="experiment",
                 inspireId = 1845350,
                 targetName='ATLAS-TileCal',
                 beamParticle='pi+',
@@ -176,6 +177,7 @@ class Test(BaseParser):
                 mctool_name="experiment",
                 mctool_version="experiment",
                 mctool_model="experiment",
+                testName="experiment",
                 inspireId = 1845350,
                 targetName='ATLAS-TileCal',
                 beamParticle='pi+',
@@ -193,6 +195,7 @@ class Test(BaseParser):
                 mctool_name="experiment",
                 mctool_version="experiment",
                 mctool_model="experiment",
+                testName="experiment",
                 inspireId = 1845350,
                 targetName='ATLAS-TileCal',
                 beamParticle='kaon+',
@@ -210,6 +213,7 @@ class Test(BaseParser):
                 mctool_name="experiment",
                 mctool_version="experiment",
                 mctool_model="experiment",
+                testName="experiment",
                 inspireId = 1845350,
                 targetName='ATLAS-TileCal',
                 beamParticle='kaon+',
@@ -227,6 +231,7 @@ class Test(BaseParser):
                 mctool_name="experiment",
                 mctool_version="experiment",
                 mctool_model="experiment",
+                testName="experiment",
                 inspireId = 1845350,
                 targetName='ATLAS-TileCal',
                 beamParticle='proton',
@@ -244,6 +249,7 @@ class Test(BaseParser):
                 mctool_name="experiment",
                 mctool_version="experiment",
                 mctool_model="experiment",
+                testName="experiment",
                 inspireId = 1845350,
                 targetName='ATLAS-TileCal',
                 beamParticle='proton',
