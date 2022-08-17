@@ -1,6 +1,10 @@
 # ATLTileCalTB
 A Geant4 simulation of the ATLAS Tile Calorimeter beam tests.
 
+<b>This branch is for Geant4 version 10.1 with FTFP_BERT_ATL, which was used in the original ATLAS paper. Note that some features are disabled.</b>
+
+This branch requires a patched version of Geant4 10.1, please see `FTFP_BERT_ATL_for_G4.10.1/README` for details. Note: you need [Xerces-C v2.8.0](https://github.com/apache/xerces-c/releases/tag/v2.8.0), which builds using autoconf in the `src/xercesc` folder.
+
 <figure>
 <img src="./images/TileCal_mu.gif" alt="Trulli" style="width:100%">
 <figcaption align="center"><b>Fig. - 10 GeV muon passing through the ATLAS TileCal.</b></figcaption>

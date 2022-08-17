@@ -1,0 +1,17 @@
+These are the 6 files you need on top of Geant4 10.1 to get FTFP_BERT_ATL
+(their directories show where they should be located):
+
+1. physics_lists/lists/sources.cmake
+  
+2. physics_lists/lists/include/FTFP_BERT_ATL.hh
+
+3. physics_lists/lists/include/FTFP_BERT_ATL.icc
+
+4. physics_lists/constructors/hadron_inelastic/sources.cmake
+
+5. physics_lists/constructors/hadron_inelastic/include/G4HadronPhysicsFTFP_BERT_ATL.hh
+
+6. physics_lists/constructors/hadron_inelastic/src/G4HadronPhysicsFTFP_BERT_ATL.cc
+
+Also, apply copynumbers.patch to source/persistency/gdml/src/G4GDMLReadStructure.cc
+using `patch < copynumbers.patch` and enter the path to the file to be patched.

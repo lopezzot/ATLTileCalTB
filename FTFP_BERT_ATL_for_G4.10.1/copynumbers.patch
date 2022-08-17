@@ -1,0 +1,29 @@
+diff --git a/source/persistency/gdml/src/G4GDMLReadStructure.cc b/source/persistency/gdml/src/G4GDMLReadStructure.cc
+index c41f8e65cdaca5887c6e4089ffd7dda279daa29e..20c810ee9807377fea5f306e2319178b1fc11a52 100644
+--- a/source/persistency/gdml/src/G4GDMLReadStructure.cc
++++ b/source/persistency/gdml/src/G4GDMLReadStructure.cc
+@@ -322,6 +322,7 @@ PhysvolRead(const xercesc::DOMElement* const physvolElement,
+    G4ThreeVector position(0.0,0.0,0.0);
+    G4ThreeVector rotation(0.0,0.0,0.0);
+    G4ThreeVector scale(1.0,1.0,1.0);
++   G4int copynumber = 0;
+ 
+    const xercesc::DOMNamedNodeMap* const attributes
+          = physvolElement->getAttributes();
+@@ -347,6 +348,7 @@ PhysvolRead(const xercesc::DOMElement* const physvolElement,
+      const G4String attValue = Transcode(attribute->getValue());
+ 
+      if (attName=="name") { name = attValue; }
++     if (attName=="copynumber") { copynumber = eval.EvaluateInteger(attValue); }
+    }
+ 
+    for (xercesc::DOMNode* iter = physvolElement->getFirstChild();
+@@ -412,7 +414,7 @@ PhysvolRead(const xercesc::DOMElement* const physvolElement,
+        if (!logvol) { return; }
+        G4String pv_name = logvol->GetName() + "_PV";
+        G4PhysicalVolumesPair pair = G4ReflectionFactory::Instance()
+-         ->Place(transform,pv_name,logvol,pMotherLogical,false,0,check);
++         ->Place(transform,pv_name,logvol,pMotherLogical,false,copynumber,check);
+ 
+        if (pair.first != 0) { GeneratePhysvolName(name,pair.first); }
+        if (pair.second != 0) { GeneratePhysvolName(name,pair.second); }
