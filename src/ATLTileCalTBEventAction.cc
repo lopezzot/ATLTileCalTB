@@ -108,9 +108,9 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
             G4double outsum = 0.;
             auto jmax = (k >= pmt_response_size) ? pmt_response_size - 1 : k;
             for (std::size_t j = 0; j <= jmax; ++j) {
-                outsum += sdep.at(k - j) * ATLTileCalTBConstants::pmt_response.at(j);
+                outsum += sdep[k - j] * ATLTileCalTBConstants::pmt_response[j];
             }
-            outvec.at(k) = outsum;
+            outvec[k] = outsum;
         }
         return outvec;
     };
