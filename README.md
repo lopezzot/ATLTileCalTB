@@ -15,6 +15,13 @@ A Geant4 simulation of the ATLAS Tile Calorimeter beam tests.
     <li><a href="#project-description">Project description</a></li>
     <li><a href="#authors-and-contacts">Authors and contacts</a></li>
     <li>
+      <a href="#results">Results</a>
+      <ul>
+        <li><a href="#selected-reports-and-presentations">Selected reports and presentations</a></li>
+        <li><a href="#available-datasets-and-analyses">Available datasets and analyses</a></li>
+      </ul>
+   </li>
+    <li>
       <a href="#how-to">How to</a>
       <ul>
         <li><a href="#build-compile-and-execute-on-maclinux">Build, compile and execute on Mac/Linux</a></li>
@@ -40,6 +47,26 @@ The project targets a standalone Geant4 simulation of the ATLAS Tile Calorimeter
 - 👨‍🔬 Lorenzo Pezzotti (CERN EP-SFT) - lorenzo.pezzotti@cern.ch 
 - 👨‍🔬 Stephan Lachnit (CERN EP-SFT Summer Student) - stephan.lachnit@cern.ch
 - 👨‍🔬 Supervisor: Alberto Ribon (CERN EP-SFT)
+
+<!--Results-->
+## Results
+
+### Selected reports and presentations
+- 📄 CERN summer student report 25/8/2022 **Standalone Geant4 validation of the ATLAS Tile Calorimeter** [![Website shields.io](https://img.shields.io/website?url=https%3A%2F%2Fcds.cern.ch%2Frecord%2F2825325)](https://cds.cern.ch/record/2825325)
+- 🗣️ CERN EP-SFT Simulation Meeting 23/8/2022, **Standalone Geant4 validation on the ATLAS Tile Calorimeter beam test** [![Website shields.io](https://img.shields.io/website?url=https%3A%2F%2Findico.cern.ch%2Fevent%2F1192377%2Fcontributions%2F5013459%2Fattachments%2F2496124%2F4287061%2Flopezzot_g4meeting_23_8_2022.pdf)](https://indico.cern.ch/event/1192377/contributions/5013459/attachments/2496124/4287061/lopezzot_g4meeting_23_8_2022.pdf)
+- 🗣️ CERN EP-SFT Group Meeting 22/8/2022, **Simulating ATLAS TileCal for Geant4 validation** [![Website shields.io](https://img.shields.io/website?url=https%3A%2F%2Fimg.shields.io%2Fwebsite-up-down-green-red%2Fhttps%2Findico.cern.ch%2Fevent%2F1180970%2Fcontributions%2F4960934%2Fattachments%2F2495153%2F4285305%2FCERN_SS_Presentation.pdf)](https://indico.cern.ch/event/1180970/contributions/4960934/attachments/2495153/4285305/CERN_SS_Presentation.pdf)
+
+### Available datasets and analyses
+We provide datasets and ROOT analyses, as well as instructions for their reproducibility.
+Ask authors for access to datasets. Results are deployed on Geant Val.
+<details><summary>Results-Table</summary>
+<p>
+
+| ATLTileCalTB     | Reproduce data | Reproduce analysis | Comments     |
+| -------------    | ----------     | -----------        | -----------  |
+| v1.0 <br /> Geant4 10.4.p03, 10.5.p01, 10.6.p03, 10.7.p03, 11.0.p02 <br /> FTFP_BERT, FTFP_BERT_ATL, QGSP_BERT, FTFP_INCLXX <br /> 300k events per run <br /> Added 17/8/2022 | Run with Geant Val, OR <br /> `./ATLTileCalTB -m TBrun_all.mac -p $PHYSLIST` | Run with Geant Val, OR <br /> `root ../analysis/TBrun_all.C` | Adjusted events per run to 300k |
+</p>
+</details>
 
 <!--How to-->
 ## How to
@@ -238,4 +265,4 @@ Relevant built-in options:
 
 <!--Selected ATLAS TileCal references-->
 ## Selected ATLAS TileCal references
-- 📄 <em>Study of energy response and resolution of the ATLAS Tile Calorimeter to hadrons of energies from 16 to 30 GeV</em>, Eur. Phys. J. C (2021) 81:549: [![Website shields.io](https://img.shields.io/website-up-down-green-red/http/shields.io.svg)](https://link.springer.com/article/10.1140/epjc/s10052-021-09292-5)
+- 📄 <em>Study of energy response and resolution of the ATLAS Tile Calorimeter to hadrons of energies from 16 to 30 GeV</em>, Eur. Phys. J. C (2021) 81:549: [![Website shields.io](https://img.shields.io/website?url=https%3A%2F%2Flink.springer.com%2Farticle%2F10.1140%2Fepjc%2Fs10052-021-09292-5)](https://link.springer.com/article/10.1140/epjc/s10052-021-09292-5)
