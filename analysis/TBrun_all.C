@@ -35,8 +35,9 @@ struct GausFitRes {
 using RDFI = ROOT::RDF::RInterface<ROOT::Detail::RDF::RNodeBase, void>;
 
 // Constants
-const std::array<double, 4> BEAM_ENERGIES {16., 18., 20., 30.};
-template<typename T> using BEarray = std::array<T, BEAM_ENERGIES.size()>;
+constexpr std::size_t N_BEAM_ENERGIES = 4;
+const std::array<double, N_BEAM_ENERGIES> BEAM_ENERGIES {16., 18., 20., 30.};
+template<typename T> using BEarray = std::array<T, N_BEAM_ENERGIES>;
 const std::string MERGED_RUN_FILE {"ATLTileCalTBout_RunAll.root"};
 const std::string RUN_FILE_TTREE_NAME {"ATLTileCalTBout"};
 const int PDG_ID_EL = 11;
@@ -48,8 +49,9 @@ const double EMSCALE_ELECTRON_CLONG_CUT = 0.6;
 const double EMSCALE_ELECTRON_CTOT_CUT = 0.125;
 
 // ATLAS data
-const std::array<double, 4> ATL_BEAM_ENERGIES {16., 18., 20., 30.};
-template<typename T> using ATLBEarray = std::array<T, ATL_BEAM_ENERGIES.size()>;
+constexpr std::size_t N_ATL_BEAM_ENERGIES = 4;
+const std::array<double, N_ATL_BEAM_ENERGIES> ATL_BEAM_ENERGIES {16., 18., 20., 30.};
+template<typename T> using ATLBEarray = std::array<T, N_ATL_BEAM_ENERGIES>;
 const ATLBEarray<ValErr> ATL_ERESPONSE_PI {
     ValErr({0.7924, 0.0116}),
     ValErr({0.7941, 0.0108}),
@@ -130,11 +132,11 @@ GausFitRes fit_sdep_hist(TF1& tf1_gaus, TH1* th1ptr,
 std::tuple<BEarray<double>, BEarray<double>> sdeppeb_graph(BEarray<GausFitRes> sdep_res,
                                                            const std::string& name) {
     BEarray<double> sdeppeb_means, sdeppeb_errors;
-    for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
+    for (std::size_t n = 0; n < N_BEAM_ENERGIES; ++n) {
         sdeppeb_means[n] = sdep_res[n].mean.value / BEAM_ENERGIES[n];
         sdeppeb_errors[n] = sdep_res[n].mean.error / BEAM_ENERGIES[n];
     }
-    auto tge = TGraphErrors(BEAM_ENERGIES.size(), BEAM_ENERGIES.data(), sdeppeb_means.data(), nullptr, sdeppeb_errors.data());
+    auto tge = TGraphErrors(N_BEAM_ENERGIES, BEAM_ENERGIES.data(), sdeppeb_means.data(), nullptr, sdeppeb_errors.data());
     tge.SetTitle(("Signal per Ebeam " + name + ";E_\\text{beam}\\,\\text{[GeV]};\\text{Signal}/E_\\text{beam}\\ \\text{[a.u./GeV]}").c_str());
     tge.Write(("Signal per Ebeam " + name).c_str());
     return std::make_tuple(sdeppeb_means, sdeppeb_errors);
@@ -204,14 +206,14 @@ void print_cut_statistics(std::tuple<RDFI, RDFI, RDFI> rdfis_filters,
                 << "\n";
     // Book counts
     BEarray<ROOT::RDF::RResultPtr<ULong64_t>> count_all, count_mr, count_er;
-    for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
+    for (std::size_t n = 0; n < N_BEAM_ENERGIES; ++n) {
         auto filter_str = "EBeam=="+std::to_string(static_cast<float>(BEAM_ENERGIES[n] * 1e3));
         count_all[n] = rdfi_eraw.Filter(filter_str).Count();
         count_mr[n] = rdfi_mr.Filter(filter_str).Count();
         count_er[n] = rdfi_er.Filter(filter_str).Count();
     }
     // Print counts
-    for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
+    for (std::size_t n = 0; n < N_BEAM_ENERGIES; ++n) {
         std::cout << std::setw(11) << BEAM_ENERGIES[n]
                     << " | " << std::setw(24) << count_all[n].GetValue()
                     << " | " << std::setw(24) << count_mr[n].GetValue()
@@ -294,17 +296,17 @@ template<class vectype> inline vectype reverse_copy_vector(const vectype& vec) {
 std::tuple<TGraphErrors, TGraphErrors> xer_graphs(BEarray<GausFitRes> eraw_res,
                                                   const std::string& name) {
     BEarray<double> eresp_vals, eresp_errors, eres_vals, eres_errors, invsqrtbe;
-    for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
+    for (std::size_t n = 0; n < N_BEAM_ENERGIES; ++n) {
         eresp_vals[n] = eraw_res[n].mean.value / BEAM_ENERGIES[n];
         eresp_errors[n] = eraw_res[n].mean.error / BEAM_ENERGIES[n];
         eres_vals[n] = eraw_res[n].sigma.value / BEAM_ENERGIES[n];
         eres_errors[n] = eraw_res[n].sigma.error / BEAM_ENERGIES[n];
         invsqrtbe[n] = 1 / sqrt(BEAM_ENERGIES[n]);
     }
-    auto tge = TGraphErrors(BEAM_ENERGIES.size(), BEAM_ENERGIES.data(), eresp_vals.data(), nullptr, eresp_errors.data());
+    auto tge = TGraphErrors(N_BEAM_ENERGIES, BEAM_ENERGIES.data(), eresp_vals.data(), nullptr, eresp_errors.data());
     tge.SetTitle(("Energy Response " + name + ";E_{beam} [GeV];R^{E^{raw}}").c_str());
     tge.Write(("Energy Response " + name).c_str());
-    auto tge2 = TGraphErrors(BEAM_ENERGIES.size(), reverse_copy_vector(invsqrtbe).data(), reverse_copy_vector(eres_vals).data(), nullptr, reverse_copy_vector(eres_errors).data());
+    auto tge2 = TGraphErrors(N_BEAM_ENERGIES, reverse_copy_vector(invsqrtbe).data(), reverse_copy_vector(eres_vals).data(), nullptr, reverse_copy_vector(eres_errors).data());
     tge2.SetTitle(("Energy Resolution " + name + ";1/#sqrt{E_{beam} [GeV]};R^{#sigma^{raw}}").c_str());
     tge2.Write(("Energy Resolution " + name).c_str());
     return std::make_tuple(tge, tge2);
@@ -316,17 +318,17 @@ std::tuple<TGraphErrors, TGraphErrors> atl_xer_graphs(ATLBEarray<ValErr> eresp,
                                                       ATLBEarray<ValErr> eres,
                                                       const std::string& name) {
     BEarray<double> eresp_vals, eresp_errors, eres_vals, eres_errors, invsqrtbe;
-    for (std::size_t n = 0; n < ATL_BEAM_ENERGIES.size(); ++n) {
+    for (std::size_t n = 0; n < N_ATL_BEAM_ENERGIES; ++n) {
         eresp_vals[n] = eresp[n].value;
         eresp_errors[n] = eresp[n].error;
         eres_vals[n] = eres[n].value;
         eres_errors[n] = eres[n].error;
         invsqrtbe[n] = 1 / sqrt(BEAM_ENERGIES[n]);
     }
-    auto tge = TGraphErrors(BEAM_ENERGIES.size(), BEAM_ENERGIES.data(), eresp_vals.data(), nullptr, eresp_errors.data());
+    auto tge = TGraphErrors(N_BEAM_ENERGIES, BEAM_ENERGIES.data(), eresp_vals.data(), nullptr, eresp_errors.data());
     tge.SetTitle(("ATLAS Energy Response " + name + ";E_{beam} [GeV];R^{E^{raw}}").c_str());
     tge.Write(("ATLAS Energy Response " + name).c_str());
-    auto tge2 = TGraphErrors(BEAM_ENERGIES.size(), reverse_copy_vector(invsqrtbe).data(), reverse_copy_vector(eres_vals).data(), nullptr, reverse_copy_vector(eres_errors).data());
+    auto tge2 = TGraphErrors(N_BEAM_ENERGIES, reverse_copy_vector(invsqrtbe).data(), reverse_copy_vector(eres_vals).data(), nullptr, reverse_copy_vector(eres_errors).data());
     tge2.SetTitle(("ATLAS Energy Resolution " + name + ";1/#sqrt{E_{beam} [GeV]};R^{#sigma^{raw}}").c_str());
     tge2.Write(("ATLAS Energy Resolution " + name).c_str());
     return std::make_tuple(tge, tge2);
@@ -419,7 +421,7 @@ void TBrun_all() {
     // Book Sdep histograms
     ROOT::RDF::TH1DModel th1dm_sdep {"th1dm_sdep", "th1dm_sdep", 300, 0., 3000.};
     BEarray<ROOT::RDF::RResultPtr<TH1D>> th1s_sdep_el, th1s_sdep_pi, th1s_sdep_k, th1s_sdep_p;
-    for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
+    for (std::size_t n = 0; n < N_BEAM_ENERGIES; ++n) {
         th1s_sdep_el[n] = book_sdep_hist(th1dm_sdep, rdf_el, BEAM_ENERGIES[n]);
         th1s_sdep_pi[n] = book_sdep_hist(th1dm_sdep, rdf_pi, BEAM_ENERGIES[n]);
         th1s_sdep_k[n]  = book_sdep_hist(th1dm_sdep, rdf_k,  BEAM_ENERGIES[n]);
@@ -428,7 +430,7 @@ void TBrun_all() {
 
     // Fit Sdep histograms
     BEarray<GausFitRes> sdep_res_el, sdep_res_pi, sdep_res_k, sdep_res_p;
-    for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
+    for (std::size_t n = 0; n < N_BEAM_ENERGIES; ++n) {
         sdep_res_el[n] = fit_sdep_hist(tf1_gaus, th1s_sdep_el[n].GetPtr(), BEAM_ENERGIES[n], "Electrons");
         sdep_res_pi[n] = fit_sdep_hist(tf1_gaus, th1s_sdep_pi[n].GetPtr(), BEAM_ENERGIES[n], "Pions");
         sdep_res_k[n] =  fit_sdep_hist(tf1_gaus, th1s_sdep_k[n].GetPtr(),  BEAM_ENERGIES[n], "Kaons");
@@ -455,7 +457,7 @@ void TBrun_all() {
 
     // Clong and Ctot histograms
     #if ATLTileCalTBana_CtotClongHists
-    for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
+    for (std::size_t n = 0; n < N_BEAM_ENERGIES; ++n) {
         clong_ctot_hist(std::get<1>(rdfs_pi_filters), BEAM_ENERGIES[n], "Pions");
         clong_ctot_hist(std::get<1>(rdfs_k_filters),  BEAM_ENERGIES[n], "Kaons");
         clong_ctot_hist(std::get<1>(rdfs_p_filters),  BEAM_ENERGIES[n], "Protons");
@@ -466,7 +468,7 @@ void TBrun_all() {
     ROOT::RDF::TH1DModel th1dm_eraw {"th1dm_eraw", "th1dm_eraw", th1dm_sdep.fNbinsX,
                                      th1dm_sdep.fXLow / r_mean_el, th1dm_sdep.fXUp  / r_mean_el};
     BEarray<ROOT::RDF::RResultPtr<TH1D>> th1s_eraw_pi, th1s_eraw_k, th1s_eraw_p;
-    for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
+    for (std::size_t n = 0; n < N_BEAM_ENERGIES; ++n) {
         th1s_eraw_pi[n] = book_eraw_hist(th1dm_eraw, std::get<2>(rdfs_pi_filters), BEAM_ENERGIES[n]);
         th1s_eraw_k[n]  = book_eraw_hist(th1dm_eraw, std::get<2>(rdfs_k_filters),  BEAM_ENERGIES[n]);
         th1s_eraw_p[n]  = book_eraw_hist(th1dm_eraw, std::get<2>(rdfs_p_filters),  BEAM_ENERGIES[n]);
@@ -474,7 +476,7 @@ void TBrun_all() {
 
     // Fit EM-Scale histograms
     BEarray<GausFitRes> eraw_res_pi, eraw_res_k, eraw_res_p;
-    for (std::size_t n = 0; n < BEAM_ENERGIES.size(); ++n) {
+    for (std::size_t n = 0; n < N_BEAM_ENERGIES; ++n) {
         eraw_res_pi[n] = fit_eraw_hist(tf1_gaus, th1s_eraw_pi[n].GetPtr(), BEAM_ENERGIES[n], "Pions");
         eraw_res_k[n]  = fit_eraw_hist(tf1_gaus, th1s_eraw_k[n].GetPtr(),  BEAM_ENERGIES[n], "Kaons");
         eraw_res_p[n]  = fit_eraw_hist(tf1_gaus, th1s_eraw_p[n].GetPtr(),  BEAM_ENERGIES[n], "Protons");
