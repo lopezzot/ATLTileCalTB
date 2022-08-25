@@ -36,7 +36,7 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction( ATLTileCalTBEventAction* eventActi
     
     //Printing event number per each event
     //
-    G4RunManager::GetRunManager()->SetPrintProgress(1);     
+    G4RunManager::GetRunManager()->SetPrintProgress(100);
 
     //Get analysis manager
     //
