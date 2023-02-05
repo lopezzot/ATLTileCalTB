@@ -1,2 +1,2 @@
 #!/bin/sh
-ATLTileCalTB -m ATLTileCalTB.mac -p %PHYSLIST% -t 4
+ATLTileCalTB -m ATLTileCalTB.mac -p %PHYSLIST% -t 8
