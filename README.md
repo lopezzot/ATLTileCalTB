@@ -98,6 +98,7 @@ Parser options
 - `-m macro.mac`: pass a Geant4 macro card (example `-m ATLTileCalTB_run.mac` available in source directory and automatically copied in build directory) 
 - `-t integer`: pass number of threads for multi-thread execution (example `-t 2`, default is the number of threads on the machine)
 - `-p Physics_List`: select Geant4 physics list (example `-p FTFP_BERT`)
+- It is possible to select alternative FTF tunings with PL_tuneID (example -pl FTFP_BERT_tune0) [only for Geant4-11.1.0 or higher]
 
 ### Build, compile and execute on lxplus
 1. git clone the repo
