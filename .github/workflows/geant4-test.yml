@@ -26,7 +26,7 @@ jobs:
           source ~/Geant4/bin/geant4.sh
           mkdir build
           cd build
-          cmake ../
+          cmake -DBUILD_ANALYSIS=OFF ../
           make
           ./ATLTileCalTB -m single.mac -t 1
           ls -ltr
@@ -56,7 +56,7 @@ jobs:
           source ~/Geant4/bin/geant4.sh
           mkdir build
           cd build
-          cmake ../
+          cmake -DBUILD_ANALYSIS=OFF ../
           make
           ./ATLTileCalTB -m single.mac -t 1
           ls -ltr
