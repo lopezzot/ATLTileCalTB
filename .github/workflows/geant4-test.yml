@@ -1,0 +1,64 @@
+name: Geant4_Test
+on: [push]
+jobs:
+  
+  geant4_11_0-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check trigger 
+        run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
+      - name: Check runner
+        run: echo "This job is running on ${{ runner.os }}."
+      - name: Check repo and branch
+        run: echo "Branch is ${{ github.ref }} and repository is ${{ github.repository }}."
+      - name: Install dependencies
+        run: sudo apt-get install libxerces-c-dev
+      - name: Install Geant4
+        run: |
+          wget https://github.com/hahnjo/geant4-actions-binaries/releases/download/$GEANT4_VERSION/$GEANT4_VERSION-binaries.tar.gz
+          tar xf $GEANT4_VERSION-binaries.tar.gz -C $HOME
+        env:
+          GEANT4_VERSION: "geant4-v11.0.0"
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Build application and run single thread with FTFP_BERT
+        run: |
+          source ~/Geant4/bin/geant4.sh
+          mkdir build
+          cd build
+          cmake -DBUILD_ANALYSIS=OFF ../
+          make
+          ./ATLTileCalTB -m single.mac -t 1
+          ls -ltr
+      - name: Check job status
+        run: echo "Job is ${{ job.status }}."
+    
+  geant4_latest-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check trigger 
+        run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
+      - name: Check runner
+        run: echo "This job is running on ${{ runner.os }}."
+      - name: Check repo and branch
+        run: echo "Branch is ${{ github.ref }} and repository is ${{ github.repository }}."
+      - name: Install dependencies
+        run: sudo apt-get install libxerces-c-dev
+      - name: Install Geant4
+        run: |
+          version=$(curl -s https://api.github.com/repos/hahnjo/geant4-actions-binaries/releases/latest | jq -r '.name')
+          wget https://github.com/hahnjo/geant4-actions-binaries/releases/download/$version/$version-binaries.tar.gz
+          tar xf $version-binaries.tar.gz -C $HOME
+      - name: Check out repository code
+        uses: actions/checkout@v3
+      - name: Build application and run single thread with FTFP_BERT
+        run: |
+          source ~/Geant4/bin/geant4.sh
+          mkdir build
+          cd build
+          cmake -DBUILD_ANALYSIS=OFF ../
+          make
+          ./ATLTileCalTB -m single.mac -t 1
+          ls -ltr
+      - name: Check job status
+        run: echo "Job is ${{ job.status }}."
