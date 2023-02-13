@@ -67,6 +67,7 @@ Ask authors for access to datasets. Results are deployed on Geant Val.
 
 | ATLTileCalTB     | Reproduce data | Reproduce analysis | Comments     |
 | -------------    | ----------     | -----------        | -----------  |
+| v1.1 <br /> Geant4 11.1 <br /> FTFP_BERT(+tunes1,2,3), FTFP_BERT_ATL, QGSP_BERT (tag v1.1_1) <br /> 300k events per run <br /> Added 13/2/2023 | Run with Geant Val, OR <br /> `./ATLTileCalTB -m TBrun_all.mac -p $PHYSLIST` | Run with Geant Val, OR <br /> `root ../analysis/TBrun_all.C` | FTFP_INCLXX results not included due to a crash, to be investigated |
 | v1.0 <br /> Geant4 10.4.p03, 10.5.p01, 10.6.p03, 10.7.p03, 11.0.p02 <br /> FTFP_BERT, FTFP_BERT_ATL, QGSP_BERT, FTFP_INCLXX <br /> 300k events per run <br /> Added 17/8/2022 | Run with Geant Val, OR <br /> `./ATLTileCalTB -m TBrun_all.mac -p $PHYSLIST` | Run with Geant Val, OR <br /> `root ../analysis/TBrun_all.C` | Adjusted events per run to 300k |
 </p>
 </details>
