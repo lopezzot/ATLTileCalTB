@@ -47,7 +47,7 @@ void ATLTileCalTBSensDet::Initialize(G4HCofThisEvent* hce) {
     auto hcID = G4SDManager::GetSDMpointer()->GetCollectionID(collectionName[0]);
     hce->AddHitsCollection( hcID, fHitsCollection ); 
 
-    //Allocate hits in hce (currently just one hit)
+    //Allocate hits in hit collection
     //
     auto cellLUT = ATLTileCalTBGeometry::CellLUT::GetInstance();
     for ( std::size_t i=0; i<cellLUT->GetNumberOfCells(); i++ ) {
