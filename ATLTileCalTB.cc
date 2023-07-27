@@ -10,6 +10,11 @@
 //
 #include "ATLTileCalTBActInitialization.hh"
 #include "ATLTileCalTBDetConstruction.hh"
+#ifdef G4_USE_FLUKA
+// include the FTFP_BERT PL custmized with fluka
+// hadron inelastic process
+#include "G4_CernFLUKAHadronInelastic_FTFP_BERT.hh"
+#endif
 
 // Includers from Geant4
 //
@@ -29,6 +34,12 @@
 #include "G4VisExecutive.hh"
 #if G4VERSION_NUMBER >= 1110 // >= Geant4-11.1.0
 #include "G4FTFTunings.hh"
+#endif
+
+// Includers from FLUKAIntegration
+//
+#ifdef G4_USE_FLUKA
+#include "FLUKAParticleTable.hh"
 #endif
 
 // CLI string outputs
@@ -100,6 +111,7 @@ int main(int argc, char **argv) {
     }
   }
 
+#ifndef G4_USE_FLUKA
 #if G4VERSION_NUMBER >= 1110 // >= Geant4-11.1.0
   G4bool UseFTFTune = false;
   G4int FTFTuneIndex = 99;
@@ -112,6 +124,7 @@ int main(int argc, char **argv) {
     G4cout << "---> Using FTF alternative tune index: " << FTFTuneIndex
            << " and PL: " << custom_pl << " <---" << G4endl;
   }
+#endif
 #endif
 
   // Activate interaction mode if no macro card is provided and define UI
@@ -136,6 +149,8 @@ int main(int argc, char **argv) {
 
   // Manadatory Geant4 classes
   //
+
+#ifndef G4_USE_FLUKA // build a standard Geant4 PL
   auto physListFactory = new G4PhysListFactory();
   if (!physListFactory->IsReferencePhysList(
           custom_pl)) { // if custom_pl is not a PLname exit
@@ -144,7 +159,14 @@ int main(int argc, char **argv) {
   }
   auto physicsList = physListFactory->GetReferencePhysList(custom_pl);
   runManager->SetUserInitialization(physicsList);
+#else // build the customized FTFP_BERT PL with Flula.Cern
+  auto physList = new G4_CernFLUKAHadronInelastic_FTFP_BERT;
+  runManager->SetUserInitialization(physList);
+  // Initialize FLUKA <-> G4 particles conversions tables.
+  fluka_particle_table::initialize();
+#endif  // #ifndef G4_USE_FLUKA
 
+#ifndef G4_USE_FLUKA 
   // Set FTF tunings (only => Geant4-11.1.0)
   //
 #if G4VERSION_NUMBER >= 1110
@@ -163,7 +185,8 @@ int main(int argc, char **argv) {
       return 1;
     }
   }
-#endif
+#endif // #if G4VERSION_NUMBER >= 1110
+#endif // #ifndef G4_USE_FLUKA
 
   G4GDMLParser parser;
   parser.Read("TileTB_2B1EB_nobeamline.gdml", false);
