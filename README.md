@@ -30,6 +30,7 @@ A Geant4 simulation of the ATLAS Tile Calorimeter beam tests.
         <li><a href="#build-compile-and-execute-on-maclinux">Build, compile and execute on Mac/Linux</a></li>
         <li><a href="#build-compile-and-execute-on-lxplus">Build, compile and execute on lxplus</a></li>
         <li><a href="#submit-a-job-with-htcondor-on-lxplus">Submit a job with HTCondor on lxplus</a></li>
+        <li><a href="#use-flukacern-hadron-inelastic-process">Use Fluka.Cern hadron inelastic process</a></li>
       </ul>
     </li>
     <li><a href="#geant-val-integration">Geant Val integration</a></li>
@@ -179,6 +180,34 @@ Parser options
    condor_ssh_to_job jobid.0
    ```
 
+### Use Fluka.Cern hadron inelastic process
+`Geant4-11.1-ref05` introduces a Fluka.Cern interface to use the Fluka.Cern hadron inelastic process in any geant4 application as explained in `examples/extended/hadronic/FlukaCern`. The following are my instructions to use this repo with a customized FTFP_BERT physics list using it. It assumes that cvmfs is mounted (e.g. usage on lxplus).
+1. Install Fluka.Cern from source code (example with fluka4-3.3)
+   ```sh
+   source /cvmfs/sft.cern.ch/lcg/contrib/gcc/10.1.0/x86_64-centos7/setup.sh
+   cd fluka4-3.3 && make -j 4
+   cd src/ && make cpp_headers
+   mkdir /path-to/fluka4-3.3-install && make install DESTDIR=/path-to/fluka4-3.3-install/
+   PATH="/absolute-path-to/fluka4-3.3-install/bin/":$PATH
+   ```
+2. Setup `geant4-11.1.ref05` and compile the fluka interface as in the example
+   ```sh
+   source /cvmfs/geant4.cern.ch/geant4/11.1.ref05/x86_64-centos7-gcc10-optdeb-MT/CMake-setup.sh 
+   source /cvmfs/geant4.cern.ch/geant4/11.1.ref05/x86_64-centos7-gcc10-optdeb-MT/bin/geant4.sh 
+   cd FlukaCern/FlukaInterface/
+   make interface
+   make env
+   source env_FLUKA_G4_interface.sh 
+   ```
+3. Build and execute ATLTileCalTB
+   ```sh
+   git clone https://github.com/lopezzot/ATLTileCalTB.git
+   mkdir ATLTileCalTB-build && cd ATLTileCalTB-build
+   /cvmfs/sft.cern.ch/lcg/contrib/CMake/3.23.2/Linux-x86_64/bin/cmake -DG4_USE_FLUKA=1 ../ATLTileCalTB/
+   make
+   ```
+   NOTE: the Fluka.Cern interface can only be used in single-threaded mode.
+
 <!--Geant Val integration-->
 ## Geant Val integration
 [Geant Val](https://geant-val.cern.ch/) is the Geant4 testing and validation suite. It is a project hosted on [gitlab.cern.ch](https://gitlab.cern.ch/GeantValidation) used to facilitate the maintenance and validation of Geant4 applications, referred to as <em>tests</em>.\
@@ -249,6 +278,7 @@ Custom options:
 -  `WITH_ATLTileCalTB_NoNoise`: if set to `ON`, the simulation will not put electronic noise on the
    signal (per cell) and disable the 2 sigma noise cut. Only relevant for noise calibration.
 -  `WITH_GEANT4_UIVIS`: if set to `ON` (default), build with UI and visualization drivers.
+-   `G4_USE_FLUKA`: if set to `ON` build against the Fluka.Cern interface (default `OFF`).
 
 Relevant built-in options:
 -  `CMAKE_BUILD_TYPE`: set to `Debug` for debugging and to `Release` for production (faster).
