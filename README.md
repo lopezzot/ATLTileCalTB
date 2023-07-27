@@ -67,7 +67,7 @@ The project targets a standalone Geant4 simulation of the ATLAS Tile Calorimeter
 ### Available datasets and analyses
 We provide datasets and ROOT analyses, as well as instructions for their reproducibility.
 Ask authors for access to datasets. Results are deployed on Geant Val.
-<details><summary>Results-Table</summary>
+<details><summary>Geant-val-results-table</summary>
 <p>
 
 | ATLTileCalTB     | Reproduce data | Reproduce analysis | Comments     |
@@ -75,6 +75,14 @@ Ask authors for access to datasets. Results are deployed on Geant Val.
 | v1.1 <br /> Geant4 11.1.p01 <br /> tag 1.1_2 <br /> FTFP_INCLXX Added 2/5/2023 | Run with Geant Val, OR <br /> `./ATLTileCalTB -m TBrun_all.mac -p $PHYSLIST` | Run with Geant Val, OR <br /> `root ../analysis/TBrun_all.C` | FTFP_INCLXX results only because results 1.1_1 do not contain FTFP_INCLXX |
 | v1.1 <br /> Geant4 11.1 <br /> tag 1.1_1 <br /> FTFP_BERT(+tunes1,2,3), FTFP_BERT_ATL, QGSP_BERT (tag v1.1_1) <br /> 300k events per run <br /> Added 13/2/2023 | Run with Geant Val, OR <br /> `./ATLTileCalTB -m TBrun_all.mac -p $PHYSLIST` | Run with Geant Val, OR <br /> `root ../analysis/TBrun_all.C` | FTFP_INCLXX results not included due to a crash, to be investigated (problem with merged root files by parser.py) |
 | v1.0 <br /> Geant4 10.4.p03, 10.5.p01, 10.6.p03, 10.7.p03, 11.0.p02 <br /> FTFP_BERT, FTFP_BERT_ATL, QGSP_BERT, FTFP_INCLXX <br /> 300k events per run <br /> Added 17/8/2022 | Run with Geant Val, OR <br /> `./ATLTileCalTB -m TBrun_all.mac -p $PHYSLIST` | Run with Geant Val, OR <br /> `root ../analysis/TBrun_all.C` | Adjusted events per run to 300k |
+</p>
+</details>
+<details><summary>Other-results-table</summary>
+<p>
+
+| ATLTileCalTB     | Reproduce data | Reproduce analysis | Comments     |
+| -------------    | ----------     | -----------        | -----------  |
+|                  |                |                    |              |
 </p>
 </details>
 
