@@ -138,7 +138,7 @@ install(TARGETS ATLTileCalTB DESTINATION bin)
 #----------------------------------------------------------------------------
 # Add analysis
 #
-option(BUILD_ANALYSIS "build analysis (requires ROOT)" ON)
+option(BUILD_ANALYSIS "build analysis (requires ROOT)" OFF)
 if(BUILD_ANALYSIS)
   add_subdirectory(analysis)
 endif()
