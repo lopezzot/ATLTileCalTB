@@ -56,11 +56,39 @@ add_compile_options(-Wall -Wextra -Wpedantic)
 include(${Geant4_USE_FILE})
 
 #----------------------------------------------------------------------------
+# Find FLUKA interface (optional) and add relative compile definitions.
+# (this part is taken from /examples/extended/hadronic/FLUKACern/FlukaInterface/README.md
+# as in geant4-11.1.ref05 (May 2023))
+# FindFLUKAInterface.cmake is located at your_path_to_geant4/cmake/Modules/FindFLUKAInterface.cmake
+# Check that FindFLUKAInterface.cmake can be found from $CMAKE_MODULE_PATH
+message(STATUS "CMAKE_MODULE_PATH = ${CMAKE_MODULE_PATH}")
+# Otherwise, you can always prepend it to the cmake module search path with:
+# set(CMAKE_MODULE_PATH my_path_to_find_fluka ${CMAKE_MODULE_PATH})
+
+# Check whether FLUKA should be used or not
+set(G4_USE_FLUKA OFF CACHE BOOL "Using FLUKA")
+if(G4_USE_FLUKA)
+  message(STATUS "G4_USE_FLUKA=ON : Using FLUKA interface for building ${PROJECT_SOURCE_DIR}")
+  add_definitions(-DG4_USE_FLUKA)
+  find_package(FLUKAInterface REQUIRED)
+  if(FLUKAInterface_FOUND)
+    message(STATUS "FLUKA cmake module was found : ${CMAKE_MODULE_PATH}")
+  else()
+    message(FATAL_ERROR "FLUKA cmake module was NOT found! Please add one.")
+  endif()
+else()
+  message(STATUS "G4_USE_FLUKA=OFF : NOT using FLUKA interface for building ${PROJECT_SOURCE_DIR}. \n \
+  If ever you want to use the FLUKA interface, please repeat cmake command with -DG4_USE_FLUKA=1")
+endif()
+#End of find FLUKAInterface
+
+#----------------------------------------------------------------------------
 # Locate sources and headers for this project
 # NB: headers are included so they will show up in IDEs
 #
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/include
-                    ${Geant4_INCLUDE_DIR})
+                    ${Geant4_INCLUDE_DIR}
+		    ${FLUKAInterface_INCLUDE_DIR})
 file(GLOB sources ${PROJECT_SOURCE_DIR}/src/*.cc)
 file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 
@@ -68,7 +96,7 @@ file(GLOB headers ${PROJECT_SOURCE_DIR}/include/*.hh)
 # Add the executable, and link it to the Geant4 libraries
 #
 add_executable(ATLTileCalTB ATLTileCalTB.cc ${sources} ${headers})
-target_link_libraries(ATLTileCalTB ${Geant4_LIBRARIES})
+target_link_libraries(ATLTileCalTB ${Geant4_LIBRARIES} ${FLUKAInterface_LIBRARIES})
 set_target_properties(ATLTileCalTB PROPERTIES CXX_STANDARD 17)
 
 #----------------------------------------------------------------------------
