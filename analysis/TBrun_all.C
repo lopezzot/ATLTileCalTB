@@ -38,7 +38,7 @@ using RDFI = ROOT::RDF::RInterface<ROOT::Detail::RDF::RNodeBase, void>;
 constexpr std::size_t N_BEAM_ENERGIES = 4;
 const std::array<double, N_BEAM_ENERGIES> BEAM_ENERGIES {16., 18., 20., 30.};
 template<typename T> using BEarray = std::array<T, N_BEAM_ENERGIES>;
-const std::string MERGED_RUN_FILE {"ATLTileCalTBout_RunAll.root"};
+std::string MERGED_RUN_FILE {"ATLTileCalTBout_RunAll.root"};
 const std::string RUN_FILE_TTREE_NAME {"ATLTileCalTBout"};
 const int PDG_ID_EL = 11;
 const int PDG_ID_PI = 211;
@@ -259,8 +259,18 @@ inline ROOT::RDF::RResultPtr<TH1D> book_eraw_hist(ROOT::RDF::TH1DModel th1dm_era
 // Fits Eraw histogram
 GausFitRes fit_eraw_hist(TF1& tf1_gaus, TH1* th1ptr,
                         const double beam_energy,
-                        const std::string& name) {
+                        const std::string& name,
+                        const bool IsFluka = false) {
     auto th1_mean = th1ptr->GetMean();
+    //Results with fluka show a large tail on the left side
+    //of energy distributions, due to heavy leakage.
+    //As of now, I will only fit the right part of 
+    //the distributions for fluka data.
+    if (IsFluka){
+        //first fir aroung maximum-bin
+        int binmax = th1ptr->GetMaximumBin();
+        th1_mean = th1ptr->GetXaxis()->GetBinCenter(binmax);
+    }
     auto th1_2std = 2 * th1ptr->GetStdDev();
     tf1_gaus.SetParameter(0, 0.95 * th1ptr->GetMaximum());
     tf1_gaus.SetParameter(1, th1_mean);
@@ -271,7 +281,9 @@ GausFitRes fit_eraw_hist(TF1& tf1_gaus, TH1* th1ptr,
     // Second fit with adjusted two sigma range
     auto fit1_mean = tf1_gaus.GetParameter(1);
     auto fit1_2std = 2 * tf1_gaus.GetParameter(2);
-    tf1_gaus.SetRange(fit1_mean-fit1_2std, fit1_mean+fit1_2std);
+    if (!IsFluka) tf1_gaus.SetRange(fit1_mean-fit1_2std, fit1_mean+fit1_2std);
+    //for fluka only fir the "right" side
+    else tf1_gaus.SetRange(fit1_mean-0.1*fit1_2std, fit1_mean+2.*fit1_2std);
     th1ptr->Fit(&tf1_gaus, "RQ");
 
     std::ostringstream write_name;
@@ -399,13 +411,20 @@ void xer_graphs_comp_canvas(std::tuple<TGraphErrors, TGraphErrors> sim_xer_graph
 
 
 // Macro entry
-void TBrun_all() {
+// Usage: root TBrun_all.C for standard G4-only data analysis
+//        root 'TBrun_all.C(true)' for analysis of data using FLUKA.CERN interface
+//
+void TBrun_all(const bool IsFluka = false) {
     ROOT::EnableImplicitMT();
     ROOT::Math::MinimizerOptions::SetDefaultMinimizer("TMinuit", "Minimize");
     gROOT->SetStyle("Modern");
 
     // Create output file and RDataFrame
-    TFile output {"analysis.root", "RECREATE"};
+    std::string output_name{};
+    if(!IsFluka) output_name = "analysis.root";
+    else output_name = "analysis_fluka.root";
+    TFile output {output_name.c_str(), "RECREATE"};
+    if (IsFluka) MERGED_RUN_FILE = "ATLTileCalTBout_RunAll_Fluka.root";
     ROOT::RDataFrame rdf {RUN_FILE_TTREE_NAME, MERGED_RUN_FILE};
 
     // Create default canvas and default gaus
@@ -477,9 +496,9 @@ void TBrun_all() {
     // Fit EM-Scale histograms
     BEarray<GausFitRes> eraw_res_pi, eraw_res_k, eraw_res_p;
     for (std::size_t n = 0; n < N_BEAM_ENERGIES; ++n) {
-        eraw_res_pi[n] = fit_eraw_hist(tf1_gaus, th1s_eraw_pi[n].GetPtr(), BEAM_ENERGIES[n], "Pions");
-        eraw_res_k[n]  = fit_eraw_hist(tf1_gaus, th1s_eraw_k[n].GetPtr(),  BEAM_ENERGIES[n], "Kaons");
-        eraw_res_p[n]  = fit_eraw_hist(tf1_gaus, th1s_eraw_p[n].GetPtr(),  BEAM_ENERGIES[n], "Protons");
+        eraw_res_pi[n] = fit_eraw_hist(tf1_gaus, th1s_eraw_pi[n].GetPtr(), BEAM_ENERGIES[n], "Pions", IsFluka);
+        eraw_res_k[n]  = fit_eraw_hist(tf1_gaus, th1s_eraw_k[n].GetPtr(),  BEAM_ENERGIES[n], "Kaons", IsFluka);
+        eraw_res_p[n]  = fit_eraw_hist(tf1_gaus, th1s_eraw_p[n].GetPtr(),  BEAM_ENERGIES[n], "Protons", IsFluka);
     }
 
     // Create x/e ratio graphs
@@ -494,8 +513,8 @@ void TBrun_all() {
 
     // Create comparision plots
     gROOT->SetStyle("ATLAS");
-    xer_graphs_comp_canvas(sim_pier_graphs, atl_pier_graphs, 0.77, 0.85, 0.086, 0.135, "Pions");
-    xer_graphs_comp_canvas(sim_ker_graphs,  atl_ker_graphs,  0.74, 0.82, 0.082, 0.160, "Kaons");
+    xer_graphs_comp_canvas(sim_pier_graphs, atl_pier_graphs, 0.77, 0.85, 0.076, 0.135, "Pions");
+    xer_graphs_comp_canvas(sim_ker_graphs,  atl_ker_graphs,  0.74, 0.82, 0.072, 0.160, "Kaons");
     xer_graphs_comp_canvas(sim_per_graphs,  atl_per_graphs,  0.68, 0.80, 0.076, 0.130, "Protons");
 
     // Uncomment to see comparison plots directly when executing script
