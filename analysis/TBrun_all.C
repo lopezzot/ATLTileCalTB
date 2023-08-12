@@ -22,6 +22,7 @@
 #include <ROOT/RVec.hxx>
 #include <ROOT/RDataFrame.hxx>
 #include <Math/MinimizerOptions.h>
+#include "FLUKA_comparison.h"
 
 struct ValErr {
     double value;
@@ -317,10 +318,10 @@ std::tuple<TGraphErrors, TGraphErrors> xer_graphs(BEarray<GausFitRes> eraw_res,
     }
     auto tge = TGraphErrors(N_BEAM_ENERGIES, BEAM_ENERGIES.data(), eresp_vals.data(), nullptr, eresp_errors.data());
     tge.SetTitle(("Energy Response " + name + ";E_{beam} [GeV];R^{E^{raw}}").c_str());
-    tge.Write(("Energy Response " + name).c_str());
+    tge.Write(("Energy_Response_" + name).c_str());
     auto tge2 = TGraphErrors(N_BEAM_ENERGIES, reverse_copy_vector(invsqrtbe).data(), reverse_copy_vector(eres_vals).data(), nullptr, reverse_copy_vector(eres_errors).data());
     tge2.SetTitle(("Energy Resolution " + name + ";1/#sqrt{E_{beam} [GeV]};R^{#sigma^{raw}}").c_str());
-    tge2.Write(("Energy Resolution " + name).c_str());
+    tge2.Write(("Energy_Resolution_" + name).c_str());
     return std::make_tuple(tge, tge2);
 }
 
@@ -339,10 +340,10 @@ std::tuple<TGraphErrors, TGraphErrors> atl_xer_graphs(ATLBEarray<ValErr> eresp,
     }
     auto tge = TGraphErrors(N_BEAM_ENERGIES, BEAM_ENERGIES.data(), eresp_vals.data(), nullptr, eresp_errors.data());
     tge.SetTitle(("ATLAS Energy Response " + name + ";E_{beam} [GeV];R^{E^{raw}}").c_str());
-    tge.Write(("ATLAS Energy Response " + name).c_str());
+    tge.Write(("ATLAS_Energy_Response_" + name).c_str());
     auto tge2 = TGraphErrors(N_BEAM_ENERGIES, reverse_copy_vector(invsqrtbe).data(), reverse_copy_vector(eres_vals).data(), nullptr, reverse_copy_vector(eres_errors).data());
     tge2.SetTitle(("ATLAS Energy Resolution " + name + ";1/#sqrt{E_{beam} [GeV]};R^{#sigma^{raw}}").c_str());
-    tge2.Write(("ATLAS Energy Resolution " + name).c_str());
+    tge2.Write(("ATLAS_Energy_Resolution_" + name).c_str());
     return std::make_tuple(tge, tge2);
 }
 
@@ -523,4 +524,8 @@ void TBrun_all(const bool IsFluka = false) {
     // Write and close
     output.Write();
     output.Close();
+
+    if (IsFluka) {
+        FLUKA_comparison();
+    }
 }
