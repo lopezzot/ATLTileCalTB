@@ -22,7 +22,6 @@
 #include <ROOT/RVec.hxx>
 #include <ROOT/RDataFrame.hxx>
 #include <Math/MinimizerOptions.h>
-#include "FLUKA_comparison.h"
 
 struct ValErr {
     double value;
@@ -525,7 +524,4 @@ void TBrun_all(const bool IsFluka = false) {
     output.Write();
     output.Close();
 
-    if (IsFluka) {
-        FLUKA_comparison();
-    }
 }
