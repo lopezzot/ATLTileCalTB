@@ -88,7 +88,7 @@ void FLUKA_comparison(){
     FLUKA_EnergyRes_ratio->SetMarkerStyle(kCircle);
     FLUKA_EnergyRes_ratio->GetYaxis()->SetLabelSize(0.09);FLUKA_EnergyRes_ratio->GetXaxis()->SetLabelSize(0.09);
     FLUKA_EnergyRes_ratio->GetYaxis()->SetTitleSize(0.09);FLUKA_EnergyRes_ratio->GetYaxis()->SetTitleOffset(0.65);
-    FLUKA_EnergyRes_ratio->GetYaxis()->SetRangeUser(0.7,1.2);
+    FLUKA_EnergyRes_ratio->GetYaxis()->SetRangeUser(0.7,1.05);
     FLUKA_EnergyRes_ratio->SetName("Pions_ATLASenergyresolutionRatio");
     FLUKA_EnergyRes_ratio->Draw("AP");
     FLUKA_EnergyRes_ratio -> SetMarkerColor(kCyan -3);
@@ -122,7 +122,7 @@ void FLUKA_comparison(){
     G4_EnergyRes_ratio->SetMarkerStyle(kCircle);
     G4_EnergyRes_ratio->GetYaxis()->SetLabelSize(0.09);G4_EnergyRes_ratio->GetXaxis()->SetLabelSize(0.09);
     G4_EnergyRes_ratio->GetYaxis()->SetTitleSize(0.09);G4_EnergyRes_ratio->GetYaxis()->SetTitleOffset(0.65);
-    G4_EnergyRes_ratio->GetYaxis()->SetRangeUser(0.7,1.2);
+    G4_EnergyRes_ratio->GetYaxis()->SetRangeUser(0.7,1.05);
     G4_EnergyRes_ratio->SetName("Pions_ATLASenergyresolutionRatio");
     G4_EnergyRes_ratio->Draw("AP");
     G4_EnergyRes_ratio -> SetMarkerColor(kRed);
@@ -207,7 +207,7 @@ void FLUKA_comparison(){
     FLUKA_EnergyRes_ratio->SetMarkerStyle(kCircle);
     FLUKA_EnergyRes_ratio->GetYaxis()->SetLabelSize(0.09);FLUKA_EnergyRes_ratio->GetXaxis()->SetLabelSize(0.09);
     FLUKA_EnergyRes_ratio->GetYaxis()->SetTitleSize(0.09);FLUKA_EnergyRes_ratio->GetYaxis()->SetTitleOffset(0.65);
-    FLUKA_EnergyRes_ratio->GetYaxis()->SetRangeUser(0.7,1.2);
+    FLUKA_EnergyRes_ratio->GetYaxis()->SetRangeUser(0.7,1.05);
     FLUKA_EnergyRes_ratio->SetName("Kaons_ATLASenergyresolutionRatio");
     FLUKA_EnergyRes_ratio->Draw("AP");
     FLUKA_EnergyRes_ratio -> SetMarkerColor(kCyan -3);
@@ -241,7 +241,7 @@ void FLUKA_comparison(){
     G4_EnergyRes_ratio->SetMarkerStyle(kCircle);
     G4_EnergyRes_ratio->GetYaxis()->SetLabelSize(0.09);G4_EnergyRes_ratio->GetXaxis()->SetLabelSize(0.09);
     G4_EnergyRes_ratio->GetYaxis()->SetTitleSize(0.09);G4_EnergyRes_ratio->GetYaxis()->SetTitleOffset(0.65);
-    G4_EnergyRes_ratio->GetYaxis()->SetRangeUser(0.7,1.2);
+    G4_EnergyRes_ratio->GetYaxis()->SetRangeUser(0.7,1.05);
     G4_EnergyRes_ratio->SetName("Kaons_ATLASenergyresolutionRatio");
     G4_EnergyRes_ratio->Draw("AP");
     G4_EnergyRes_ratio -> SetMarkerColor(kRed);
@@ -327,7 +327,7 @@ void FLUKA_comparison(){
     FLUKA_EnergyRes_ratio->SetMarkerStyle(kCircle);
     FLUKA_EnergyRes_ratio->GetYaxis()->SetLabelSize(0.09);FLUKA_EnergyRes_ratio->GetXaxis()->SetLabelSize(0.09);
     FLUKA_EnergyRes_ratio->GetYaxis()->SetTitleSize(0.09);FLUKA_EnergyRes_ratio->GetYaxis()->SetTitleOffset(0.65);
-    FLUKA_EnergyRes_ratio->GetYaxis()->SetRangeUser(0.7,1.2);
+    FLUKA_EnergyRes_ratio->GetYaxis()->SetRangeUser(0.7,1.05);
     FLUKA_EnergyRes_ratio->SetName("Protons_ATLASenergyresolutionRatio");
     FLUKA_EnergyRes_ratio->Draw("AP");
     FLUKA_EnergyRes_ratio -> SetMarkerColor(kCyan -3);
@@ -361,7 +361,7 @@ void FLUKA_comparison(){
     G4_EnergyRes_ratio->SetMarkerStyle(kCircle);
     G4_EnergyRes_ratio->GetYaxis()->SetLabelSize(0.09);G4_EnergyRes_ratio->GetXaxis()->SetLabelSize(0.09);
     G4_EnergyRes_ratio->GetYaxis()->SetTitleSize(0.09);G4_EnergyRes_ratio->GetYaxis()->SetTitleOffset(0.65);
-    G4_EnergyRes_ratio->GetYaxis()->SetRangeUser(0.7,1.2);
+    G4_EnergyRes_ratio->GetYaxis()->SetRangeUser(0.7,1.05);
     G4_EnergyRes_ratio->SetName("Protons_ATLASenergyresolutionRatio");
     G4_EnergyRes_ratio->Draw("AP");
     G4_EnergyRes_ratio -> SetMarkerColor(kRed);
@@ -449,7 +449,7 @@ void FLUKA_comparison(){
     FLUKA_EnergyResponse_ratio->SetMarkerStyle(kCircle);
     FLUKA_EnergyResponse_ratio->GetYaxis()->SetLabelSize(0.09);FLUKA_EnergyResponse_ratio->GetXaxis()->SetLabelSize(0.09);
     FLUKA_EnergyResponse_ratio->GetYaxis()->SetTitleSize(0.09);FLUKA_EnergyResponse_ratio->GetYaxis()->SetTitleOffset(0.65);
-    FLUKA_EnergyResponse_ratio->GetYaxis()->SetRangeUser(0.7,1.2);
+    FLUKA_EnergyResponse_ratio->GetYaxis()->SetRangeUser(0.95,1.05);
     FLUKA_EnergyResponse_ratio->SetName("Pions_ATLASenergyresponseRatio");
     FLUKA_EnergyResponse_ratio->Draw("AP");
     FLUKA_EnergyResponse_ratio -> SetMarkerColor(kCyan -3);
@@ -483,7 +483,7 @@ void FLUKA_comparison(){
     G4_EnergyResponse_ratio->SetMarkerStyle(kCircle);
     G4_EnergyResponse_ratio->GetYaxis()->SetLabelSize(0.09);G4_EnergyResponse_ratio->GetXaxis()->SetLabelSize(0.09);
     G4_EnergyResponse_ratio->GetYaxis()->SetTitleSize(0.09);G4_EnergyResponse_ratio->GetYaxis()->SetTitleOffset(0.65);
-    G4_EnergyResponse_ratio->GetYaxis()->SetRangeUser(0.7,1.2);
+    G4_EnergyResponse_ratio->GetYaxis()->SetRangeUser(0.95,1.05);
     G4_EnergyResponse_ratio->SetName("Pions_ATLASenergyresponseRatio");
     G4_EnergyResponse_ratio->Draw("AP");
     G4_EnergyResponse_ratio -> SetMarkerColor(kRed);
@@ -568,7 +568,7 @@ void FLUKA_comparison(){
     FLUKA_EnergyResponse_ratio->SetMarkerStyle(kCircle);
     FLUKA_EnergyResponse_ratio->GetYaxis()->SetLabelSize(0.09);FLUKA_EnergyResponse_ratio->GetXaxis()->SetLabelSize(0.09);
     FLUKA_EnergyResponse_ratio->GetYaxis()->SetTitleSize(0.09);FLUKA_EnergyResponse_ratio->GetYaxis()->SetTitleOffset(0.65);
-    FLUKA_EnergyResponse_ratio->GetYaxis()->SetRangeUser(0.7,1.2);
+    FLUKA_EnergyResponse_ratio->GetYaxis()->SetRangeUser(0.95,1.05);
     FLUKA_EnergyResponse_ratio->SetName("Kaons_ATLASenergyresponseRatio");
     FLUKA_EnergyResponse_ratio->Draw("AP");
     FLUKA_EnergyResponse_ratio -> SetMarkerColor(kCyan -3);
@@ -602,7 +602,7 @@ void FLUKA_comparison(){
     G4_EnergyResponse_ratio->SetMarkerStyle(kCircle);
     G4_EnergyResponse_ratio->GetYaxis()->SetLabelSize(0.09);G4_EnergyResponse_ratio->GetXaxis()->SetLabelSize(0.09);
     G4_EnergyResponse_ratio->GetYaxis()->SetTitleSize(0.09);G4_EnergyResponse_ratio->GetYaxis()->SetTitleOffset(0.65);
-    G4_EnergyResponse_ratio->GetYaxis()->SetRangeUser(0.7,1.2);
+    G4_EnergyResponse_ratio->GetYaxis()->SetRangeUser(0.95,1.05);
     G4_EnergyResponse_ratio->SetName("Kaons_ATLASenergyresponseRatio");
     G4_EnergyResponse_ratio->Draw("AP");
     G4_EnergyResponse_ratio -> SetMarkerColor(kRed);
@@ -687,7 +687,7 @@ void FLUKA_comparison(){
     FLUKA_EnergyResponse_ratio->SetMarkerStyle(kCircle);
     FLUKA_EnergyResponse_ratio->GetYaxis()->SetLabelSize(0.09);FLUKA_EnergyResponse_ratio->GetXaxis()->SetLabelSize(0.09);
     FLUKA_EnergyResponse_ratio->GetYaxis()->SetTitleSize(0.09);FLUKA_EnergyResponse_ratio->GetYaxis()->SetTitleOffset(0.65);
-    FLUKA_EnergyResponse_ratio->GetYaxis()->SetRangeUser(0.7,1.2);
+    FLUKA_EnergyResponse_ratio->GetYaxis()->SetRangeUser(0.95,1.05);
     FLUKA_EnergyResponse_ratio->SetName("Protons_ATLASenergyresponseRatio");
     FLUKA_EnergyResponse_ratio->Draw("AP");
     FLUKA_EnergyResponse_ratio -> SetMarkerColor(kCyan -3);
@@ -721,7 +721,7 @@ void FLUKA_comparison(){
     G4_EnergyResponse_ratio->SetMarkerStyle(kCircle);
     G4_EnergyResponse_ratio->GetYaxis()->SetLabelSize(0.09);G4_EnergyResponse_ratio->GetXaxis()->SetLabelSize(0.09);
     G4_EnergyResponse_ratio->GetYaxis()->SetTitleSize(0.09);G4_EnergyResponse_ratio->GetYaxis()->SetTitleOffset(0.65);
-    G4_EnergyResponse_ratio->GetYaxis()->SetRangeUser(0.7,1.2);
+    G4_EnergyResponse_ratio->GetYaxis()->SetRangeUser(0.95,1.05);
     G4_EnergyResponse_ratio->SetName("Protons_ATLASenergyresponseRatio");
     G4_EnergyResponse_ratio->Draw("AP");
     G4_EnergyResponse_ratio -> SetMarkerColor(kRed);
