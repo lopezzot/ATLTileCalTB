@@ -1,7 +1,6 @@
 //**************************************************
-// \file FLUKA_comparison.h
-// \brief: Analysis #1 of ATLTileCalTB
-//         for pi-   
+// \file FLUKA_comparison.C
+// \brief: G4-to-Fluka comparison plots
 // \author: Michele D'Andrea (CERN EP-SFT-sim)
 //          @DandreaMichele
 // \start date: 12 August 2023
@@ -12,9 +11,6 @@
 
 #include "TBrun_all.C"
 
-
-
-
 void FLUKA_comparison(){
 
     //Running single analysis
@@ -22,8 +18,6 @@ void FLUKA_comparison(){
     TBrun_all();
     cout << "Starting FLUKA analysis...\n" << endl;
     TBrun_all(true);
-
-
 
     //defining variables
     Double_t xprime, yprime;
@@ -40,7 +34,6 @@ void FLUKA_comparison(){
     double FLUKA_energyresponse_error[4];
     double G4_energyresponse[4];
     double G4_energyresponse_error[4];
-
 
     //Initialize the plots
     cout << "Initializing plots for comparison..." << endl;
@@ -102,9 +95,6 @@ void FLUKA_comparison(){
     FLUKA_EnergyRes_ratio -> SetLineColor(kCyan -3);
     FLUKA_EnergyRes_ratio->Write();
     
-
-
-
     //------G4StandAlone & RATIO---------
     auto G4_EnergyRes = (TGraphErrors*)G4_file->Get("Energy_Resolution_Pions");
     G4_EnergyRes -> SetMarkerStyle(kCircle);
@@ -139,7 +129,6 @@ void FLUKA_comparison(){
     G4_EnergyRes_ratio -> SetLineColor(kRed);
     G4_EnergyRes_ratio->Write();
 
-
     outputfile->cd();
 
     //#######---------Plotting-----------#######
@@ -147,7 +136,6 @@ void FLUKA_comparison(){
     auto C1res = new TCanvas("ComparisonEnergyResolution", "", 700, 900);
     auto *p1res = new TPad("p1","p1",0.,0.305,1.,1.);  p1res->Draw();
     auto *p2res = new TPad("p2","p2",0.,0.02,1.,0.32); p2res->Draw();
-    
     
     p1res->cd();
     ATLAS_EnergyRes->SetTitle("");
@@ -226,9 +214,6 @@ void FLUKA_comparison(){
     FLUKA_EnergyRes_ratio -> SetLineColor(kCyan -3);
     FLUKA_EnergyRes_ratio->Write();
     
-
-
-
     //------G4StandAlone & RATIO---------
     G4_EnergyRes = (TGraphErrors*)G4_file->Get("Energy_Resolution_Kaons");
     G4_EnergyRes -> SetMarkerStyle(kCircle);
@@ -263,7 +248,6 @@ void FLUKA_comparison(){
     G4_EnergyRes_ratio -> SetLineColor(kRed);
     G4_EnergyRes_ratio->Write();
 
-
     outputfile->cd();
 
     //#######---------Plotting-----------#######
@@ -271,7 +255,6 @@ void FLUKA_comparison(){
     C1res = new TCanvas("ComparisonEnergyResolution", "", 700, 900);
     p1res = new TPad("p1","p1",0.,0.305,1.,1.);  p1res->Draw();
     p2res = new TPad("p2","p2",0.,0.02,1.,0.32); p2res->Draw();
-    
     
     p1res->cd();
     //title
@@ -291,8 +274,6 @@ void FLUKA_comparison(){
     "GH", "P");
     Freslegend->SetLineWidth(0);
     Freslegend->Draw("same");
-    
-
     
     p2res->cd();
     gPad->SetLeftMargin(0.15);
@@ -353,9 +334,6 @@ void FLUKA_comparison(){
     FLUKA_EnergyRes_ratio -> SetLineColor(kCyan -3);
     FLUKA_EnergyRes_ratio->Write();
     
-
-
-
     //------G4StandAlone & RATIO---------
     G4_EnergyRes = (TGraphErrors*)G4_file->Get("Energy_Resolution_Protons");
     G4_EnergyRes -> SetMarkerStyle(kCircle);
@@ -390,7 +368,6 @@ void FLUKA_comparison(){
     G4_EnergyRes_ratio -> SetLineColor(kRed);
     G4_EnergyRes_ratio->Write();
 
-
     outputfile->cd();
 
     //#######---------Plotting-----------#######
@@ -398,7 +375,6 @@ void FLUKA_comparison(){
     C1res = new TCanvas("ComparisonEnergyResolution", "", 700, 900);
     p1res = new TPad("p1","p1",0.,0.305,1.,1.);  p1res->Draw();
     p2res = new TPad("p2","p2",0.,0.02,1.,0.32); p2res->Draw();
-    
     
     p1res->cd();
     //title
@@ -419,8 +395,6 @@ void FLUKA_comparison(){
     Freslegend->SetLineWidth(0);
     Freslegend->Draw("same");
     
-
-    
     p2res->cd();
     gPad->SetLeftMargin(0.15);
     G4_EnergyRes_ratio->Draw("AP");
@@ -431,8 +405,6 @@ void FLUKA_comparison(){
     delete p1res, p2res;
     delete G4_EnergyRes, ATLAS_EnergyRes, FLUKA_EnergyRes, G4_EnergyRes_ratio, FLUKA_EnergyRes_ratio;
     delete C1res;
-
-
 
     //#######---------Energy Response-----------#######
 
@@ -484,9 +456,6 @@ void FLUKA_comparison(){
     FLUKA_EnergyResponse_ratio -> SetLineColor(kCyan -3);
     FLUKA_EnergyResponse_ratio->Write();
     
-
-
-
     //------G4StandAlone & RATIO---------
     auto G4_EnergyResponse = (TGraphErrors*)G4_file->Get("Energy_Response_Pions");
     G4_EnergyResponse -> SetMarkerStyle(kCircle);
@@ -521,7 +490,6 @@ void FLUKA_comparison(){
     G4_EnergyResponse_ratio -> SetLineColor(kRed);
     G4_EnergyResponse_ratio->Write();
 
-
     outputfile->cd();
 
     //#######---------Plotting-----------#######
@@ -529,7 +497,6 @@ void FLUKA_comparison(){
     C1res = new TCanvas("ComparisonEnergyResponse", "", 700, 900);
     p1res = new TPad("p1","p1",0.,0.305,1.,1.);  p1res->Draw();
     p2res = new TPad("p2","p2",0.,0.02,1.,0.32); p2res->Draw();
-    
     
     p1res->cd();
     ATLAS_EnergyResponse->SetTitle("");
@@ -560,7 +527,6 @@ void FLUKA_comparison(){
     delete G4_EnergyResponse, ATLAS_EnergyResponse, FLUKA_EnergyResponse, G4_EnergyResponse_ratio, FLUKA_EnergyResponse_ratio;
     delete C1res;
 
-    
     //-----------------KAONS-----------------
 
     //------ATLAS---------
@@ -609,9 +575,6 @@ void FLUKA_comparison(){
     FLUKA_EnergyResponse_ratio -> SetLineColor(kCyan -3);
     FLUKA_EnergyResponse_ratio->Write();
     
-
-
-
     //------G4StandAlone & RATIO---------
      G4_EnergyResponse = (TGraphErrors*)G4_file->Get("Energy_Response_Kaons");
     G4_EnergyResponse -> SetMarkerStyle(kCircle);
@@ -646,7 +609,6 @@ void FLUKA_comparison(){
     G4_EnergyResponse_ratio -> SetLineColor(kRed);
     G4_EnergyResponse_ratio->Write();
 
-
     outputfile->cd();
 
     //#######---------Plotting-----------#######
@@ -654,7 +616,6 @@ void FLUKA_comparison(){
     C1res = new TCanvas("ComparisonEnergyResponse", "", 700, 900);
     p1res = new TPad("p1","p1",0.,0.305,1.,1.);  p1res->Draw();
     p2res = new TPad("p2","p2",0.,0.02,1.,0.32); p2res->Draw();
-    
     
     p1res->cd();
     ATLAS_EnergyResponse->SetTitle("");
@@ -684,7 +645,6 @@ void FLUKA_comparison(){
     delete p1res, p2res;
     delete G4_EnergyResponse, ATLAS_EnergyResponse, FLUKA_EnergyResponse, G4_EnergyResponse_ratio, FLUKA_EnergyResponse_ratio;
     delete C1res;
-
 
     //-----------------PROTONS-----------------
 
@@ -734,9 +694,6 @@ void FLUKA_comparison(){
     FLUKA_EnergyResponse_ratio -> SetLineColor(kCyan -3);
     FLUKA_EnergyResponse_ratio->Write();
     
-
-
-
     //------G4StandAlone & RATIO---------
      G4_EnergyResponse = (TGraphErrors*)G4_file->Get("Energy_Response_Protons");
     G4_EnergyResponse -> SetMarkerStyle(kCircle);
@@ -771,7 +728,6 @@ void FLUKA_comparison(){
     G4_EnergyResponse_ratio -> SetLineColor(kRed);
     G4_EnergyResponse_ratio->Write();
 
-
     outputfile->cd();
 
     //#######---------Plotting-----------#######
@@ -779,7 +735,6 @@ void FLUKA_comparison(){
     C1res = new TCanvas("ComparisonEnergyResponse", "", 700, 900);
     p1res = new TPad("p1","p1",0.,0.305,1.,1.);  p1res->Draw();
     p2res = new TPad("p2","p2",0.,0.02,1.,0.32); p2res->Draw();
-    
     
     p1res->cd();
     ATLAS_EnergyResponse->SetTitle("");
@@ -809,8 +764,6 @@ void FLUKA_comparison(){
     delete p1res, p2res;
     delete G4_EnergyResponse, ATLAS_EnergyResponse, FLUKA_EnergyResponse, G4_EnergyResponse_ratio, FLUKA_EnergyResponse_ratio;
     delete C1res;
-
-
 
 }
 #endif
