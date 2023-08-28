@@ -11,6 +11,9 @@
 //
 #include "ATLTileCalTBRunAction.hh"
 #include "ATLTileCalTBEventAction.hh"
+#ifdef ATLTileCalTB_LEAKANALYSIS
+#include "SpectrumAnalyzer.hh"
+#endif
 
 //Includers from Geant4
 //
@@ -73,7 +76,10 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction( ATLTileCalTBEventAction* eventActi
     analysisManager->CreateNtupleIColumn("PDGID");
     analysisManager->CreateNtupleFColumn("EBeam");
     analysisManager->FinishNtuple();
-
+    
+    #ifdef ATLTileCalTB_LEAKANALYSIS
+    SpectrumAnalyzer::GetInstance()->CreateNtupleAndScorer("ke");
+    #endif
 }
 
 ATLTileCalTBRunAction::~ATLTileCalTBRunAction() {
@@ -109,7 +115,10 @@ void ATLTileCalTBRunAction::EndOfRunAction(const G4Run* /*run*/) {
     auto analysisManager = G4AnalysisManager::Instance();
     analysisManager->Write();
     analysisManager->CloseFile();
-
+    
+    #ifdef ATLTileCalTB_LEAKANALYSIS
+    SpectrumAnalyzer::GetInstance()->ClearNtupleID();
+    #endif
 }
 
 //**************************************************

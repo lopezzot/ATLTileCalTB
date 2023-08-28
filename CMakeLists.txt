@@ -36,6 +36,17 @@ if(WITH_ATLTileCalTB_PulseOutput)
 endif()
 
 #----------------------------------------------------------------------------
+#Option to enable leakage particle spectrum analysis
+#
+option(WITH_LEAKAGEANALYSIS "enable SpectrumAnalysis on leakage" OFF)
+if(WITH_LEAKAGEANALYSIS)
+    add_compile_definitions(ATLTileCalTB_LEAKANALYSIS)
+    message(STATUS "WITH_LEAKAGEANALYSIS = ON : building with ATLTileCalTB_LEAKANALYSIS compiler definition.")
+else()
+    message(STATUS "WITH_LEAKAGEANALYSIS = OFF : building without ATLTileCalTB_LEAKANALYSIS compiler definition.")
+endif()
+
+#----------------------------------------------------------------------------
 # Option to disable noise
 #
 option(WITH_ATLTileCalTB_NoNoise "disable electronic noise" OFF)
