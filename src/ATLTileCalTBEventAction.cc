@@ -13,6 +13,9 @@
 #include "ATLTileCalTBGeometry.hh"
 #include "ATLTileCalTBConstants.hh"
 #include "ATLTileCalTBPrimaryGenAction.hh"
+#ifdef ATLTileCalTB_LEAKANALYSIS
+#include "SpectrumAnalyzer.hh"
+#endif
 
 //Includers from Geant4
 //
@@ -67,7 +70,10 @@ void ATLTileCalTBEventAction::BeginOfEventAction([[maybe_unused]] const G4Event*
     pulse_event_path = std::filesystem::path("ATLTileCalTBpulse_Run" + std::to_string(runNumber) + "/Ev" + std::to_string(eventNumber));
     std::filesystem::create_directory(pulse_event_path);
     #endif
-
+    
+    #ifdef ATLTileCalTB_LEAKANALYSIS
+    SpectrumAnalyzer::GetInstance()->ClearEventFields();
+    #endif
 }
 
 //GetHitsCollection method()
@@ -200,7 +206,10 @@ void ATLTileCalTBEventAction::EndOfEventAction( const G4Event* event ) {
     analysisManager->FillNtupleFColumn(7, fPrimaryGenAction->GetParticlenGun()->GetParticleEnergy());
 
     analysisManager->AddNtupleRow();
-
+    
+    #ifdef ATLTileCalTB_LEAKANALYSIS
+    SpectrumAnalyzer::GetInstance()->FillEventFields();
+    #endif
 } 
 
 //**************************************************

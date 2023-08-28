@@ -287,7 +287,8 @@ Custom options:
 -  `WITH_ATLTileCalTB_NoNoise`: if set to `ON`, the simulation will not put electronic noise on the
    signal (per cell) and disable the 2 sigma noise cut. Only relevant for noise calibration.
 -  `WITH_GEANT4_UIVIS`: if set to `ON` (default), build with UI and visualization drivers.
--   `G4_USE_FLUKA`: if set to `ON` build against the Fluka.Cern interface (default `OFF`).
+-  `G4_USE_FLUKA`: if set to `ON` build against the Fluka.Cern interface (default `OFF`).
+-  `WITH_LEAKAGEANALYSIS`: if set to `ON` build with leakage spectrum analyzer (default `OFF`).
 
 Relevant built-in options:
 -  `CMAKE_BUILD_TYPE`: set to `Debug` for debugging and to `Release` for production (faster).

@@ -10,6 +10,9 @@
 //Includers from project files
 //
 #include "ATLTileCalTBStepAction.hh"
+#ifdef ATLTileCalTB_LEAKANALYSIS
+#include "SpectrumAnalyzer.hh"
+#endif
 
 //Constructor and de-constructor
 //
@@ -27,6 +30,9 @@ void ATLTileCalTBStepAction::UserSteppingAction( const G4Step* aStep ) {
     //
     if ( !aStep->GetTrack()->GetNextVolume() ){
         fEventAction->Add( 0, aStep->GetTrack()->GetKineticEnergy() ); 
+        #ifdef ATLTileCalTB_LEAKANALYSIS
+        SpectrumAnalyzer::GetInstance()->Analyze(aStep);
+        #endif
     }
 
     if ( aStep->GetTrack()->GetTouchableHandle()->GetVolume()->GetName() != "CALO::CALO" ||
