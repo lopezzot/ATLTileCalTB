@@ -116,9 +116,6 @@ void ATLTileCalTBRunAction::EndOfRunAction(const G4Run* /*run*/) {
     analysisManager->Write();
     analysisManager->CloseFile();
     
-    #ifdef ATLTileCalTB_LEAKANALYSIS
-    SpectrumAnalyzer::GetInstance()->ClearNtupleID();
-    #endif
 }
 
 //**************************************************
