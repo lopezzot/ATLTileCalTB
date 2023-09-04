@@ -11,6 +11,8 @@
 // Instead of coding it in the simulation, create a singleton
 // and manage its usage with (#ifdef) compiler definition.
 
+#ifdef ATLTileCalTB_LEAKANALYSIS
+
 #ifndef SpectrumAnalyzer_h
 #  define SpectrumAnalyzer_h
 
@@ -86,5 +88,6 @@ class SpectrumAnalyzer
 };
 
 #endif  // SpectrumAnalyzer_h
+#endif  // ATLTileCalTB_LEAKANALYSIS
 
 //**************************************************
