@@ -45,18 +45,6 @@ ATLTileCalTBRunAction::ATLTileCalTBRunAction( ATLTileCalTBEventAction* eventActi
     //
     auto analysisManager = G4AnalysisManager::Instance();
 
-    //Print useful information
-    //
-    if (IsMaster()) {
-        G4cout << "Using " << analysisManager->GetType() << G4endl;
-        #ifdef ATLTileCalTB_PulseOutput
-        G4cout << "Creating pulse plots" << G4endl;
-        #endif
-        #ifdef ATLTileCalTB_NoNoise
-        G4cout << "Electronic noise disabled" << G4endl;
-        #endif
-    }
-
     analysisManager->SetVerboseLevel(1);
     analysisManager->SetNtupleMerging(true);
 
@@ -101,6 +89,18 @@ void ATLTileCalTBRunAction::BeginOfRunAction(const G4Run* run) {
     std::string runnumber = std::to_string( run->GetRunID() );
     G4String fileName = "ATLTileCalTBout_Run" + runnumber + ".root";
     analysisManager->OpenFile(fileName);
+
+    //Print useful information
+    //
+    if (IsMaster()) {
+        G4cout << "Using " << analysisManager->GetType() << G4endl;
+        #ifdef ATLTileCalTB_PulseOutput
+        G4cout << "Creating pulse plots" << G4endl;
+        #endif
+        #ifdef ATLTileCalTB_NoNoise
+        G4cout << "Electronic noise disabled" << G4endl;
+        #endif
+    }
 
     auto pulse_run_path = std::filesystem::path("ATLTileCalTBpulse_Run" + runnumber);
     std::filesystem::remove_all(pulse_run_path);
