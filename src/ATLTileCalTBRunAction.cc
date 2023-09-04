@@ -86,6 +86,10 @@ void ATLTileCalTBRunAction::BeginOfRunAction(const G4Run* run) {
   
     auto analysisManager = G4AnalysisManager::Instance();
 
+    std::string runnumber = std::to_string( run->GetRunID() );
+    G4String fileName = "ATLTileCalTBout_Run" + runnumber + ".root";
+    analysisManager->OpenFile(fileName);
+
     //Print useful information
     //
     if (IsMaster()) {
@@ -97,10 +101,6 @@ void ATLTileCalTBRunAction::BeginOfRunAction(const G4Run* run) {
         G4cout << "Electronic noise disabled" << G4endl;
         #endif
     }
-
-    std::string runnumber = std::to_string( run->GetRunID() );
-    G4String fileName = "ATLTileCalTBout_Run" + runnumber + ".root";
-    analysisManager->OpenFile(fileName);
 
     auto pulse_run_path = std::filesystem::path("ATLTileCalTBpulse_Run" + runnumber);
     std::filesystem::remove_all(pulse_run_path);
