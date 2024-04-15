@@ -13,7 +13,7 @@ source /cvmfs/sft.cern.ch/lcg/contrib/gcc/${GCC_VERSION}/${GCC_PLATFORM}/setup.s
 
 # Test path
 GVALPATH="/cvmfs/geant4.cern.ch/opt-geant-val/$GEANT4_VERSION/$GEANT4_PLATFORM/bin:/cvmfs/geant4.cern.ch/opt/$GEANT4_VERSION/$GEANT4_PLATFORM/bin"
-YOURPATH="/afs/cern.ch/work/l/lopezzot/Fellow/ATLTileCalTB/build1111"
+YOURPATH="@YOURPATH@"
 export PATH="$GVALPATH:$PATH:$YOURPATH"
 
 # Geant Val exports
