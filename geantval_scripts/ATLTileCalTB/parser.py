@@ -41,12 +41,17 @@ class Test(BaseParser):
 
         # get data from analysis
         tf = ROOT.TFile(os.path.join(tempdir, 'analysis.root'), 'READ')
-        tge_eresp_pi = tf.Get('Energy Response Pions')
-        tge_eres_pi = tf.Get('Energy Resolution Pions')
-        tge_eresp_k = tf.Get('Energy Response Kaons')
-        tge_eres_k = tf.Get('Energy Resolution Kaons')
-        tge_eresp_p = tf.Get('Energy Response Protons')
-        tge_eres_p = tf.Get('Energy Resolution Protons')
+        tge_eresp_pi = tf.Get('Energy_Response_Pions')
+        tge_eres_pi = tf.Get('Energy_Resolution_Pions')
+        tge_eresp_k = tf.Get('Energy_Response_Kaons')
+        tge_eres_k = tf.Get('Energy_Resolution_Kaons')
+        tge_eresp_p = tf.Get('Energy_Response_Protons')
+        tge_eres_p = tf.Get('Energy_Resolution_Protons')
+        # graph names were changed in ATLTileCalTB_1.2
+        # spaces were changed with "_"
+        # e.g. "Energy Response" -> "Energy_Response"
+        # if you use ATLTileCalTB with geant-val and a
+        # release < 1.2 use previous names here
 
         # Return simulation results
         # Energy response pions
