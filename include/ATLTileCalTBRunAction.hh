@@ -13,6 +13,7 @@
 //Includers from Geant4
 //
 #include "G4UserRunAction.hh"
+#include "G4Timer.hh"
 
 //Forward declaration from project
 //
@@ -33,6 +34,7 @@ class ATLTileCalTBRunAction : public G4UserRunAction {
 
     private:
         ATLTileCalTBEventAction* fEventAction;
+        G4Timer fTimer;
 
 };
 
