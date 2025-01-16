@@ -79,7 +79,8 @@ ATLTileCalTBRunAction::~ATLTileCalTBRunAction() {
 //BeginOfRunAction method
 //
 void ATLTileCalTBRunAction::BeginOfRunAction(const G4Run* run) { 
-  
+    fTimer.Start(); 
+    
     //Save random number seed
     //
     //G4RunManager::GetRunManager()->SetRandomNumberStore(true);
@@ -110,12 +111,21 @@ void ATLTileCalTBRunAction::BeginOfRunAction(const G4Run* run) {
 
 }
 
-void ATLTileCalTBRunAction::EndOfRunAction(const G4Run* /*run*/) {
+void ATLTileCalTBRunAction::EndOfRunAction(const G4Run* run) {
 
     auto analysisManager = G4AnalysisManager::Instance();
     analysisManager->Write();
     analysisManager->CloseFile();
-    
+
+    //Stop Time and printout time
+    //
+    fTimer.Stop();
+    G4int events = run->GetNumberOfEvent();
+    G4cout << " ====================================================================== " << G4endl;
+    G4cout << "  Run terminated, " << events << " events transported" << G4endl;
+    G4cout << "  Time: " << fTimer << G4endl;
+    G4cout << "  Time per event(s): " << fTimer.GetUserElapsed() / static_cast<double>(events) << G4endl;
+    G4cout << " ====================================================================== " << G4endl;
 }
 
 //**************************************************
